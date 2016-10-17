@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdlCatalog>
+
+  <wsdlEntry
+	location="project:KawasakiEducationTranslationKyotoU/wsdl/MultilingualMorphologicalAnalysis.wsdl"
+	classpath="wsdl/MultilingualMorphologicalAnalysis.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:KawasakiEducationTranslationKyotoU/wsdl/MultilingualTranslationKyotoUJServer.wsdl"
+	classpath="wsdl/MultilingualTranslationKyotoUJServer.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:KawasakiEducationTranslationKyotoU/wsdl/StringOperationServiceService.wsdl"
+	classpath="wsdl/StringOperationServiceService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:KawasakiEducationTranslationKyotoU/wsdl/CodeGenerationServiceService.wsdl"
+	classpath="wsdl/CodeGenerationServiceService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:KawasakiEducationTranslationKyotoU/wsdl/TermReplacementServiceService.wsdl"
+	classpath="wsdl/TermReplacementServiceService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:KawasakiEducationTranslationKyotoU/wsdl/KawasakiEducationDictionaryServiceService.wsdl"
+	classpath="wsdl/KawasakiEducationDictionaryServiceService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:KawasakiEducationTranslationKyotoU/wsdl/unknown.wsdl"
+	classpath="wsdl/unknown.wsdl"
+  />
+
+</wsdlCatalog>

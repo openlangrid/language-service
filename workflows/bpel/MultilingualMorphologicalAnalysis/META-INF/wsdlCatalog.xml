@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdlCatalog>
+
+  <wsdlEntry
+	location="project:MultilingualMorphologicalAnalysis/wsdl/unknown.wsdl"
+	classpath="wsdl/unknown.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:MultilingualMorphologicalAnalysis/wsdl/Klt.wsdl"
+	classpath="wsdl/Klt.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:MultilingualMorphologicalAnalysis/wsdl/TreeTagger.wsdl"
+	classpath="wsdl/TreeTagger.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:MultilingualMorphologicalAnalysis/wsdl/Mecab.wsdl"
+	classpath="wsdl/Mecab.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:MultilingualMorphologicalAnalysis/wsdl/ICTCLAS.wsdl"
+	classpath="wsdl/ICTCLAS.wsdl"
+  />
+
+</wsdlCatalog>

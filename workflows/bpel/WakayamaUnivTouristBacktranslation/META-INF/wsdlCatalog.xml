@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdlCatalog>
+
+  <wsdlEntry
+	location="project:WakayamaUnivTouristBacktranslation/wsdl/WakayamaUnivTouristTranslation.wsdl"
+	classpath="wsdl/WakayamaUnivTouristTranslation.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:WakayamaUnivTouristBacktranslation/wsdl/unknown.wsdl"
+	classpath="wsdl/unknown.wsdl"
+  />
+
+</wsdlCatalog>

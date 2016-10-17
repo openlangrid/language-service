@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpws:process xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:impl="http://localhost:8080/wrapper-mock-1.2/services/AbstractBilingualDictionary" xmlns:impl1="http://localhost:8080/wrapper-1.2/services/EBMT" xmlns:ns1="http://langrid.nict.go.jp/langrid-1.2/services/EBMTPreprocessParallelText" xmlns:ns11="http://trans.nict.go.jp/langrid-service-1.2/services/AbstractParallelText" xmlns:ns2="namespace" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="EBMTPreprocessParallelText" suppressJoinFailure="yes" targetNamespace="http://langrid.nict.go.jp/langrid-1.2/services/EBMTPreprocessParallelText">
+   <bpws:partnerLinks>
+      <bpws:partnerLink myRole="preprocessor" name="PreprocessPL" partnerLinkType="ns1:PreprocessPLT"/>
+      <bpws:partnerLink name="SearchPL" partnerLinkType="ns1:SearchPLT" partnerRole="plservice"/>
+      <bpws:partnerLink name="PreprocessParallelTextPL" partnerLinkType="ns1:PreprocessParallelTextPLT" partnerRole="ptpreprocess"/>
+   </bpws:partnerLinks>
+   <bpws:variables>
+      <bpws:variable messageType="ns1:preprocessRequest" name="preprocessRequest"/>
+      <bpws:variable messageType="ns1:preprocessResponse" name="preprocessResponse"/>
+      <bpws:variable messageType="ns11:searchRequest" name="searchRequest"/>
+      <bpws:variable messageType="ns11:searchResponse" name="searchResponse"/>
+      <bpws:variable messageType="impl1:preprocessParallelTextRequest" name="preprocessParallelTextRequest"/>
+      <bpws:variable messageType="impl1:preprocessParallelTextResponse" name="preprocessParallelTextResponse"/>
+   </bpws:variables>
+   <bpws:sequence>
+      <bpws:receive createInstance="yes" operation="preprocess" partnerLink="PreprocessPL" portType="ns1:EBMTPreprocessParallelText" variable="preprocessRequest"/>
+      <bpws:assign name=" ">
+         <bpws:copy>
+            <bpws:from part="sourceLang" variable="preprocessRequest"/>
+            <bpws:to part="sourceLang" variable="searchRequest"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="targetLang" variable="preprocessRequest"/>
+            <bpws:to part="targetLang" variable="searchRequest"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="source" variable="preprocessRequest"/>
+            <bpws:to part="source" variable="searchRequest"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="matchingMethod" variable="preprocessRequest"/>
+            <bpws:to part="matchingMethod" variable="searchRequest"/>
+         </bpws:copy>
+      </bpws:assign>
+      <bpws:invoke inputVariable="searchRequest" name="Search" operation="search" outputVariable="searchResponse" partnerLink="SearchPL" portType="ns11:ParallelText"/>
+      <bpws:assign>
+         <bpws:copy>
+            <bpws:from part="searchReturn" variable="searchResponse"/>
+            <bpws:to part="contents" variable="preprocessParallelTextRequest"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="sourceLang" variable="preprocessRequest"/>
+            <bpws:to part="sourceLang" variable="preprocessParallelTextRequest"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="targetLang" variable="preprocessRequest"/>
+            <bpws:to part="targetLang" variable="preprocessParallelTextRequest"/>
+         </bpws:copy>
+      </bpws:assign>
+      <bpws:invoke inputVariable="preprocessParallelTextRequest" name="Preprocess" operation="preprocessParallelText" outputVariable="preprocessParallelTextResponse" partnerLink="PreprocessParallelTextPL" portType="impl1:EBMT"/>
+      <bpws:assign>
+         <bpws:copy>
+            <bpws:from part="preprocessParallelTextReturn" variable="preprocessParallelTextResponse"/>
+            <bpws:to part="token" variable="preprocessResponse"/>
+         </bpws:copy>
+      </bpws:assign>
+      <bpws:reply operation="preprocess" partnerLink="PreprocessPL" portType="ns1:EBMTPreprocessParallelText" variable="preprocessResponse"/>
+   </bpws:sequence>
+</bpws:process>

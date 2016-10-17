@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://trans.nict.go.jp/collabo/services/TermReplacementService" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://trans.nict.go.jp/collabo/services/TermReplacementService" xmlns:intf="http://trans.nict.go.jp/collabo/services/TermReplacementService" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns1="http://langrid.nict.go.jp/ws_1_0/morphologicalanalysis/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDLはApache Axis version: 1.3
+Built on Oct 05, 2005 (05:23:37 EDT)によって生成されました / [en]-(WSDL created by Apache Axis version: 1.3
+Built on Oct 05, 2005 (05:23:37 EDT))-->
+ <wsdl:types>
+  <schema targetNamespace="http://trans.nict.go.jp/collabo/services/TermReplacementService" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://langrid.nict.go.jp/ws_1_0/morphologicalanalysis/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOf_xsd_string">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_tns1_Morpheme">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:Morpheme[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://langrid.nict.go.jp/ws_1_0/morphologicalanalysis/" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://trans.nict.go.jp/collabo/services/TermReplacementService"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="Morpheme">
+    <sequence>
+     <element name="lemma" nillable="true" type="xsd:string"/>
+     <element name="partOfSpeech" nillable="true" type="xsd:string"/>
+     <element name="word" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="replaceRequest">
+
+      <wsdl:part name="language" type="xsd:string"/>
+
+      <wsdl:part name="text" type="xsd:string"/>
+
+      <wsdl:part name="searchWords" type="impl:ArrayOf_xsd_string"/>
+
+      <wsdl:part name="replacementWords" type="impl:ArrayOf_xsd_string"/>
+
+      <wsdl:part name="morpheme" type="impl:ArrayOf_tns1_Morpheme"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="replaceResponse">
+
+      <wsdl:part name="replaceReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="TermReplacementService">
+
+      <wsdl:operation name="replace" parameterOrder="language text searchWords replacementWords morpheme">
+
+         <wsdl:input message="impl:replaceRequest" name="replaceRequest"/>
+
+         <wsdl:output message="impl:replaceResponse" name="replaceResponse"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="TermReplacementServiceSoapBinding" type="impl:TermReplacementService">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="replace">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="replaceRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://service.community.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="replaceResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://trans.nict.go.jp/collabo/services/TermReplacementService" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="TermReplacementServiceService">
+
+      <wsdl:port binding="impl:TermReplacementServiceSoapBinding" name="TermReplacementService">
+
+         <wsdlsoap:address location="http://trans.nict.go.jp/collabo/services/TermReplacementService"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

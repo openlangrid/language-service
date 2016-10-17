@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdlCatalog>
+
+  <wsdlEntry
+	location="project:MultilingualBacktranslationNictJServer/wsdl/MultilingualTranslationNictJServer.wsdl"
+	classpath="wsdl/MultilingualTranslationNictJServer.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:MultilingualBacktranslationNictJServer/wsdl/unknown.wsdl"
+	classpath="wsdl/unknown.wsdl"
+  />
+
+</wsdlCatalog>

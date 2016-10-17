@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://localhost:8080/wrapper-mock-1.2/services/TranslationWithBackup" xmlns:impl="http://localhost:8080/wrapper-mock-1.2/services/TranslationWithBackup" xmlns:intf="http://localhost:8080/wrapper-mock-1.2/services/TranslationWithBackup" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:ns1="http://localhost:8080/wrapper-mock-1.2/services/AbstractTranslation" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns1="http://langrid.nict.go.jp/ws_1_2/">
+<plnk:partnerLinkType xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" name="TranslationWithBackupPLT">
+   <plnk:role name="translator">
+      <plnk:portType name="impl:Translation"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+<plnk:partnerLinkType xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" name="TranslationPLT">
+   <plnk:role name="translator">
+      <plnk:portType name="ns1:Translation"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+  <wsdl:types>
+    <schema targetNamespace="http://langrid.nict.go.jp/ws_1_2/" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://localhost:8080/wrapper-mock-1.2/services/TranslationWithBackup"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="LangridException">
+    <sequence>
+     <element name="description" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="AccessLimitExceededException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="InvalidParameterException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence>
+       <element name="parameterName" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="UnsupportedLanguagePairException">
+    <complexContent>
+     <extension base="tns1:InvalidParameterException">
+      <sequence>
+       <element name="language1" nillable="true" type="xsd:string"/>
+       <element name="language2" nillable="true" type="xsd:string"/>
+       <element name="parameterName1" nillable="true" type="xsd:string"/>
+       <element name="parameterName2" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="LanguagePairNotUniquelyDecidedException">
+    <complexContent>
+     <extension base="tns1:InvalidParameterException">
+      <sequence>
+       <element name="candidates" nillable="true" type="impl:ArrayOf_xsd_string"/>
+       <element name="message" nillable="true" type="xsd:string"/>
+       <element name="parameterName1" nillable="true" type="xsd:string"/>
+       <element name="parameterName2" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="NoAccessPermissionException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="NoValidEndpointsException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ProcessFailedException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ServerBusyException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ServiceNotActiveException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence>
+       <element name="serviceId" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ServiceNotFoundException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence>
+       <element name="serviceId" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ServiceConfigurationException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="UnknownException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+  </schema>
+    <schema targetNamespace="http://localhost:8080/wrapper-mock-1.2/services/TranslationWithBackup" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOf_xsd_string">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string[]" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+  </wsdl:types>
+  <wsdl:message name="translateRequest">
+    <wsdl:part name="sourceLang" type="xsd:string"/>
+    <wsdl:part name="targetLang" type="xsd:string"/>
+    <wsdl:part name="source" type="xsd:string"/>
+  </wsdl:message>
+  <wsdl:message name="ServerBusyException">
+    <wsdl:part name="fault" type="tns1:ServerBusyException"/>
+  </wsdl:message>
+  <wsdl:message name="ServiceNotActiveException">
+    <wsdl:part name="fault" type="tns1:ServiceNotActiveException"/>
+  </wsdl:message>
+  <wsdl:message name="UnsupportedLanguagePairException">
+    <wsdl:part name="fault" type="tns1:UnsupportedLanguagePairException"/>
+  </wsdl:message>
+  <wsdl:message name="AccessLimitExceededException">
+    <wsdl:part name="fault" type="tns1:AccessLimitExceededException"/>
+  </wsdl:message>
+  <wsdl:message name="LanguagePairNotUniquelyDecidedException">
+    <wsdl:part name="fault" type="tns1:LanguagePairNotUniquelyDecidedException"/>
+  </wsdl:message>
+  <wsdl:message name="InvalidParameterException">
+    <wsdl:part name="fault" type="tns1:InvalidParameterException"/>
+  </wsdl:message>
+  <wsdl:message name="ServiceConfigurationException">
+    <wsdl:part name="fault" type="tns1:ServiceConfigurationException"/>
+  </wsdl:message>
+  <wsdl:message name="ServiceNotFoundException">
+    <wsdl:part name="fault" type="tns1:ServiceNotFoundException"/>
+  </wsdl:message>
+  <wsdl:message name="translateResponse">
+    <wsdl:part name="translateReturn" type="xsd:string"/>
+  </wsdl:message>
+  <wsdl:message name="UnknownException">
+    <wsdl:part name="fault" type="tns1:UnknownException"/>
+  </wsdl:message>
+  <wsdl:message name="NoValidEndpointsException">
+    <wsdl:part name="fault" type="tns1:NoValidEndpointsException"/>
+  </wsdl:message>
+  <wsdl:message name="ProcessFailedException">
+    <wsdl:part name="fault" type="tns1:ProcessFailedException"/>
+  </wsdl:message>
+  <wsdl:message name="NoAccessPermissionException">
+    <wsdl:part name="fault" type="tns1:NoAccessPermissionException"/>
+  </wsdl:message>
+  <wsdl:portType name="Translation">
+    <wsdl:operation name="translate" parameterOrder="sourceLang targetLang source">
+      <wsdl:input name="translateRequest" message="impl:translateRequest"/>
+      <wsdl:output name="translateResponse" message="impl:translateResponse"/>
+      <wsdl:fault name="ServerBusyException" message="impl:ServerBusyException"/>
+      <wsdl:fault name="LanguagePairNotUniquelyDecidedException" message="impl:LanguagePairNotUniquelyDecidedException"/>
+      <wsdl:fault name="NoAccessPermissionException" message="impl:NoAccessPermissionException"/>
+      <wsdl:fault name="ServiceConfigurationException" message="impl:ServiceConfigurationException"/>
+      <wsdl:fault name="AccessLimitExceededException" message="impl:AccessLimitExceededException"/>
+      <wsdl:fault name="UnsupportedLanguagePairException" message="impl:UnsupportedLanguagePairException"/>
+      <wsdl:fault name="NoValidEndpointsException" message="impl:NoValidEndpointsException"/>
+      <wsdl:fault name="ServiceNotActiveException" message="impl:ServiceNotActiveException"/>
+      <wsdl:fault name="UnknownException" message="impl:UnknownException"/>
+      <wsdl:fault name="ServiceNotFoundException" message="impl:ServiceNotFoundException"/>
+      <wsdl:fault name="ProcessFailedException" message="impl:ProcessFailedException"/>
+      <wsdl:fault name="InvalidParameterException" message="impl:InvalidParameterException"/>
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

@@ -1,0 +1,6 @@
+# russian PartOfSpeech map
+noun*=noun.common
+verb*=verb
+adv*=adverb
+adj*=adjective
+*=other

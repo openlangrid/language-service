@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+BPEL Process Definition
+Edited using ActiveBPEL(tm) Designer Version 2.1.0 (http://www.active-endpoints.com)
+-->
+<process xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+xmlns:ns1="http://langrid.nict.go.jp/langrid/services/PlaygroundDemoBacktranslationKyotoUService"
+xmlns:ns2="http://langrid.nict.go.jp/langrid/services/PlaygroundDemoTranslationKyotoUService"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="PlaygroundDemoBacktranslationKyotoU"
+suppressJoinFailure="yes"
+targetNamespace="http://langrid.nict.go.jp/langrid/services/PlaygroundDemoBacktranslationKyotoU">
+
+   <partnerLinks>
+      <partnerLink myRole="backtranslator" name="BacktransPL" partnerLinkType="ns1:BacktransPLT"/>
+      <partnerLink name="TranslatePL" partnerLinkType="ns1:TranslatePLT" partnerRole="translator"/>
+   </partnerLinks>
+   <variables>
+      <variable messageType="ns1:BacktransRequest" name="BacktransRequest"/>
+      <variable messageType="ns1:BacktransResponse" name="BacktransResponse"/>
+      <variable messageType="ns2:translateRequest" name="translateRequest1"/>
+      <variable messageType="ns2:translateResponse" name="translateResponse1"/>
+      <variable messageType="ns2:translateRequest" name="translateRequest2"/>
+      <variable messageType="ns2:translateResponse" name="translateResponse2"/>
+   </variables>
+   <sequence>
+      <receive createInstance="yes" operation="backTranslate" partnerLink="BacktransPL" portType="ns1:Backtranslation" variable="BacktransRequest"/>
+      <assign>
+         <copy>
+            <from part="sourceLang" variable="BacktransRequest"/>
+            <to part="sourceLang" variable="translateRequest1"/>
+         </copy>
+         <copy>
+            <from part="intermediateLang" variable="BacktransRequest"/>
+            <to part="targetLang" variable="translateRequest1"/>
+         </copy>
+         <copy>
+            <from part="source" variable="BacktransRequest"/>
+            <to part="source" variable="translateRequest1"/>
+         </copy>
+      </assign>
+      <invoke inputVariable="translateRequest1" operation="translate" outputVariable="translateResponse1" partnerLink="TranslatePL" portType="ns2:Translation"/>
+      <assign>
+         <copy>
+            <from part="intermediateLang" variable="BacktransRequest"/>
+            <to part="sourceLang" variable="translateRequest2"/>
+         </copy>
+         <copy>
+            <from part="sourceLang" variable="BacktransRequest"/>
+            <to part="targetLang" variable="translateRequest2"/>
+         </copy>
+         <copy>
+            <from part="translateReturn" variable="translateResponse1"/>
+            <to part="source" variable="translateRequest2"/>
+         </copy>
+         <copy>
+            <from part="translateReturn" variable="translateResponse1"/>
+            <to part="BacktransReturn" query="/BacktransReturn/intermediate" variable="BacktransResponse"/>
+         </copy>
+      </assign>
+      <invoke inputVariable="translateRequest2" operation="translate" outputVariable="translateResponse2" partnerLink="TranslatePL" portType="ns2:Translation"/>
+      <assign>
+         <copy>
+            <from part="translateReturn" variable="translateResponse2"/>
+            <to part="BacktransReturn" query="/BacktransReturn/target" variable="BacktransResponse"/>
+         </copy>
+      </assign>
+      <reply operation="backTranslate" partnerLink="BacktransPL" portType="ns1:Backtranslation" variable="BacktransResponse"/>
+   </sequence>
+</process>

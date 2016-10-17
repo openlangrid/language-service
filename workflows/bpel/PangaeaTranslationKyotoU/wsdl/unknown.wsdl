@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+targetNamespace="http://trans.nict.go.jp/active-bpel/services/PangaeaTranslationKyotoUService"
+xmlns:tns="http://trans.nict.go.jp/active-bpel/services/PangaeaTranslationKyotoUService"
+xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+xmlns:ns1="http://trans.nict.go.jp/active-bpel/services/PangaeaTranslationKyotoUService"
+xmlns:ns2="http://trans.nict.go.jp/collabo/services/PangaeaDictionaryService"
+xmlns:ns3="http://trans.nict.go.jp/collabo/services/StringOperationService"
+xmlns:ns4="http://langrid.nict.go.jp/langrid-service_1_2/services/MultilingualMorphologicalAnalysis"
+xmlns:ns5="http://langrid.nict.go.jp/langrid-1.2/services/MultilingualTranslationKyotoUJServer"
+xmlns:ns6="http://trans.nict.go.jp/collabo/services/CodeGenerationService"
+xmlns:ns7="http://trans.nict.go.jp/collabo/services/TermReplacementService"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"> 
+
+  <wsdl:message name="translateRequest">
+    <wsdl:part name="sourceLang" type="xsd:string"/>
+    <wsdl:part name="targetLang" type="xsd:string"/>
+    <wsdl:part name="source" type="xsd:string"/>
+  </wsdl:message>
+  <wsdl:message name="translateResponse">
+    <wsdl:part name="translateReturn" type="xsd:string"/>
+  </wsdl:message>
+  <wsdl:portType name="Translate">
+    <wsdl:operation name="translate">
+      <wsdl:input name="translateRequest" message="tns:translateRequest"/>
+      <wsdl:output name="translateResponse" message="tns:translateResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+
+<plnk:partnerLinkType name="TranslatePLT">
+   <plnk:role name="translator">
+      <plnk:portType name="tns:Translate"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+<plnk:partnerLinkType name="MTranslatePLT">
+   <plnk:role name="mtranslator">
+      <plnk:portType name="ns5:Translation"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+<plnk:partnerLinkType name="MorphologicalAnalysisPLT">
+   <plnk:role name="analyzer">
+      <plnk:portType name="ns4:MorphologicalAnalysis"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+<plnk:partnerLinkType name="CDictionaryPLT">
+   <plnk:role name="cdict">
+      <plnk:portType name="ns2:PangaeaDictionaryService"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+<plnk:partnerLinkType name="StringOperatorPLT">
+   <plnk:role name="stroperator">
+      <plnk:portType name="ns3:StringOperationService"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+<plnk:partnerLinkType name="CodeGeneratorPLT">
+   <plnk:role name="codegenerator">
+      <plnk:portType name="ns6:CodeGenerationService"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+<plnk:partnerLinkType name="ReplacementPLT">
+   <plnk:role name="replacement">
+      <plnk:portType name="ns7:TermReplacementService"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+</wsdl:definitions>

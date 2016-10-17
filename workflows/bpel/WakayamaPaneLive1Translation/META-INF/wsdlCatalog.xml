@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdlCatalog>
+
+  <wsdlEntry
+	location="project:WakayamaPaneLive1Translation/wsdl/MultilingualMorphologicalAnalysis.wsdl"
+	classpath="wsdl/MultilingualMorphologicalAnalysis.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:WakayamaPaneLive1Translation/wsdl/WakayamaPaneLive1DictionaryServiceService.wsdl"
+	classpath="wsdl/WakayamaPaneLive1DictionaryServiceService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:WakayamaPaneLive1Translation/wsdl/StringOperationServiceService.wsdl"
+	classpath="wsdl/StringOperationServiceService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:WakayamaPaneLive1Translation/wsdl/CodeGenerationServiceService.wsdl"
+	classpath="wsdl/CodeGenerationServiceService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:WakayamaPaneLive1Translation/wsdl/MultilingualTranslationNictJServer.wsdl"
+	classpath="wsdl/MultilingualTranslationNictJServer.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:WakayamaPaneLive1Translation/wsdl/TermReplacementServiceService.wsdl"
+	classpath="wsdl/TermReplacementServiceService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:WakayamaPaneLive1Translation/wsdl/unknown.wsdl"
+	classpath="wsdl/unknown.wsdl"
+  />
+
+</wsdlCatalog>

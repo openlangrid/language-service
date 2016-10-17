@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdlCatalog>
+
+  <wsdlEntry
+	location="project:EBMTPreprocessDictionary/wsdl/unknown.wsdl"
+	classpath="wsdl/unknown.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:EBMTPreprocessDictionary/wsdl/AbstractBilingualDictionary.wsdl"
+	classpath="wsdl/AbstractBilingualDictionary.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:EBMTPreprocessDictionary/wsdl/EBMTService.wsdl"
+	classpath="wsdl/EBMTService.wsdl"
+  />
+
+</wsdlCatalog>

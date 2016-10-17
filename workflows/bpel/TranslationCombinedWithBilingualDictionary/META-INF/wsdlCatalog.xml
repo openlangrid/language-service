@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdlCatalog>
+
+  <wsdlEntry
+	location="project:TranslationCombinedWithBilingualDictionary/wsdl/TemporalBilingualDictionaryWithLongestMatchSearch.wsdl"
+	classpath="wsdl/TemporalBilingualDictionaryWithLongestMatchSearch.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:TranslationCombinedWithBilingualDictionary/wsdl/StringOperationServiceService.wsdl"
+	classpath="wsdl/StringOperationServiceService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:TranslationCombinedWithBilingualDictionary/wsdl/ConstructSourceAndMorphemesAndCodes.wsdl"
+	classpath="wsdl/ConstructSourceAndMorphemesAndCodes.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:TranslationCombinedWithBilingualDictionary/wsdl/unknown.wsdl"
+	classpath="wsdl/unknown.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:TranslationCombinedWithBilingualDictionary/wsdl/ReplacementTermService.wsdl"
+	classpath="wsdl/ReplacementTermService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:TranslationCombinedWithBilingualDictionary/wsdl/AbstractMorphologicalAnalysis.wsdl"
+	classpath="wsdl/AbstractMorphologicalAnalysis.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:TranslationCombinedWithBilingualDictionary/wsdl/AbstractBilingualDictionary.wsdl"
+	classpath="wsdl/AbstractBilingualDictionary.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:TranslationCombinedWithBilingualDictionary/wsdl/GetLongestMatchingTerm.wsdl"
+	classpath="wsdl/GetLongestMatchingTerm.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:TranslationCombinedWithBilingualDictionary/wsdl/AbstractTranslation.wsdl"
+	classpath="wsdl/AbstractTranslation.wsdl"
+  />
+
+</wsdlCatalog>

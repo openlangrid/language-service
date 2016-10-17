@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdlCatalog>
+
+  <wsdlEntry
+	location="project:WakayamaSecondLifeChatTranslation/wsdl/MultilingualMorphologicalAnalysis.wsdl"
+	classpath="wsdl/MultilingualMorphologicalAnalysis.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:WakayamaSecondLifeChatTranslation/wsdl/WakayamaSecondLifeChatDictionaryServiceService.wsdl"
+	classpath="wsdl/WakayamaSecondLifeChatDictionaryServiceService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:WakayamaSecondLifeChatTranslation/wsdl/StringOperationServiceService.wsdl"
+	classpath="wsdl/StringOperationServiceService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:WakayamaSecondLifeChatTranslation/wsdl/CodeGenerationServiceService.wsdl"
+	classpath="wsdl/CodeGenerationServiceService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:WakayamaSecondLifeChatTranslation/wsdl/MultilingualTranslationNictJServer.wsdl"
+	classpath="wsdl/MultilingualTranslationNictJServer.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:WakayamaSecondLifeChatTranslation/wsdl/unknown.wsdl"
+	classpath="wsdl/unknown.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:WakayamaSecondLifeChatTranslation/wsdl/TermReplacementServiceService.wsdl"
+	classpath="wsdl/TermReplacementServiceService.wsdl"
+  />
+
+</wsdlCatalog>

@@ -1,0 +1,2 @@
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./lib
+java -jar ./JTreeTagger.jar de ./jtreetagger-de.conf

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdlCatalog>
+
+  <wsdlEntry
+	location="project:WakayamaUnivEducationConversationTranslation/wsdl/MultilingualMorphologicalAnalysis.wsdl"
+	classpath="wsdl/MultilingualMorphologicalAnalysis.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:WakayamaUnivEducationConversationTranslation/wsdl/StringOperationServiceService.wsdl"
+	classpath="wsdl/StringOperationServiceService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:WakayamaUnivEducationConversationTranslation/wsdl/CodeGenerationServiceService.wsdl"
+	classpath="wsdl/CodeGenerationServiceService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:WakayamaUnivEducationConversationTranslation/wsdl/MultilingualTranslationNictJServer.wsdl"
+	classpath="wsdl/MultilingualTranslationNictJServer.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:WakayamaUnivEducationConversationTranslation/wsdl/TermReplacementServiceService.wsdl"
+	classpath="wsdl/TermReplacementServiceService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:WakayamaUnivEducationConversationTranslation/wsdl/unknown.wsdl"
+	classpath="wsdl/unknown.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:WakayamaUnivEducationConversationTranslation/wsdl/WakayamaUnivEducationConversationDictionaryServiceService.wsdl"
+	classpath="wsdl/WakayamaUnivEducationConversationDictionaryServiceService.wsdl"
+  />
+
+</wsdlCatalog>

@@ -1,0 +1,13 @@
+
+インストール手順
+
+1. JAVAサービスの実行環境において、環境変数PATHにjuliusを通してください。
+  a. /etc/profile を編集
+  b. $TOMCAT_HOME/startup.sh 等を編集
+  
+  PATH=/opt/julius/bin:$PATH
+
+2. 音声モデルを特定のパスに展開、言語モデル設定をjulius.jarのlm.propertiesを編集してください。
+  モデル名.path ： .jconf ファイルへのフルパス
+  モデル名.language : 
+  モデル名.c

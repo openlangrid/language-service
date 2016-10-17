@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdlCatalog>
+
+  <wsdlEntry
+	location="project:DemoBacktranslation/wsdl/unknown.wsdl"
+	classpath="wsdl/unknown.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:DemoBacktranslation/wsdl/DemoTranslation.wsdl"
+	classpath="wsdl/DemoTranslation.wsdl"
+  />
+
+</wsdlCatalog>

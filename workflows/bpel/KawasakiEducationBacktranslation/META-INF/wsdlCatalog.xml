@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdlCatalog>
+
+  <wsdlEntry
+	location="project:KawasakiEducationBacktranslation/wsdl/KawasakiEducationTranslation.wsdl"
+	classpath="wsdl/KawasakiEducationTranslation.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:KawasakiEducationBacktranslation/wsdl/unknown.wsdl"
+	classpath="wsdl/unknown.wsdl"
+  />
+
+</wsdlCatalog>

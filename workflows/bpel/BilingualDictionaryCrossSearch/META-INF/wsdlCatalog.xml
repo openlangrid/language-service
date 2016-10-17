@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdlCatalog>
+
+  <wsdlEntry
+	location="project:BilingualDictionaryCrossSearch/wsdl/unknown.wsdl"
+	classpath="wsdl/unknown.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:BilingualDictionaryCrossSearch/wsdl/AbstractBilingualDictionary.wsdl"
+	classpath="wsdl/AbstractBilingualDictionary.wsdl"
+  />
+
+</wsdlCatalog>

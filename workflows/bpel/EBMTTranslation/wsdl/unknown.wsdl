@@ -1,0 +1,55 @@
+<wsdl:definitions
+ xmlns:ns1="http://orchid.kuee.kyoto-u.ac.jp:8080/wrapper-1.2/services/EBMT"
+ xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+ xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+ xmlns:tns="http://langrid.nict.go.jp/langrid-1.2/services/EBMTTranslation"
+ xmlns:impl="http://langrid.nict.go.jp/langrid-1.2/services/EBMTTranslation"
+ xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+ name="EBMTTranslation" 
+ targetNamespace="http://langrid.nict.go.jp/langrid-1.2/services/EBMTTranslation">
+
+<plnk:partnerLinkType xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" name="TranslationProcessPLT">
+   <plnk:role name="process">
+     <plnk:portType name="tns:EBMTTranslation"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+<plnk:partnerLinkType xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" name="TranslationPLT">
+   <plnk:role name="translator">
+     <plnk:portType name="ns1:EBMT"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+
+  <wsdl:types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema"
+    		targetNamespace="http://langrid.nict.go.jp/langrid-1.2/services/EBMTTranslation">
+	   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+      <complexType name="ArrayOf_xsd_string">
+        <complexContent>
+          <restriction base="soapenc:Array">
+            <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string[]"/>
+          </restriction>
+        </complexContent>
+      </complexType>
+    </schema>
+  </wsdl:types>
+ 
+   <wsdl:message name="translateResponse">
+      <wsdl:part name="translateReturn" type="xsd:string"/>
+   </wsdl:message>
+
+   <wsdl:message name="translateRequest">
+      <wsdl:part name="sourceLang" type="xsd:string"/>
+      <wsdl:part name="targetLang" type="xsd:string"/>
+      <wsdl:part name="source" type="xsd:string"/>
+      <wsdl:part name="dicTokens" type="impl:ArrayOf_xsd_string"/>
+      <wsdl:part name="ptTokens" type="impl:ArrayOf_xsd_string"/>
+   </wsdl:message>
+
+  <wsdl:portType name="EBMTTranslation">
+    <wsdl:operation name="translate" parameterOrder="sourceLang targetLang source dicTokens ptTokens">
+      <wsdl:input message="impl:translateRequest" name="translateRequest"/>
+      <wsdl:output message="impl:translateResponse" name="translateResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

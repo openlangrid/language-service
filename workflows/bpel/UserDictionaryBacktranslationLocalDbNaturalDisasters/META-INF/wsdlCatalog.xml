@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdlCatalog>
+
+  <wsdlEntry
+	location="project:UserDictionaryBacktranslationLocalDbNaturalDisasters/wsdl/UserDictionaryTranslationLocalDbNaturalDisasters.wsdl"
+	classpath="wsdl/UserDictionaryTranslationLocalDbNaturalDisasters.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:UserDictionaryBacktranslationLocalDbNaturalDisasters/wsdl/unknown.wsdl"
+	classpath="wsdl/unknown.wsdl"
+  />
+
+</wsdlCatalog>

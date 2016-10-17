@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdlCatalog>
+
+  <wsdlEntry
+	location="project:KwanseiGakuinUnivBacktranslation/wsdl/KwanseiGakuinUnivTranslation.wsdl"
+	classpath="wsdl/KwanseiGakuinUnivTranslation.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:KwanseiGakuinUnivBacktranslation/wsdl/unknown.wsdl"
+	classpath="wsdl/unknown.wsdl"
+  />
+
+</wsdlCatalog>

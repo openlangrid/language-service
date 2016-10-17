@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+ 
+  targetNamespace="http://langrid.nict.go.jp/langrid-service_1_2/services/MultilingualTranslationNictJServer"
+  xmlns:apachesoap="http://xml.apache.org/xml-soap"
+  xmlns:impl="http://langrid.nict.go.jp/langrid-service_1_2/services/MultilingualTranslationNictJServer"
+  xmlns:intf="http://langrid.nict.go.jp/langrid-service_1_2/services/MultilingualTranslationNictJServer"
+  xmlns:js="http://langrid.nict.go.jp/langrid-service_1_2/services/JServer"
+  xmlns:cl="http://langrid.nict.go.jp/langrid-service_1_2/services/CLWT"
+  xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+  xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"   
+  xmlns:tns1="http://langrid.nict.go.jp/ws_1_2/"
+  xmlns:tns2="http://langrid.nict.go.jp/ws_1_2/translation/"
+  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+  xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+>
+ <wsdl:types>
+  <schema
+    targetNamespace="http://langrid.nict.go.jp/ws_1_2/"
+    xmlns="http://www.w3.org/2001/XMLSchema"
+  >
+   <import namespace="http://langrid.nict.go.jp/langrid-service_1_2/services/MultilingualTranslationNictJServer"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/translation/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="LangridException">
+    <sequence>
+     <element name="description" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="AccessLimitExceededException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="InvalidParameterException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence>
+       <element name="parameterName" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="UnsupportedLanguagePairException">
+    <complexContent>
+     <extension base="tns1:InvalidParameterException">
+      <sequence>
+       <element name="language1" nillable="true" type="xsd:string"/>
+       <element name="language2" nillable="true" type="xsd:string"/>
+       <element name="parameterName1" nillable="true" type="xsd:string"/>
+       <element name="parameterName2" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="LanguagePairNotUniquelyDecidedException">
+    <complexContent>
+     <extension base="tns1:InvalidParameterException">
+      <sequence>
+       <element name="candidates" nillable="true" type="impl:ArrayOf_xsd_string"/>
+       <element name="message" nillable="true" type="xsd:string"/>
+       <element name="parameterName1" nillable="true" type="xsd:string"/>
+       <element name="parameterName2" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="NoAccessPermissionException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ServiceConfigurationException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ServiceNotActiveException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence>
+       <element name="serviceId" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="UnknownException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://langrid.nict.go.jp/langrid-service_1_2/services/MultilingualTranslationNictJServer" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/translation/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOf_xsd_string">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://langrid.nict.go.jp/ws_1_2/translation/" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://langrid.nict.go.jp/langrid-service_1_2/services/MultilingualTranslationNictJServer"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="TranslationFailedException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="LanguagePairNotUniquelyDecidedException">
+
+      <wsdl:part name="fault" type="tns1:LanguagePairNotUniquelyDecidedException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="ServiceNotActiveException">
+
+      <wsdl:part name="fault" type="tns1:ServiceNotActiveException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="TranslationFailedException">
+
+      <wsdl:part name="fault" type="tns2:TranslationFailedException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="NoAccessPermissionException">
+
+      <wsdl:part name="fault" type="tns1:NoAccessPermissionException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="translateRequest">
+
+      <wsdl:part name="sourceLang" type="xsd:string"/>
+
+      <wsdl:part name="targetLang" type="xsd:string"/>
+
+      <wsdl:part name="source" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="translateResponse">
+
+      <wsdl:part name="translateReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="UnsupportedLanguagePairException">
+
+      <wsdl:part name="fault" type="tns1:UnsupportedLanguagePairException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="ServiceConfigurationException">
+
+      <wsdl:part name="fault" type="tns1:ServiceConfigurationException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="InvalidParameterException">
+
+      <wsdl:part name="fault" type="tns1:InvalidParameterException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="AccessLimitExceededException">
+
+      <wsdl:part name="fault" type="tns1:AccessLimitExceededException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="UnknownException">
+
+      <wsdl:part name="fault" type="tns1:UnknownException"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="MultilingualTranslationNictJServer">
+
+      <wsdl:operation name="translate" parameterOrder="sourceLang targetLang source">
+
+         <wsdl:input message="impl:translateRequest" name="translateRequest"/>
+
+         <wsdl:output message="impl:translateResponse" name="translateResponse"/>
+
+         <wsdl:fault message="impl:LanguagePairNotUniquelyDecidedException" name="LanguagePairNotUniquelyDecidedException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:UnsupportedLanguagePairException" name="UnsupportedLanguagePairException"/>
+
+         <wsdl:fault message="impl:TranslationFailedException" name="TranslationFailedException"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:ServiceNotActiveException" name="ServiceNotActiveException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+<plnk:partnerLinkType name="SelfPLT" xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/">
+<plnk:role name="service">
+<plnk:portType name="impl:MultilingualTranslationNictJServer"/>
+</plnk:role>
+</plnk:partnerLinkType>
+
+<plnk:partnerLinkType name="JServerPLT" xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/">
+<plnk:role name="translation">
+<plnk:portType name="js:Translation"/>
+</plnk:role>
+</plnk:partnerLinkType>
+
+<plnk:partnerLinkType name="CLWTPLT" xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/">
+<plnk:role name="translation">
+<plnk:portType name="cl:Translation"/>
+</plnk:role>
+</plnk:partnerLinkType>
+
+</wsdl:definitions>

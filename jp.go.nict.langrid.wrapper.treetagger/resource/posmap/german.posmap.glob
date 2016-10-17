@@ -1,0 +1,25 @@
+# german PartOfSpeech map
+ADJ*=adjective
+ADV*=adverb
+AP*=other
+AR*=other
+C*=other
+F*=other
+I*=other
+K*=other
+NN*=noun.common
+NE*=noun.proper
+PD*=other
+PI*=other
+PPER*=noun.other
+PPO*=other
+PR*=other
+PW*=other
+PAV*=adverb
+PT*=other
+T*=other
+V*=verb
+X*=other
+$,=other
+$.=other
+$(=other

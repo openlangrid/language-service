@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+BPEL Process Definition
+Edited using ActiveBPEL(r) Designer Version 4.1.0 (http://www.active-endpoints.com)
+-->
+<bpws:process xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:ns1="http://langrid.nict.go.jp/langrid/services/ThreeHopTranslationEnJa" xmlns:ns2="http://localhost:8080/wrapper-mock-1.2/services/AbstractTranslation" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="ThreeHopTranslationEnJa" suppressJoinFailure="yes" targetNamespace="http://langrid.nict.go.jp/langrid/services/ThreeHopTranslationEnJa">
+   <bpws:partnerLinks>
+      <bpws:partnerLink myRole="translator" name="TranslationPL" partnerLinkType="ns1:TranslationPLT"/>
+      <bpws:partnerLink name="FirstTranslationPL" partnerLinkType="ns1:AbstractTranslationPLT" partnerRole="translator"/>
+      <bpws:partnerLink name="SecondTranslationPL" partnerLinkType="ns1:AbstractTranslationPLT" partnerRole="translator"/>
+      <bpws:partnerLink name="ThirdTranslationPL" partnerLinkType="ns1:AbstractTranslationPLT" partnerRole="translator"/>
+   </bpws:partnerLinks>
+   <bpws:variables>
+      <bpws:variable messageType="ns1:translateRequest" name="translateRequest"/>
+      <bpws:variable messageType="ns1:translateResponse" name="translateResponse"/>
+      <bpws:variable messageType="ns2:translateRequest" name="translateRequest1"/>
+      <bpws:variable messageType="ns2:translateResponse" name="translateResponse1"/>
+      <bpws:variable messageType="ns2:translateRequest" name="translateRequest2"/>
+      <bpws:variable messageType="ns2:translateResponse" name="translateResponse2"/>
+      <bpws:variable messageType="ns2:translateRequest" name="translateRequest3"/>
+      <bpws:variable messageType="ns2:translateResponse" name="translateResponse3"/>
+   </bpws:variables>
+   <bpws:sequence>
+      <bpws:receive createInstance="yes" operation="translate" partnerLink="TranslationPL" portType="ns1:Translation" variable="translateRequest"/>
+      <bpws:assign>
+         <bpws:copy>
+            <bpws:from part="sourceLang" variable="translateRequest"/>
+            <bpws:to part="sourceLang" variable="translateRequest1"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="source" variable="translateRequest"/>
+            <bpws:to part="source" variable="translateRequest1"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from>en</bpws:from>
+            <bpws:to part="targetLang" variable="translateRequest1"/>
+         </bpws:copy>
+      </bpws:assign>
+      <bpws:invoke inputVariable="translateRequest1" name="FirstTranslation" operation="translate" outputVariable="translateResponse1" partnerLink="FirstTranslationPL" portType="ns2:Translation"/>
+      <bpws:assign>
+         <bpws:copy>
+            <bpws:from>en</bpws:from>
+            <bpws:to part="sourceLang" variable="translateRequest2"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from>ja</bpws:from>
+            <bpws:to part="targetLang" variable="translateRequest2"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="translateReturn" variable="translateResponse1"/>
+            <bpws:to part="source" variable="translateRequest2"/>
+         </bpws:copy>
+      </bpws:assign>
+      <bpws:invoke inputVariable="translateRequest2" name="SecondTranslation" operation="translate" outputVariable="translateResponse2" partnerLink="SecondTranslationPL" portType="ns2:Translation"/>
+      <bpws:assign>
+         <bpws:copy>
+            <bpws:from>ja</bpws:from>
+            <bpws:to part="sourceLang" variable="translateRequest3"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="targetLang" variable="translateRequest"/>
+            <bpws:to part="targetLang" variable="translateRequest3"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="translateReturn" variable="translateResponse2"/>
+            <bpws:to part="source" variable="translateRequest3"/>
+         </bpws:copy>
+      </bpws:assign>
+      <bpws:invoke inputVariable="translateRequest3" name="ThirdTranslation" operation="translate" outputVariable="translateResponse3" partnerLink="ThirdTranslationPL" portType="ns2:Translation"/>
+      <bpws:assign>
+         <bpws:copy>
+            <bpws:from part="translateReturn" variable="translateResponse3"/>
+            <bpws:to part="translateReturn" variable="translateResponse"/>
+         </bpws:copy>
+      </bpws:assign>
+      <bpws:reply operation="translate" partnerLink="TranslationPL" portType="ns1:Translation" variable="translateResponse"/>
+   </bpws:sequence>
+</bpws:process>

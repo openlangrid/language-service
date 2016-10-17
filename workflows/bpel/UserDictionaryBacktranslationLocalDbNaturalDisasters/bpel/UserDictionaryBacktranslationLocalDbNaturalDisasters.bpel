@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+BPEL Process Definition
+Edited using ActiveBPEL(tm) Designer Version 3.0.0 (http://www.active-endpoints.com)
+-->
+<process xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:ns1="http://langrid.nict.go.jp/langrid/services/UserDictionaryBacktranslationLocalDbNaturalDisastersService" xmlns:ns2="http://langrid.nict.go.jp/langrid/services/UserDictionaryTranslationLocalDbNaturalDisastersService" xmlns:ns3="http://langrid.nict.go.jp/langrid/services/UserDictionaryTranslationLocalDbNaturalDisastersService" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="UserDictionaryBacktranslationLocalDbNaturalDisasters" suppressJoinFailure="yes" targetNamespace="http://langrid.nict.go.jp/langrid/services/UserDictionaryBacktranslationLocalDbNaturalDisastersService">
+   <partnerLinks>
+      <partnerLink myRole="backtranslator" name="BacktransPL" partnerLinkType="ns1:BacktransPLT"/>
+      <partnerLink name="TranslatePL" partnerLinkType="ns1:TranslatePLT" partnerRole="translator"/>
+   </partnerLinks>
+   <variables>
+      <variable messageType="ns1:BacktransRequest" name="BacktransRequest"/>
+      <variable messageType="ns1:BacktransResponse" name="BacktransResponse"/>
+      <variable messageType="ns2:translateRequest" name="translateRequest1"/>
+      <variable messageType="ns2:translateResponse" name="translateResponse1"/>
+      <variable messageType="ns2:translateRequest" name="translateRequest2"/>
+      <variable messageType="ns2:translateResponse" name="translateResponse2"/>
+      <variable name="counter" type="xsd:int"/>
+   </variables>
+   <sequence>
+      <receive createInstance="yes" operation="backTranslate" partnerLink="BacktransPL" portType="ns1:Backtranslation" variable="BacktransRequest"/>
+      <assign>
+         <copy>
+            <from part="sourceLang" variable="BacktransRequest"/>
+            <to part="sourceLang" variable="translateRequest1"/>
+         </copy>
+         <copy>
+            <from part="intermediateLang" variable="BacktransRequest"/>
+            <to part="targetLang" variable="translateRequest1"/>
+         </copy>
+         <copy>
+            <from part="source" variable="BacktransRequest"/>
+            <to part="source" variable="translateRequest1"/>
+         </copy>
+         <copy>
+            <from part="userDict" variable="BacktransRequest"/>
+            <to part="userDict" variable="translateRequest1"/>
+         </copy>
+      </assign>
+      <invoke inputVariable="translateRequest1" operation="translate" outputVariable="translateResponse1" partnerLink="TranslatePL" portType="ns2:Translation"/>
+      <assign>
+         <copy>
+            <from part="intermediateLang" variable="BacktransRequest"/>
+            <to part="sourceLang" variable="translateRequest2"/>
+         </copy>
+         <copy>
+            <from part="sourceLang" variable="BacktransRequest"/>
+            <to part="targetLang" variable="translateRequest2"/>
+         </copy>
+         <copy>
+            <from part="translateReturn" variable="translateResponse1"/>
+            <to part="source" variable="translateRequest2"/>
+         </copy>
+         <copy>
+            <from>
+               <Translation xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"/>
+            </from>
+            <to part="userDict" variable="translateRequest2"/>
+         </copy>
+         <copy>
+            <from part="translateReturn" variable="translateResponse1"/>
+            <to part="BacktransReturn" query="/BacktransReturn/intermediate" variable="BacktransResponse"/>
+         </copy>
+         <copy>
+            <from expression="1"/>
+            <to variable="counter"/>
+         </copy>
+      </assign>
+      <while condition="bpws:getVariableData('counter') &lt;= bpws:getVariableData('BacktransRequest', 'userDict', 'count(/userDict/Translation)')">
+         <assign>
+            <copy>
+               <from part="userDict" query="/userDict/Translation[bpws:getVariableData('counter')]/targetWords/string[1]" variable="BacktransRequest"/>
+               <to part="userDict" query="/userDict/Translation[bpws:getVariableData('counter')]/headWord" variable="translateRequest2"/>
+            </copy>
+            <copy>
+               <from part="userDict" query="/userDict/Translation[bpws:getVariableData('counter')]/headWord" variable="BacktransRequest"/>
+               <to part="userDict" query="/userDict/Translation[bpws:getVariableData('counter')]/targetWords/string[1]" variable="translateRequest2"/>
+            </copy>
+            <copy>
+               <from expression="bpws:getVariableData('counter') + 1"/>
+               <to variable="counter"/>
+            </copy>
+         </assign>
+      </while>
+      <invoke inputVariable="translateRequest2" operation="translate" outputVariable="translateResponse2" partnerLink="TranslatePL" portType="ns2:Translation"/>
+      <assign>
+         <copy>
+            <from part="translateReturn" variable="translateResponse2"/>
+            <to part="BacktransReturn" query="/BacktransReturn/target" variable="BacktransResponse"/>
+         </copy>
+      </assign>
+      <reply operation="backTranslate" partnerLink="BacktransPL" portType="ns1:Backtranslation" variable="BacktransResponse"/>
+   </sequence>
+</process>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdlCatalog>
+
+  <wsdlEntry
+	location="project:PlaygroundDemoBacktranslationKyotoU/wsdl/PlaygroundDemoTranslationKyotoU.wsdl"
+	classpath="wsdl/PlaygroundDemoTranslationKyotoU.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:PlaygroundDemoBacktranslationKyotoU/wsdl/unknown.wsdl"
+	classpath="wsdl/unknown.wsdl"
+  />
+
+</wsdlCatalog>

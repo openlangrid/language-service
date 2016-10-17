@@ -1,0 +1,32 @@
+<wsdl:definitions xmlns:ns1="http://localhost:8080/wrapper-1.2/services/EBMT" xmlns:ns2="http://localhost:8080/wrapper-mock-1.2/services/AbstractParallelText" xmlns:pt="http://trans.nict.go.jp/langrid-service-1.2/services/AbstractParallelText" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://langrid.nict.go.jp/langrid-1.2/services/EBMTPreprocessParallelText" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="EBMTPreprocessParallelText" targetNamespace="http://langrid.nict.go.jp/langrid-1.2/services/EBMTPreprocessParallelText">
+<plnk:partnerLinkType xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" name="PreprocessPLT">
+   <plnk:role name="preprocessor">
+      <plnk:portType name="tns:EBMTPreprocessParallelText"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+<plnk:partnerLinkType xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" name="SearchPLT">
+   <plnk:role name="plservice">
+      <plnk:portType name="pt:ParallelText"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+<plnk:partnerLinkType xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" name="PreprocessParallelTextPLT">
+   <plnk:role name="ptpreprocess">
+      <plnk:portType name="ns1:EBMT"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+  <wsdl:message name="preprocessRequest">
+    <wsdl:part name="sourceLang" type="xsd:string"/>
+    <wsdl:part name="targetLang" type="xsd:string"/>
+    <wsdl:part name="source" type="xsd:string"></wsdl:part>
+    <wsdl:part name="matchingMethod" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="preprocessResponse">
+    <wsdl:part name="token" type="xsd:string"/>
+  </wsdl:message>
+  <wsdl:portType name="EBMTPreprocessParallelText">
+    <wsdl:operation name="preprocess">
+      <wsdl:input message="tns:preprocessRequest"/>
+      <wsdl:output message="tns:preprocessResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

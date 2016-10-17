@@ -1,0 +1,14 @@
+# portugues PartOfSpeech map
+ADJ=adjective
+ADV=adverb
+DET=other
+CARD=other
+NOM=noun
+P=noun.other
+PREP=other
+V=verb
+I=other
+VIRG=other
+SENT=other
+PRP+DET=other
+V+P=other

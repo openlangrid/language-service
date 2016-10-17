@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdlCatalog>
+
+  <wsdlEntry
+	location="project:IshidaLabBacktranslation/wsdl/unknown.wsdl"
+	classpath="wsdl/unknown.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:IshidaLabBacktranslation/wsdl/IshidaLabTranslation.wsdl"
+	classpath="wsdl/IshidaLabTranslation.wsdl"
+  />
+
+</wsdlCatalog>

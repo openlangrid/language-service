@@ -1,0 +1,45 @@
+Supported Language Translation Pairs
+
+The Google AJAX Language API currently detects all languages listed above. A subset of those languages are translatable and are listed below. Any two languages from the following list can be translated. To test if a language is translatable, utilize google.language.isTranslatable(languageCode);
+
+    * AlbanianNew!
+    * Arabic
+    * Bulgarian
+    * Chinese (Simplified and Traditional)
+    * CatalanNew!
+    * Croatian
+    * Czech
+    * Danish
+    * Dutch
+    * English
+    * EstonianNew!
+    * FilipinoNew!
+    * Finnish
+    * French
+    * GalicianNew!
+    * German
+    * Greek
+    * HebrewNew!
+    * Hindi
+    * HungarianNew!
+    * IndonesianNew!
+    * Italian
+    * Japanese
+    * Korean
+    * LatvianNew!
+    * LithuanianNew!
+    * MalteseNew!
+    * Norwegian
+    * Polish
+    * Portuguese
+    * Romanian
+    * Russian
+    * Spanish
+    * SerbianNew!
+    * SlovakNew!
+    * SlovenianNew!
+    * Swedish
+    * ThaiNew!
+    * TurkishNew!
+    * UkrainianNew!
+    * VietnameseNew!

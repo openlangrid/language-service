@@ -1,0 +1,20 @@
+KNPインストール手順（Linux版）
+
+・Jumanのインストール
+http://nlp.kuee.kyoto-u.ac.jp/nl-resource/juman/juman-6.0.tar.gz
+
+ % ./configure 
+ % make
+ % make check
+ % su
+ # make install
+
+・KNPのインストール
+http://nlp.kuee.kyoto-u.ac.jp/nl-resource/knp/knp-2.0.tar.gz
+
+ % ./configure 
+ % make
+ % make check
+ % su
+ # make install
+

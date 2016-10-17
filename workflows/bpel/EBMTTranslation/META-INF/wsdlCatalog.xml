@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdlCatalog>
+
+  <wsdlEntry
+	location="project:EBMTTranslation/wsdl/unknown.wsdl"
+	classpath="wsdl/unknown.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:EBMTTranslation/wsdl/EBMTService.wsdl"
+	classpath="wsdl/EBMTService.wsdl"
+  />
+
+</wsdlCatalog>

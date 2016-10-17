@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdlCatalog>
+
+  <wsdlEntry
+	location="project:WakayamaPaneLive2Backtranslation/wsdl/WakayamaPaneLive2Translation.wsdl"
+	classpath="wsdl/WakayamaPaneLive2Translation.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:WakayamaPaneLive2Backtranslation/wsdl/unknown.wsdl"
+	classpath="wsdl/unknown.wsdl"
+  />
+
+</wsdlCatalog>

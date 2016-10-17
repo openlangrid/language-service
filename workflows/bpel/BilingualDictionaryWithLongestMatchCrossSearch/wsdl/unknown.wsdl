@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://localhost:8080/wrapper-mock-1.2.N/services/BilingualDictionaryWithLongestMatchCrossSearch" xmlns:tns3="http://langrid.nict.go.jp/ws_1_2/morphologicalanalysis/" xmlns:impl="http://localhost:8080/wrapper-mock-1.2.N/services/BilingualDictionaryWithLongestMatchCrossSearch" xmlns:intf="http://localhost:8080/wrapper-mock-1.2.N/services/BilingualDictionaryWithLongestMatchCrossSearch" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:ns1="http://localhost:8080/wrapper-mock-1.2.N/services/AbstractBilingualDictionaryWithLongestMatchSearch" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns2="http://langrid.nict.go.jp/ws_1_2/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns1="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/">
+<plnk:partnerLinkType xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" name="BilingualDictionaryWithLongestMatchCrossSearchPLT">
+   <plnk:role name="self">
+      <plnk:portType name="impl:BilingualDictionaryWithLongestMatchSearch"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+<plnk:partnerLinkType xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" name="BilingualDictionaryWithLongestMatchPLT">
+   <plnk:role name="service">
+      <plnk:portType name="ns1:BilingualDictionaryWithLongestMatchSearch"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+  <wsdl:types>
+    <schema targetNamespace="http://localhost:8080/wrapper-mock-1.2.N/services/BilingualDictionaryWithLongestMatchCrossSearch" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/morphologicalanalysis/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOf_xsd_string">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string[]" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_tns1_Translation">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:Translation[]" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_tns2_LanguagePair">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns2:LanguagePair[]" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_tns3_Morpheme">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns3:Morpheme[]" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_tns1_TranslationWithPosition">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:TranslationWithPosition[]" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+    <schema targetNamespace="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://localhost:8080/wrapper-mock-1.2.N/services/BilingualDictionaryWithLongestMatchCrossSearch"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/morphologicalanalysis/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="Translation">
+    <sequence>
+     <element name="headWord" nillable="true" type="xsd:string"/>
+     <element name="targetWords" nillable="true" type="impl:ArrayOf_xsd_string"/>
+    </sequence>
+   </complexType>
+   <complexType name="TranslationWithPosition">
+    <sequence>
+     <element name="numberOfMorphemes" type="xsd:int"/>
+     <element name="startIndex" type="xsd:int"/>
+     <element name="translation" nillable="true" type="tns1:Translation"/>
+    </sequence>
+   </complexType>
+  </schema>
+    <schema targetNamespace="http://langrid.nict.go.jp/ws_1_2/" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://localhost:8080/wrapper-mock-1.2.N/services/BilingualDictionaryWithLongestMatchCrossSearch"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/morphologicalanalysis/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="LangridException">
+    <sequence>
+     <element name="description" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="AccessLimitExceededException">
+    <complexContent>
+     <extension base="tns2:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="InvalidParameterException">
+    <complexContent>
+     <extension base="tns2:LangridException">
+      <sequence>
+       <element name="parameterName" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="UnsupportedLanguagePairException">
+    <complexContent>
+     <extension base="tns2:InvalidParameterException">
+      <sequence>
+       <element name="language1" nillable="true" type="xsd:string"/>
+       <element name="language2" nillable="true" type="xsd:string"/>
+       <element name="parameterName1" nillable="true" type="xsd:string"/>
+       <element name="parameterName2" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="UnsupportedMatchingMethodException">
+    <complexContent>
+     <extension base="tns2:InvalidParameterException">
+      <sequence>
+       <element name="matchingMethod" nillable="true" type="xsd:string"/>
+       <element name="validMethods" nillable="true" type="impl:ArrayOf_xsd_string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="LanguagePairNotUniquelyDecidedException">
+    <complexContent>
+     <extension base="tns2:InvalidParameterException">
+      <sequence>
+       <element name="candidates" nillable="true" type="impl:ArrayOf_xsd_string"/>
+       <element name="message" nillable="true" type="xsd:string"/>
+       <element name="parameterName1" nillable="true" type="xsd:string"/>
+       <element name="parameterName2" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="NoAccessPermissionException">
+    <complexContent>
+     <extension base="tns2:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="NoValidEndpointsException">
+    <complexContent>
+     <extension base="tns2:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ProcessFailedException">
+    <complexContent>
+     <extension base="tns2:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ServerBusyException">
+    <complexContent>
+     <extension base="tns2:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ServiceNotActiveException">
+    <complexContent>
+     <extension base="tns2:LangridException">
+      <sequence>
+       <element name="serviceId" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ServiceNotFoundException">
+    <complexContent>
+     <extension base="tns2:LangridException">
+      <sequence>
+       <element name="serviceId" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="LanguagePair">
+    <sequence>
+     <element name="first" nillable="true" type="xsd:string"/>
+     <element name="second" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+  </schema>
+    <schema targetNamespace="http://langrid.nict.go.jp/ws_1_2/morphologicalanalysis/" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://localhost:8080/wrapper-mock-1.2.N/services/BilingualDictionaryWithLongestMatchCrossSearch"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="Morpheme">
+    <sequence>
+     <element name="lemma" nillable="true" type="xsd:string"/>
+     <element name="partOfSpeech" nillable="true" type="xsd:string"/>
+     <element name="word" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+  </schema>
+  </wsdl:types>
+  <wsdl:message name="getLastUpdateResponse">
+    <wsdl:part name="getLastUpdateReturn" type="xsd:dateTime"/>
+  </wsdl:message>
+  <wsdl:message name="getLastUpdateRequest">
+  </wsdl:message>
+  <wsdl:message name="ProcessFailedException">
+    <wsdl:part name="fault" type="tns2:ProcessFailedException"/>
+  </wsdl:message>
+  <wsdl:message name="getSupportedMatchingMethodsRequest">
+  </wsdl:message>
+  <wsdl:message name="getSupportedLanguagePairsRequest">
+  </wsdl:message>
+  <wsdl:message name="searchRequest">
+    <wsdl:part name="headLang" type="xsd:string"/>
+    <wsdl:part name="targetLang" type="xsd:string"/>
+    <wsdl:part name="headWord" type="xsd:string"/>
+    <wsdl:part name="matchingMethod" type="xsd:string"/>
+  </wsdl:message>
+  <wsdl:message name="UnsupportedLanguagePairException">
+    <wsdl:part name="fault" type="tns2:UnsupportedLanguagePairException"/>
+  </wsdl:message>
+  <wsdl:message name="getSupportedLanguagePairsResponse">
+    <wsdl:part name="getSupportedLanguagePairsReturn" type="impl:ArrayOf_tns2_LanguagePair"/>
+  </wsdl:message>
+  <wsdl:message name="NoValidEndpointsException">
+    <wsdl:part name="fault" type="tns2:NoValidEndpointsException"/>
+  </wsdl:message>
+  <wsdl:message name="ServerBusyException">
+    <wsdl:part name="fault" type="tns2:ServerBusyException"/>
+  </wsdl:message>
+  <wsdl:message name="searchResponse">
+    <wsdl:part name="searchReturn" type="impl:ArrayOf_tns1_Translation"/>
+  </wsdl:message>
+  <wsdl:message name="UnsupportedMatchingMethodException">
+    <wsdl:part name="fault" type="tns2:UnsupportedMatchingMethodException"/>
+  </wsdl:message>
+  <wsdl:message name="AccessLimitExceededException">
+    <wsdl:part name="fault" type="tns2:AccessLimitExceededException"/>
+  </wsdl:message>
+  <wsdl:message name="searchLongestMatchingTermsResponse">
+    <wsdl:part name="searchLongestMatchingTermsReturn" type="impl:ArrayOf_tns1_TranslationWithPosition"/>
+  </wsdl:message>
+  <wsdl:message name="searchLongestMatchingTermsRequest">
+    <wsdl:part name="headLang" type="xsd:string"/>
+    <wsdl:part name="targetLang" type="xsd:string"/>
+    <wsdl:part name="morphemes" type="impl:ArrayOf_tns3_Morpheme"/>
+  </wsdl:message>
+  <wsdl:message name="NoAccessPermissionException">
+    <wsdl:part name="fault" type="tns2:NoAccessPermissionException"/>
+  </wsdl:message>
+  <wsdl:message name="InvalidParameterException">
+    <wsdl:part name="fault" type="tns2:InvalidParameterException"/>
+  </wsdl:message>
+  <wsdl:message name="ServiceNotFoundException">
+    <wsdl:part name="fault" type="tns2:ServiceNotFoundException"/>
+  </wsdl:message>
+  <wsdl:message name="LanguagePairNotUniquelyDecidedException">
+    <wsdl:part name="fault" type="tns2:LanguagePairNotUniquelyDecidedException"/>
+  </wsdl:message>
+  <wsdl:message name="ServiceNotActiveException">
+    <wsdl:part name="fault" type="tns2:ServiceNotActiveException"/>
+  </wsdl:message>
+  <wsdl:message name="getSupportedMatchingMethodsResponse">
+    <wsdl:part name="getSupportedMatchingMethodsReturn" type="impl:ArrayOf_xsd_string"/>
+  </wsdl:message>
+  <wsdl:portType name="BilingualDictionaryWithLongestMatchSearch">
+    <wsdl:operation name="searchLongestMatchingTerms" parameterOrder="headLang targetLang morphemes">
+      <wsdl:input name="searchLongestMatchingTermsRequest" message="impl:searchLongestMatchingTermsRequest"/>
+      <wsdl:output name="searchLongestMatchingTermsResponse" message="impl:searchLongestMatchingTermsResponse"/>
+      <wsdl:fault name="ServerBusyException" message="impl:ServerBusyException"/>
+      <wsdl:fault name="LanguagePairNotUniquelyDecidedException" message="impl:LanguagePairNotUniquelyDecidedException"/>
+      <wsdl:fault name="NoAccessPermissionException" message="impl:NoAccessPermissionException"/>
+      <wsdl:fault name="AccessLimitExceededException" message="impl:AccessLimitExceededException"/>
+      <wsdl:fault name="UnsupportedLanguagePairException" message="impl:UnsupportedLanguagePairException"/>
+      <wsdl:fault name="UnsupportedMatchingMethodException" message="impl:UnsupportedMatchingMethodException"/>
+      <wsdl:fault name="NoValidEndpointsException" message="impl:NoValidEndpointsException"/>
+      <wsdl:fault name="ServiceNotActiveException" message="impl:ServiceNotActiveException"/>
+      <wsdl:fault name="ProcessFailedException" message="impl:ProcessFailedException"/>
+      <wsdl:fault name="ServiceNotFoundException" message="impl:ServiceNotFoundException"/>
+      <wsdl:fault name="InvalidParameterException" message="impl:InvalidParameterException"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BilingualDictionaryWithLongestMatchSearchSoapBinding" type="impl:BilingualDictionaryWithLongestMatchSearch">
+    <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+    <wsdl:operation name="searchLongestMatchingTerms">
+    <wsdlsoap:operation soapAction="" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+      <wsdl:input name="searchLongestMatchingTermsRequest">
+    <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://bilingualdictionary.ws_1_2.wrapper.langrid.nict.go.jp" use="encoded" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+      </wsdl:input>
+      <wsdl:output name="searchLongestMatchingTermsResponse">
+    <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/wrapper-mock-1.2.N/services/BilingualDictionaryWithLongestMatchCrossSearch" use="encoded" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+      </wsdl:output>
+      <wsdl:fault name="ServerBusyException">
+    <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServerBusyException" namespace="http://localhost:8080/wrapper-mock-1.2.N/services/BilingualDictionaryWithLongestMatchCrossSearch" use="encoded" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+      </wsdl:fault>
+      <wsdl:fault name="LanguagePairNotUniquelyDecidedException">
+    <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="LanguagePairNotUniquelyDecidedException" namespace="http://localhost:8080/wrapper-mock-1.2.N/services/BilingualDictionaryWithLongestMatchCrossSearch" use="encoded" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+      </wsdl:fault>
+      <wsdl:fault name="NoAccessPermissionException">
+    <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/wrapper-mock-1.2.N/services/BilingualDictionaryWithLongestMatchCrossSearch" use="encoded" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+      </wsdl:fault>
+      <wsdl:fault name="AccessLimitExceededException">
+    <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/wrapper-mock-1.2.N/services/BilingualDictionaryWithLongestMatchCrossSearch" use="encoded" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+      </wsdl:fault>
+      <wsdl:fault name="UnsupportedLanguagePairException">
+    <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnsupportedLanguagePairException" namespace="http://localhost:8080/wrapper-mock-1.2.N/services/BilingualDictionaryWithLongestMatchCrossSearch" use="encoded" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+      </wsdl:fault>
+      <wsdl:fault name="UnsupportedMatchingMethodException">
+    <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnsupportedMatchingMethodException" namespace="http://localhost:8080/wrapper-mock-1.2.N/services/BilingualDictionaryWithLongestMatchCrossSearch" use="encoded" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+      </wsdl:fault>
+      <wsdl:fault name="NoValidEndpointsException">
+    <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoValidEndpointsException" namespace="http://localhost:8080/wrapper-mock-1.2.N/services/BilingualDictionaryWithLongestMatchCrossSearch" use="encoded" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+      </wsdl:fault>
+      <wsdl:fault name="ServiceNotActiveException">
+    <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceNotActiveException" namespace="http://localhost:8080/wrapper-mock-1.2.N/services/BilingualDictionaryWithLongestMatchCrossSearch" use="encoded" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+      </wsdl:fault>
+      <wsdl:fault name="ProcessFailedException">
+    <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ProcessFailedException" namespace="http://localhost:8080/wrapper-mock-1.2.N/services/BilingualDictionaryWithLongestMatchCrossSearch" use="encoded" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+      </wsdl:fault>
+      <wsdl:fault name="ServiceNotFoundException">
+    <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceNotFoundException" namespace="http://localhost:8080/wrapper-mock-1.2.N/services/BilingualDictionaryWithLongestMatchCrossSearch" use="encoded" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidParameterException">
+    <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/wrapper-mock-1.2.N/services/BilingualDictionaryWithLongestMatchCrossSearch" use="encoded" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+</wsdl:definitions>

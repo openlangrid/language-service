@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+targetNamespace="http://langrid.nict.go.jp/langrid/services/PlaygroundDemoTranslationKyotoUService"
+xmlns:tns="http://langrid.nict.go.jp/langrid/services/PlaygroundDemoTranslationKyotoUService"
+xmlns:cg="http://trans.nict.go.jp/collabo/services/CodeGenerationService"
+xmlns:bd="http://trans.nict.go.jp/collabo/services/PlaygroundDemoDictionaryService"
+xmlns:mor="http://langrid.nict.go.jp/langrid-service_1_2/services/MultilingualMorphologicalAnalysis"
+xmlns:tr="http://langrid.nict.go.jp/langrid-1.2/services/MultilingualTranslationKyotoUJServer"
+xmlns:st="http://trans.nict.go.jp/collabo/services/StringOperationService"
+xmlns:rp="http://trans.nict.go.jp/collabo/services/TermReplacementService"
+xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"> 
+
+  <wsdl:message name="translateRequest">
+    <wsdl:part name="sourceLang" type="xsd:string"/>
+    <wsdl:part name="targetLang" type="xsd:string"/>
+    <wsdl:part name="source" type="xsd:string"/>
+  </wsdl:message>
+  <wsdl:message name="translateResponse">
+    <wsdl:part name="translateReturn" type="xsd:string"/>
+  </wsdl:message>
+  <wsdl:portType name="Translate">
+    <wsdl:operation name="translate">
+      <wsdl:input name="translateRequest" message="tns:translateRequest"/>
+      <wsdl:output name="translateResponse" message="tns:translateResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+
+<plnk:partnerLinkType name="TranslatePLT">
+   <plnk:role name="translator">
+      <plnk:portType name="tns:Translate"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+
+<plnk:partnerLinkType name="CodeGeneratorPLT">
+   <plnk:role name="codegenerator">
+      <plnk:portType name="cg:CodeGenerationService"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+
+<plnk:partnerLinkType name="CDictionaryPLT">
+   <plnk:role name="cdict">
+      <plnk:portType name="bd:PlaygroundDemoDictionaryService"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+
+<plnk:partnerLinkType name="MorphologicalAnalysisPLT" xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/">
+   <plnk:role name="analyzer">
+      <plnk:portType name="mor:MorphologicalAnalysis"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+
+<plnk:partnerLinkType name="MTranslatePLT" xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/">
+   <plnk:role name="mtranslator">
+      <plnk:portType name="tr:Translation"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+
+<plnk:partnerLinkType name="StringOperatorPLT">
+   <plnk:role name="stroperator">
+      <plnk:portType name="st:StringOperationService"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+
+<plnk:partnerLinkType name="ReplacementPLT">
+   <plnk:role name="replacement">
+      <plnk:portType name="rp:TermReplacementService"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+
+</wsdl:definitions>

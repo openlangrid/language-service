@@ -1,0 +1,600 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+BPEL Process Definition
+Edited using ActiveBPEL(r) Designer Version 4.1.0 (http://www.active-endpoints.com)
+-->
+<bpws:process xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:ext="http://www.activebpel.org/2006/09/bpel/extension/activity" xmlns:ns="http://schemas.xmlsoap.org/soap/encoding/" xmlns:ns1="http://landev.nict.go.jp/wrapper-mock-1.2.N/services/WebPageTranslation" xmlns:ns2="http://langrid.nict.go.jp/workflow-support/services/ApplyTemplate" xmlns:ns3="http://langrid.nict.go.jp/workflow-support/services/AnalysisHtml" xmlns:ns4="http://langrid.nict.go.jp/workflow-support/services/ReplacementTerm" xmlns:ns5="http://localhost:8080/wrapper-mock-1.2/services/AbstractTranslation" xmlns:ns6="http://langrid.nict.go.jp/langrid-1.2/services/TranslationCombinedWithBilingualDictionaryWithLongestMatchSearch" xmlns:xsd="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/TR/1999/REC-xpath-19991116" name="WebPageTranslation" suppressJoinFailure="yes" targetNamespace="http://landev.nict.go.jp/wrapper-mock-1.2.N/services/WebPageTranslation">
+   <bpws:partnerLinks>
+      <bpws:partnerLink myRole="self" name="SelfPL" partnerLinkType="ns1:SelfPLT"/>
+      <bpws:partnerLink name="ApplyTemplatePL" partnerLinkType="ns1:ApplyTemplatePLT" partnerRole="applyTemplate"/>
+      <bpws:partnerLink name="AnalysisPL" partnerLinkType="ns1:AnalysisPLT" partnerRole="analysis"/>
+      <bpws:partnerLink name="ReplaceTemplatePL" partnerLinkType="ns1:ReplaceTemplatePLT" partnerRole="replace"/>
+      <bpws:partnerLink name="ReplaceSentencePL" partnerLinkType="ns1:ReplaceSentencePLT" partnerRole="replace"/>
+      <bpws:partnerLink name="TagReplacePL" partnerLinkType="ns1:TagReplacePLT" partnerRole="replace"/>
+      <bpws:partnerLink name="BackTagReplacementPL" partnerLinkType="ns1:BackTagReplacementPLT" partnerRole="replace"/>
+      <bpws:partnerLink name="BackSkeletonHTMLonSentencePL" partnerLinkType="ns1:BackSkeletonHTMLonSentencePLT" partnerRole="replace"/>
+      <bpws:partnerLink name="BackReplacementTemplatePL" partnerLinkType="ns1:BackReplacementTemplatePLT" partnerRole="replace"/>
+      <bpws:partnerLink name="TranslationPL1" partnerLinkType="ns1:TranslationPLT1" partnerRole="translator"/>
+      <bpws:partnerLink name="TranslationPL2" partnerLinkType="ns1:TranslationPLT2" partnerRole="translator"/>
+      <bpws:partnerLink name="TranslationPL3" partnerLinkType="ns1:TranslationPLT3" partnerRole="translator"/>
+      <bpws:partnerLink name="TranslationPL4" partnerLinkType="ns1:TranslationPLT4" partnerRole="translator"/>
+   </bpws:partnerLinks>
+   <bpws:variables>
+      <bpws:variable messageType="ns1:translateRequest" name="translateRequest"/>
+      <bpws:variable messageType="ns1:translateResponse" name="translateResponse"/>
+      <bpws:variable messageType="ns2:applyRequest" name="applyRequest"/>
+      <bpws:variable messageType="ns2:applyResponse" name="applyResponse"/>
+      <bpws:variable messageType="ns3:analysisRequest" name="analysisRequest"/>
+      <bpws:variable messageType="ns3:analysisResponse" name="analysisResponse"/>
+      <bpws:variable messageType="ns4:replaceRequest" name="replaceTemplateRequest"/>
+      <bpws:variable messageType="ns4:replaceResponse" name="replaceTemplateResponse"/>
+      <bpws:variable messageType="ns4:replaceRequest" name="replaceSentenceRequest"/>
+      <bpws:variable messageType="ns4:replaceResponse" name="replaceSentenseResponse"/>
+      <bpws:variable messageType="ns4:replaceRequest" name="tagReplaceRequest"/>
+      <bpws:variable messageType="ns4:replaceResponse" name="tagReplaceResponse"/>
+      <bpws:variable messageType="ns1:stringArray" name="translateTargetTexts"/>
+      <bpws:variable messageType="ns1:stringArray" name="translateBackTexts"/>
+      <bpws:variable name="isBack" type="xsd:boolean"/>
+      <bpws:variable messageType="ns4:replaceRequest" name="backTagReplacementRequest"/>
+      <bpws:variable messageType="ns4:replaceResponse" name="backReplacementTagResponse"/>
+      <bpws:variable messageType="ns4:replaceRequest" name="backReplacementSentenceRequest"/>
+      <bpws:variable messageType="ns4:replaceResponse" name="backReplacementSentenceResponse"/>
+      <bpws:variable messageType="ns4:replaceRequest" name="backReplacementTemplateRequest"/>
+      <bpws:variable messageType="ns4:replaceResponse" name="backReplacementTemplateResponse"/>
+      <bpws:variable messageType="ns6:translateRequest" name="translateWithDictRequest1"/>
+      <bpws:variable messageType="ns6:translateResponse" name="translateWithDictResponse1"/>
+      <bpws:variable messageType="ns6:translateRequest" name="translateWithDictRequest2"/>
+      <bpws:variable messageType="ns6:translateResponse" name="translateWithDictResponse2"/>
+      <bpws:variable messageType="ns6:translateRequest" name="translateWithDictRequest3"/>
+      <bpws:variable messageType="ns6:translateResponse" name="translateWithDictResponse3"/>
+      <bpws:variable messageType="ns6:translateRequest" name="translateWithDictRequest4"/>
+      <bpws:variable messageType="ns6:translateResponse" name="translateWithDictResponse4"/>
+   </bpws:variables>
+   <bpws:sequence>
+      <bpws:receive createInstance="yes" operation="translate" partnerLink="SelfPL" portType="ns1:WebPageTranslation" variable="translateRequest"/>
+      <bpws:scope name="get_PairTemplates">
+         <bpws:faultHandlers>
+            <bpws:catchAll>
+               <bpws:assign>
+                  <bpws:copy>
+                     <bpws:from part="htmlText" variable="translateRequest"/>
+                     <bpws:to part="htmlText" variable="applyRequest"/>
+                  </bpws:copy>
+                  <bpws:copy>
+                     <bpws:from>
+                        <templates xmlns:aensTYPE="http://landev.nict.go.jp/wrapper-mock-1.2.N/services/WebPageTranslation" xmlns:ns1="http://langrid.nict.go.jp/process/binding/tree" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:ext="http://www.activebpel.org/2006/09/bpel/extension/activity" xmlns:ns="http://schemas.xmlsoap.org/soap/encoding/" xmlns:ns2="http://langrid.nict.go.jp/workflow-support/services/ApplyTemplate" xmlns:ns3="http://langrid.nict.go.jp/workflow-support/services/AnalysisHtml" xmlns:ns4="http://langrid.nict.go.jp/workflow-support/services/ReplacementTerm" xmlns:ns5="http://localhost:8080/wrapper-mock-1.2/services/AbstractTranslation" xmlns:ns6="http://langrid.nict.go.jp/langrid-1.2/services/TranslationCombinedWithBilingualDictionaryWithLongestMatchSearch" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="aensTYPE:ArrayOf_tns1_PairTemplate"/>
+                     </bpws:from>
+                     <bpws:to part="templates" variable="applyRequest"/>
+                  </bpws:copy>
+               </bpws:assign>
+            </bpws:catchAll>
+         </bpws:faultHandlers>
+         <bpws:assign>
+            <bpws:copy>
+               <bpws:from part="htmlText" variable="translateRequest"/>
+               <bpws:to part="htmlText" variable="applyRequest"/>
+            </bpws:copy>
+            <bpws:copy>
+               <bpws:from part="templates" variable="translateRequest"/>
+               <bpws:to part="templates" variable="applyRequest"/>
+            </bpws:copy>
+         </bpws:assign>
+      </bpws:scope>
+      <bpws:invoke inputVariable="applyRequest" name="ApplyTemplatePL_apply" operation="apply" outputVariable="applyResponse" partnerLink="ApplyTemplatePL" portType="ns2:HTMLApplyTemplate"/>
+      <bpws:assign name="Invokeing_AnalysisHTML">
+         <bpws:copy>
+            <bpws:from part="sourceLang" variable="translateRequest"/>
+            <bpws:to part="language" variable="analysisRequest"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="applyReturn" query="/applyReturn/skeletonHtml" variable="applyResponse"/>
+            <bpws:to part="htmlText" variable="analysisRequest"/>
+         </bpws:copy>
+      </bpws:assign>
+      <bpws:invoke inputVariable="analysisRequest" name="AnalysisPL_analysis" operation="analysis" outputVariable="analysisResponse" partnerLink="AnalysisPL" portType="ns3:HTMLAnalysis"/>
+      <bpws:scope name="Translation-Scope">
+         <bpws:variables>
+            <bpws:variable messageType="ns1:stringArray" name="translateCompletedTexts"/>
+            <bpws:variable name="translateLoopMax" type="xsd:int"/>
+            <bpws:variable messageType="ns1:translateSetting" name="translateSetting"/>
+         </bpws:variables>
+         <bpws:sequence>
+            <bpws:scope name="get_intermediateLangs">
+               <bpws:faultHandlers>
+                  <bpws:catchAll>
+                     <bpws:assign>
+                        <bpws:copy>
+                           <bpws:from>1</bpws:from>
+                           <bpws:to variable="translateLoopMax"/>
+                        </bpws:copy>
+                     </bpws:assign>
+                  </bpws:catchAll>
+               </bpws:faultHandlers>
+               <bpws:assign>
+                  <bpws:copy>
+                     <bpws:from part="intermediateLangs" query="bpws:getVariableData('translateRequest', 'intermediateLangs', 'count(/intermediateLangs/node())') + 1" variable="translateRequest"/>
+                     <bpws:to variable="translateLoopMax"/>
+                  </bpws:copy>
+               </bpws:assign>
+            </bpws:scope>
+            <bpws:assign name="TranslationValiablesInitializeing">
+               <bpws:copy>
+                  <bpws:from>false</bpws:from>
+                  <bpws:to variable="isBack"/>
+               </bpws:copy>
+               <bpws:copy>
+                  <bpws:from>''</bpws:from>
+                  <bpws:to part="translateReturn" query="/translateReturn/backTransLang" variable="translateResponse"/>
+               </bpws:copy>
+               <bpws:copy>
+                  <bpws:from>''</bpws:from>
+                  <bpws:to part="translateReturn" query="/translateReturn/backTransWebPageContents" variable="translateResponse"/>
+               </bpws:copy>
+               <bpws:copy>
+                  <bpws:from>''</bpws:from>
+                  <bpws:to part="translateReturn" query="/translateReturn/targetLang" variable="translateResponse"/>
+               </bpws:copy>
+               <bpws:copy>
+                  <bpws:from>''</bpws:from>
+                  <bpws:to part="translateReturn" query="/translateReturn/targetWebPageContents" variable="translateResponse"/>
+               </bpws:copy>
+            </bpws:assign>
+            <ext:forEach counterName="translateCounter" name="TranslationPathLoop" parallel="no">
+               <ext:startCounterValue>1</ext:startCounterValue>
+               <ext:finalCounterValue expressionLanguage="http://www.w3.org/TR/1999/REC-xpath-19991116">bpws:getVariableData('translateLoopMax')</ext:finalCounterValue>
+               <bpws:scope>
+                  <bpws:sequence>
+                     <bpws:switch name="if_1pass_or_Npass">
+                        <bpws:case condition="bpws:getVariableData('translateLoopMax') = 1">
+                           <bpws:assign>
+                              <bpws:copy>
+                                 <bpws:from part="sourceLang" variable="translateRequest"/>
+                                 <bpws:to part="sourceLang" variable="translateSetting"/>
+                              </bpws:copy>
+                              <bpws:copy>
+                                 <bpws:from part="targetLang" variable="translateRequest"/>
+                                 <bpws:to part="targetLang" variable="translateSetting"/>
+                              </bpws:copy>
+                              <bpws:copy>
+                                 <bpws:from part="analysisReturn" query="/analysisReturn/sourceText" variable="analysisResponse"/>
+                                 <bpws:to part="targetText" variable="translateSetting"/>
+                              </bpws:copy>
+                           </bpws:assign>
+                        </bpws:case>
+                        <bpws:otherwise>
+                           <bpws:switch name="select-sourceLangAndtargetLang">
+                              <bpws:case condition="bpws:getVariableData('translateCounter') = 1">
+                                 <bpws:assign>
+                                    <bpws:copy>
+                                       <bpws:from part="sourceLang" variable="translateRequest"/>
+                                       <bpws:to part="sourceLang" variable="translateSetting"/>
+                                    </bpws:copy>
+                                    <bpws:copy>
+                                       <bpws:from part="intermediateLangs" query="/intermediateLangs/string[1]/text()" variable="translateRequest"/>
+                                       <bpws:to part="targetLang" variable="translateSetting"/>
+                                    </bpws:copy>
+                                    <bpws:copy>
+                                       <bpws:from part="analysisReturn" query="/analysisReturn/sourceText" variable="analysisResponse"/>
+                                       <bpws:to part="targetText" variable="translateSetting"/>
+                                    </bpws:copy>
+                                 </bpws:assign>
+                              </bpws:case>
+                              <bpws:case condition="bpws:getVariableData('translateCounter') = bpws:getVariableData('translateLoopMax')">
+                                 <bpws:assign>
+                                    <bpws:copy>
+                                       <bpws:from part="intermediateLangs" query="/intermediateLangs/string[last()]/text()" variable="translateRequest"/>
+                                       <bpws:to part="sourceLang" variable="translateSetting"/>
+                                    </bpws:copy>
+                                    <bpws:copy>
+                                       <bpws:from part="targetLang" variable="translateRequest"/>
+                                       <bpws:to part="targetLang" variable="translateSetting"/>
+                                    </bpws:copy>
+                                    <bpws:copy>
+                                       <bpws:from part="array" variable="translateCompletedTexts"/>
+                                       <bpws:to part="targetText" variable="translateSetting"/>
+                                    </bpws:copy>
+                                 </bpws:assign>
+                              </bpws:case>
+                              <bpws:otherwise>
+                                 <bpws:assign>
+                                    <bpws:copy>
+                                       <bpws:from part="intermediateLangs" query="/intermediateLangs/string[bpws:getVariableData('translateCounter') - 1]/text()" variable="translateRequest"/>
+                                       <bpws:to part="sourceLang" variable="translateSetting"/>
+                                    </bpws:copy>
+                                    <bpws:copy>
+                                       <bpws:from part="intermediateLangs" query="/intermediateLangs/string[bpws:getVariableData('translateCounter')]/text()" variable="translateRequest"/>
+                                       <bpws:to part="targetLang" variable="translateSetting"/>
+                                    </bpws:copy>
+                                    <bpws:copy>
+                                       <bpws:from part="array" variable="translateCompletedTexts"/>
+                                       <bpws:to part="targetText" variable="translateSetting"/>
+                                    </bpws:copy>
+                                 </bpws:assign>
+                              </bpws:otherwise>
+                           </bpws:switch>
+                        </bpws:otherwise>
+                     </bpws:switch>
+                     <bpws:sequence>
+                        <ext:forEach counterName="counter" name="Translation_Invoker_Loop" parallel="no">
+                           <ext:startCounterValue>1</ext:startCounterValue>
+                           <ext:finalCounterValue expressionLanguage="http://www.w3.org/TR/1999/REC-xpath-19991116">bpws:getVariableData('translateSetting', 'targetText', 'count(/targetText/node())')</ext:finalCounterValue>
+                           <bpws:scope>
+                              <bpws:switch name="Selection_translator">
+                                 <bpws:case condition="bpws:getVariableData('translateCounter') = 1">
+                                    <bpws:sequence name="_1st">
+                                       <bpws:assign name="SettingTranslateRequest">
+                                          <bpws:copy>
+                                             <bpws:from part="sourceLang" variable="translateSetting"/>
+                                             <bpws:to part="sourceLang" variable="translateWithDictRequest1"/>
+                                          </bpws:copy>
+                                          <bpws:copy>
+                                             <bpws:from part="targetLang" variable="translateSetting"/>
+                                             <bpws:to part="targetLang" variable="translateWithDictRequest1"/>
+                                          </bpws:copy>
+                                          <bpws:copy>
+                                             <bpws:from part="targetText" query="/targetText/string[bpws:getVariableData('counter')]/text()" variable="translateSetting"/>
+                                             <bpws:to part="source" variable="translateWithDictRequest1"/>
+                                          </bpws:copy>
+                                          <bpws:copy>
+                                             <bpws:from part="targetLang" variable="translateSetting"/>
+                                             <bpws:to part="dictTargetLang" variable="translateWithDictRequest1"/>
+                                          </bpws:copy>
+                                       </bpws:assign>
+                                       <bpws:invoke inputVariable="translateWithDictRequest1" name="Invoke_TranslationPL1" operation="translate" outputVariable="translateWithDictResponse1" partnerLink="TranslationPL1" portType="ns6:TranslationWithTemporalDictionary"/>
+                                       <bpws:assign name="GettingTranslateResult">
+                                          <bpws:copy>
+                                             <bpws:from part="translateReturn" variable="translateWithDictResponse1"/>
+                                             <bpws:to part="array" query="/array/string[bpws:getVariableData('counter')]/text()" variable="translateCompletedTexts"/>
+                                          </bpws:copy>
+                                       </bpws:assign>
+                                    </bpws:sequence>
+                                 </bpws:case>
+                                 <bpws:case condition="bpws:getVariableData('translateCounter') = 2">
+                                    <bpws:sequence name="_2nd">
+                                       <bpws:assign name="SettingTranslateRequest">
+                                          <bpws:copy>
+                                             <bpws:from part="sourceLang" variable="translateSetting"/>
+                                             <bpws:to part="sourceLang" variable="translateWithDictRequest2"/>
+                                          </bpws:copy>
+                                          <bpws:copy>
+                                             <bpws:from part="targetLang" variable="translateSetting"/>
+                                             <bpws:to part="targetLang" variable="translateWithDictRequest2"/>
+                                          </bpws:copy>
+                                          <bpws:copy>
+                                             <bpws:from part="targetText" query="/targetText/string[bpws:getVariableData('counter')]/text()" variable="translateSetting"/>
+                                             <bpws:to part="source" variable="translateWithDictRequest2"/>
+                                          </bpws:copy>
+                                          <bpws:copy>
+                                             <bpws:from part="targetLang" variable="translateSetting"/>
+                                             <bpws:to part="dictTargetLang" variable="translateWithDictRequest2"/>
+                                          </bpws:copy>
+                                       </bpws:assign>
+                                       <bpws:invoke inputVariable="translateWithDictRequest2" name="Invoke_TranslationPL2" operation="translate" outputVariable="translateWithDictResponse2" partnerLink="TranslationPL2" portType="ns6:TranslationWithTemporalDictionary"/>
+                                       <bpws:assign name="GettingTranslateResult">
+                                          <bpws:copy>
+                                             <bpws:from part="translateReturn" variable="translateWithDictResponse2"/>
+                                             <bpws:to part="array" query="/array/string[bpws:getVariableData('counter')]/text()" variable="translateCompletedTexts"/>
+                                          </bpws:copy>
+                                       </bpws:assign>
+                                    </bpws:sequence>
+                                 </bpws:case>
+                                 <bpws:case condition="bpws:getVariableData('translateCounter') = 3">
+                                    <bpws:sequence name="_3rd">
+                                       <bpws:assign name="SettingTranslateRequest">
+                                          <bpws:copy>
+                                             <bpws:from part="sourceLang" variable="translateSetting"/>
+                                             <bpws:to part="sourceLang" variable="translateWithDictRequest3"/>
+                                          </bpws:copy>
+                                          <bpws:copy>
+                                             <bpws:from part="targetLang" variable="translateSetting"/>
+                                             <bpws:to part="targetLang" variable="translateWithDictRequest3"/>
+                                          </bpws:copy>
+                                          <bpws:copy>
+                                             <bpws:from part="targetText" query="/targetText/string[bpws:getVariableData('counter')]/text()" variable="translateSetting"/>
+                                             <bpws:to part="source" variable="translateWithDictRequest3"/>
+                                          </bpws:copy>
+                                          <bpws:copy>
+                                             <bpws:from part="targetLang" variable="translateSetting"/>
+                                             <bpws:to part="dictTargetLang" variable="translateWithDictRequest3"/>
+                                          </bpws:copy>
+                                       </bpws:assign>
+                                       <bpws:invoke inputVariable="translateWithDictRequest3" name="Invoke_TranslationPL3" operation="translate" outputVariable="translateWithDictResponse3" partnerLink="TranslationPL3" portType="ns6:TranslationWithTemporalDictionary"/>
+                                       <bpws:assign name="GettingTranslateResult">
+                                          <bpws:copy>
+                                             <bpws:from part="translateReturn" variable="translateWithDictResponse3"/>
+                                             <bpws:to part="array" query="/array/string[bpws:getVariableData('counter')]/text()" variable="translateCompletedTexts"/>
+                                          </bpws:copy>
+                                       </bpws:assign>
+                                    </bpws:sequence>
+                                 </bpws:case>
+                                 <bpws:case condition="bpws:getVariableData('translateCounter') = 4">
+                                    <bpws:sequence name="_4th">
+                                       <bpws:assign name="SettingTranslateRequest">
+                                          <bpws:copy>
+                                             <bpws:from part="sourceLang" variable="translateSetting"/>
+                                             <bpws:to part="sourceLang" variable="translateWithDictRequest4"/>
+                                          </bpws:copy>
+                                          <bpws:copy>
+                                             <bpws:from part="targetLang" variable="translateSetting"/>
+                                             <bpws:to part="targetLang" variable="translateWithDictRequest4"/>
+                                          </bpws:copy>
+                                          <bpws:copy>
+                                             <bpws:from part="targetText" query="/targetText/string[bpws:getVariableData('counter')]/text()" variable="translateSetting"/>
+                                             <bpws:to part="source" variable="translateWithDictRequest4"/>
+                                          </bpws:copy>
+                                          <bpws:copy>
+                                             <bpws:from part="targetLang" variable="translateSetting"/>
+                                             <bpws:to part="dictTargetLang" variable="translateWithDictRequest4"/>
+                                          </bpws:copy>
+                                       </bpws:assign>
+                                       <bpws:invoke inputVariable="translateWithDictRequest4" name="Invoke_TranslationPL4" operation="translate" outputVariable="translateWithDictResponse4" partnerLink="TranslationPL4" portType="ns6:TranslationWithTemporalDictionary"/>
+                                       <bpws:assign name="GettingTranslateResult">
+                                          <bpws:copy>
+                                             <bpws:from part="translateReturn" variable="translateWithDictResponse4"/>
+                                             <bpws:to part="array" query="/array/string[bpws:getVariableData('counter')]/text()" variable="translateCompletedTexts"/>
+                                          </bpws:copy>
+                                       </bpws:assign>
+                                    </bpws:sequence>
+                                 </bpws:case>
+                              </bpws:switch>
+                           </bpws:scope>
+                        </ext:forEach>
+                        <bpws:switch name="if_isBack">
+                           <bpws:case condition="bpws:getVariableData('isBack')">
+                              <bpws:assign name="Assign_backTranslatedTexts">
+                                 <bpws:copy>
+                                    <bpws:from part="array" variable="translateCompletedTexts"/>
+                                    <bpws:to part="array" variable="translateBackTexts"/>
+                                 </bpws:copy>
+                                 <bpws:copy>
+                                    <bpws:from part="targetLang" variable="translateSetting"/>
+                                    <bpws:to part="translateReturn" query="/translateReturn/backTransLang" variable="translateResponse"/>
+                                 </bpws:copy>
+                              </bpws:assign>
+                           </bpws:case>
+                           <bpws:otherwise>
+                              <bpws:assign name="Assing_targetTranslatedTexts">
+                                 <bpws:copy>
+                                    <bpws:from part="array" variable="translateCompletedTexts"/>
+                                    <bpws:to part="array" variable="translateTargetTexts"/>
+                                 </bpws:copy>
+                                 <bpws:copy>
+                                    <bpws:from part="targetLang" variable="translateSetting"/>
+                                    <bpws:to part="translateReturn" query="/translateReturn/targetLang" variable="translateResponse"/>
+                                 </bpws:copy>
+                              </bpws:assign>
+                           </bpws:otherwise>
+                        </bpws:switch>
+                     </bpws:sequence>
+                     <bpws:switch name="check_isBack">
+                        <bpws:case condition="( bpws:getVariableData('translateRequest', 'sourceLang') = bpws:getVariableData('translateRequest', 'targetLang') ) and ( (bpws:getVariableData('translateCounter') * 2) = bpws:getVariableData('translateLoopMax') )">
+                           <bpws:assign name="Setting_isBack_true">
+                              <bpws:copy>
+                                 <bpws:from>true</bpws:from>
+                                 <bpws:to variable="isBack"/>
+                              </bpws:copy>
+                           </bpws:assign>
+                        </bpws:case>
+                     </bpws:switch>
+                  </bpws:sequence>
+               </bpws:scope>
+            </ext:forEach>
+         </bpws:sequence>
+      </bpws:scope>
+      <bpws:sequence name="ReplacementTag">
+         <ext:forEach counterName="tagReplacementCounter" name="TagReplacementLoop" parallel="no">
+            <ext:startCounterValue>1</ext:startCounterValue>
+            <ext:finalCounterValue expressionLanguage="http://www.w3.org/TR/1999/REC-xpath-19991116">bpws:getVariableData('translateTargetTexts', 'array', 'count(/array/node())')</ext:finalCounterValue>
+            <bpws:scope>
+               <bpws:sequence>
+                  <bpws:assign>
+                     <bpws:copy>
+                        <bpws:from part="translateReturn" query="/translateReturn/targetLang" variable="translateResponse"/>
+                        <bpws:to part="sourceLang" variable="tagReplaceRequest"/>
+                     </bpws:copy>
+                     <bpws:copy>
+                        <bpws:from part="array" query="/array/string[bpws:getVariableData('tagReplacementCounter')]/text()" variable="translateTargetTexts"/>
+                        <bpws:to part="text" variable="tagReplaceRequest"/>
+                     </bpws:copy>
+                     <bpws:copy>
+                        <bpws:from part="analysisReturn" query="/analysisReturn/sentenceAndCodes/SentenceAndCodes[bpws:getVariableData('tagReplacementCounter')]/codes" variable="analysisResponse"/>
+                        <bpws:to part="searchWords" variable="tagReplaceRequest"/>
+                     </bpws:copy>
+                     <bpws:copy>
+                        <bpws:from part="analysisReturn" query="/analysisReturn/sentenceAndCodes/SentenceAndCodes[bpws:getVariableData('tagReplacementCounter')]/words" variable="analysisResponse"/>
+                        <bpws:to part="replacementWords" variable="tagReplaceRequest"/>
+                     </bpws:copy>
+                  </bpws:assign>
+                  <bpws:invoke inputVariable="tagReplaceRequest" name="TagReplace" operation="replace" outputVariable="tagReplaceResponse" partnerLink="TagReplacePL" portType="ns4:ReplacementTerm"/>
+                  <bpws:assign>
+                     <bpws:copy>
+                        <bpws:from part="replaceReturn" variable="tagReplaceResponse"/>
+                        <bpws:to part="array" query="/array/string[bpws:getVariableData('tagReplacementCounter')]" variable="translateTargetTexts"/>
+                     </bpws:copy>
+                  </bpws:assign>
+               </bpws:sequence>
+            </bpws:scope>
+         </ext:forEach>
+      </bpws:sequence>
+      <bpws:switch>
+         <bpws:case condition="bpws:getVariableData('isBack')">
+            <bpws:sequence name="ReplacementTag">
+               <ext:forEach counterName="tagReplacementCounter" name="TagReplacementLoop" parallel="no">
+                  <ext:startCounterValue>1</ext:startCounterValue>
+                  <ext:finalCounterValue expressionLanguage="http://www.w3.org/TR/1999/REC-xpath-19991116">bpws:getVariableData('translateTargetTexts', 'array', 'count(/array/node())')</ext:finalCounterValue>
+                  <bpws:scope>
+                     <bpws:sequence>
+                        <bpws:assign>
+                           <bpws:copy>
+                              <bpws:from part="translateReturn" query="/translateReturn/backTransLang" variable="translateResponse"/>
+                              <bpws:to part="sourceLang" variable="backTagReplacementRequest"/>
+                           </bpws:copy>
+                           <bpws:copy>
+                              <bpws:from part="array" query="/array/string[bpws:getVariableData('tagReplacementCounter')]/text()" variable="translateBackTexts"/>
+                              <bpws:to part="text" variable="backTagReplacementRequest"/>
+                           </bpws:copy>
+                           <bpws:copy>
+                              <bpws:from part="analysisReturn" query="/analysisReturn/sentenceAndCodes/SentenceAndCodes[bpws:getVariableData('tagReplacementCounter')]/codes" variable="analysisResponse"/>
+                              <bpws:to part="searchWords" variable="backTagReplacementRequest"/>
+                           </bpws:copy>
+                           <bpws:copy>
+                              <bpws:from part="analysisReturn" query="/analysisReturn/sentenceAndCodes/SentenceAndCodes[bpws:getVariableData('tagReplacementCounter')]/words" variable="analysisResponse"/>
+                              <bpws:to part="replacementWords" variable="backTagReplacementRequest"/>
+                           </bpws:copy>
+                        </bpws:assign>
+                        <bpws:invoke inputVariable="backTagReplacementRequest" operation="replace" outputVariable="backReplacementTagResponse" partnerLink="BackTagReplacementPL" portType="ns4:ReplacementTerm"/>
+                        <bpws:assign>
+                           <bpws:copy>
+                              <bpws:from part="replaceReturn" variable="backReplacementTagResponse"/>
+                              <bpws:to part="array" query="/array/string[bpws:getVariableData('tagReplacementCounter')]" variable="translateBackTexts"/>
+                           </bpws:copy>
+                        </bpws:assign>
+                     </bpws:sequence>
+                  </bpws:scope>
+               </ext:forEach>
+            </bpws:sequence>
+         </bpws:case>
+      </bpws:switch>
+      <bpws:sequence name="ReplacementSkeletonHTML">
+         <bpws:assign>
+            <bpws:copy>
+               <bpws:from part="translateReturn" query="/translateReturn/targetLang" variable="translateResponse"/>
+               <bpws:to part="sourceLang" variable="replaceSentenceRequest"/>
+            </bpws:copy>
+            <bpws:copy>
+               <bpws:from part="analysisReturn" query="/analysisReturn/skeletonHtml" variable="analysisResponse"/>
+               <bpws:to part="text" variable="replaceSentenceRequest"/>
+            </bpws:copy>
+            <bpws:copy>
+               <bpws:from part="analysisReturn" query="/analysisReturn/sentenceCodes" variable="analysisResponse"/>
+               <bpws:to part="searchWords" variable="replaceSentenceRequest"/>
+            </bpws:copy>
+            <bpws:copy>
+               <bpws:from part="array" variable="translateTargetTexts"/>
+               <bpws:to part="replacementWords" variable="replaceSentenceRequest"/>
+            </bpws:copy>
+         </bpws:assign>
+         <bpws:invoke inputVariable="replaceSentenceRequest" name="SkeletonHTMLonSentence" operation="replace" outputVariable="replaceSentenseResponse" partnerLink="ReplaceSentencePL" portType="ns4:ReplacementTerm"/>
+         <bpws:assign>
+            <bpws:copy>
+               <bpws:from part="replaceReturn" variable="replaceSentenseResponse"/>
+               <bpws:to part="translateReturn" query="/translateReturn/targetWebPageContents" variable="translateResponse"/>
+            </bpws:copy>
+         </bpws:assign>
+      </bpws:sequence>
+      <bpws:switch>
+         <bpws:case condition="bpws:getVariableData('isBack')">
+            <bpws:sequence name="BackReplacementSkeletonHTML">
+               <bpws:assign>
+                  <bpws:copy>
+                     <bpws:from part="translateReturn" query="/translateReturn/backTransLang" variable="translateResponse"/>
+                     <bpws:to part="sourceLang" variable="backReplacementSentenceRequest"/>
+                  </bpws:copy>
+                  <bpws:copy>
+                     <bpws:from part="analysisReturn" query="/analysisReturn/skeletonHtml" variable="analysisResponse"/>
+                     <bpws:to part="text" variable="backReplacementSentenceRequest"/>
+                  </bpws:copy>
+                  <bpws:copy>
+                     <bpws:from part="analysisReturn" query="/analysisReturn/sentenceCodes" variable="analysisResponse"/>
+                     <bpws:to part="searchWords" variable="backReplacementSentenceRequest"/>
+                  </bpws:copy>
+                  <bpws:copy>
+                     <bpws:from part="array" variable="translateBackTexts"/>
+                     <bpws:to part="replacementWords" variable="backReplacementSentenceRequest"/>
+                  </bpws:copy>
+               </bpws:assign>
+               <bpws:invoke inputVariable="backReplacementSentenceRequest" operation="replace" outputVariable="backReplacementSentenceResponse" partnerLink="BackSkeletonHTMLonSentencePL" portType="ns4:ReplacementTerm"/>
+               <bpws:assign>
+                  <bpws:copy>
+                     <bpws:from part="replaceReturn" variable="backReplacementSentenceResponse"/>
+                     <bpws:to part="translateReturn" query="/translateReturn/backTransWebPageContents" variable="translateResponse"/>
+                  </bpws:copy>
+               </bpws:assign>
+            </bpws:sequence>
+         </bpws:case>
+      </bpws:switch>
+      <bpws:sequence>
+         <bpws:assign>
+            <bpws:copy>
+               <bpws:from part="translateReturn" query="/translateReturn/targetLang" variable="translateResponse"/>
+               <bpws:to part="sourceLang" variable="replaceTemplateRequest"/>
+            </bpws:copy>
+            <bpws:copy>
+               <bpws:from part="translateReturn" query="/translateReturn/targetWebPageContents" variable="translateResponse"/>
+               <bpws:to part="text" variable="replaceTemplateRequest"/>
+            </bpws:copy>
+            <bpws:copy>
+               <bpws:from part="applyReturn" query="/applyReturn/templateCodes" variable="applyResponse"/>
+               <bpws:to part="searchWords" variable="replaceTemplateRequest"/>
+            </bpws:copy>
+            <bpws:copy>
+               <bpws:from part="applyReturn" query="/applyReturn/templateCodes" variable="applyResponse"/>
+               <bpws:to part="replacementWords" variable="replaceTemplateRequest"/>
+            </bpws:copy>
+         </bpws:assign>
+         <ext:forEach counterName="tempCopyCnt" name="COPY_ReplaceTemplateWords" parallel="no">
+            <ext:startCounterValue>1</ext:startCounterValue>
+            <ext:finalCounterValue expressionLanguage="http://www.w3.org/TR/1999/REC-xpath-19991116">bpws:getVariableData('applyResponse', 'applyReturn', 'count(/applyReturn/templateCodes/node())')</ext:finalCounterValue>
+            <bpws:scope>
+               <bpws:assign>
+                  <bpws:copy>
+                     <bpws:from part="applyReturn" query="/applyReturn/templates/PairTemplate[bpws:getVariableData('tempCopyCnt')]/target/text()" variable="applyResponse"/>
+                     <bpws:to part="replacementWords" query="/replacementWords/string[bpws:getVariableData('tempCopyCnt')]/text()" variable="replaceTemplateRequest"/>
+                  </bpws:copy>
+               </bpws:assign>
+            </bpws:scope>
+         </ext:forEach>
+         <bpws:invoke inputVariable="replaceTemplateRequest" name="ReplaceTemplate_replace" operation="replace" outputVariable="replaceTemplateResponse" partnerLink="ReplaceTemplatePL" portType="ns4:ReplacementTerm"/>
+         <bpws:assign>
+            <bpws:copy>
+               <bpws:from part="replaceReturn" variable="replaceTemplateResponse"/>
+               <bpws:to part="translateReturn" query="/translateReturn/targetWebPageContents" variable="translateResponse"/>
+            </bpws:copy>
+         </bpws:assign>
+      </bpws:sequence>
+      <bpws:switch>
+         <bpws:case condition="bpws:getVariableData('isBack')">
+            <bpws:sequence>
+               <bpws:assign>
+                  <bpws:copy>
+                     <bpws:from part="translateReturn" query="/translateReturn/backTransLang" variable="translateResponse"/>
+                     <bpws:to part="sourceLang" variable="backReplacementTemplateRequest"/>
+                  </bpws:copy>
+                  <bpws:copy>
+                     <bpws:from part="translateReturn" query="/translateReturn/backTransWebPageContents" variable="translateResponse"/>
+                     <bpws:to part="text" variable="backReplacementTemplateRequest"/>
+                  </bpws:copy>
+                  <bpws:copy>
+                     <bpws:from part="applyReturn" query="/applyReturn/templateCodes" variable="applyResponse"/>
+                     <bpws:to part="searchWords" variable="backReplacementTemplateRequest"/>
+                  </bpws:copy>
+                  <bpws:copy>
+                     <bpws:from part="applyReturn" query="/applyReturn/templateCodes" variable="applyResponse"/>
+                     <bpws:to part="replacementWords" variable="backReplacementTemplateRequest"/>
+                  </bpws:copy>
+               </bpws:assign>
+               <ext:forEach counterName="tempCopyCnt" name="COPY_ReplaceTemplateWords" parallel="no">
+                  <ext:startCounterValue>1</ext:startCounterValue>
+                  <ext:finalCounterValue expressionLanguage="http://www.w3.org/TR/1999/REC-xpath-19991116">bpws:getVariableData('applyResponse', 'applyReturn', 'count(/applyReturn/templateCodes/node())')</ext:finalCounterValue>
+                  <bpws:scope>
+                     <bpws:assign>
+                        <bpws:copy>
+                           <bpws:from part="applyReturn" query="/applyReturn/templates/PairTemplate[bpws:getVariableData('tempCopyCnt')]/source/text()" variable="applyResponse"/>
+                           <bpws:to part="replacementWords" query="/replacementWords/string[bpws:getVariableData('tempCopyCnt')]/text()" variable="backReplacementTemplateRequest"/>
+                        </bpws:copy>
+                     </bpws:assign>
+                  </bpws:scope>
+               </ext:forEach>
+               <bpws:invoke inputVariable="backReplacementTemplateRequest" operation="replace" outputVariable="backReplacementTemplateResponse" partnerLink="BackReplacementTemplatePL" portType="ns4:ReplacementTerm"/>
+               <bpws:assign>
+                  <bpws:copy>
+                     <bpws:from part="replaceReturn" variable="backReplacementTemplateResponse"/>
+                     <bpws:to part="translateReturn" query="/translateReturn/backTransWebPageContents" variable="translateResponse"/>
+                  </bpws:copy>
+               </bpws:assign>
+            </bpws:sequence>
+         </bpws:case>
+      </bpws:switch>
+      <bpws:reply operation="translate" partnerLink="SelfPL" portType="ns1:WebPageTranslation" variable="translateResponse"/>
+   </bpws:sequence>
+</bpws:process>

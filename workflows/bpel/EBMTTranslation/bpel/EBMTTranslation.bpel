@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpws:process xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:impl="http://orchid.kuee.kyoto-u.ac.jp:8080/wrapper-1.2/services/EBMT" xmlns:ns1="http://langrid.nict.go.jp/langrid-1.2/services/EBMTTranslation" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="EBMTTranslation" suppressJoinFailure="yes" targetNamespace="http://langrid.nict.go.jp/langrid-1.2/services/EBMTTranslation">
+   <bpws:partnerLinks>
+      <bpws:partnerLink myRole="process" name="TranslationProcessPL" partnerLinkType="ns1:TranslationProcessPLT"/>
+      <bpws:partnerLink name="EBMTTranslationPL" partnerLinkType="ns1:TranslationPLT" partnerRole="translator"/>
+   </bpws:partnerLinks>
+   <bpws:variables>
+      <bpws:variable messageType="ns1:translateRequest" name="translateRequest"/>
+      <bpws:variable messageType="ns1:translateResponse" name="translateResponse"/>
+      <bpws:variable messageType="impl:translateRequest" name="ebmtTranslateRequest"/>
+      <bpws:variable messageType="impl:translateResponse" name="ebmtTranslateResponse"/>
+   </bpws:variables>
+   <bpws:sequence>
+      <bpws:receive createInstance="yes" operation="translate" partnerLink="TranslationProcessPL" portType="ns1:EBMTTranslation" variable="translateRequest"/>
+      <bpws:assign>
+         <bpws:copy>
+            <bpws:from part="sourceLang" variable="translateRequest"/>
+            <bpws:to part="sourceLang" variable="ebmtTranslateRequest"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="targetLang" variable="translateRequest"/>
+            <bpws:to part="targetLang" variable="ebmtTranslateRequest"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="source" variable="translateRequest"/>
+            <bpws:to part="source" variable="ebmtTranslateRequest"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="dicTokens" variable="translateRequest"/>
+            <bpws:to part="dicTokens" variable="ebmtTranslateRequest"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="ptTokens" variable="translateRequest"/>
+            <bpws:to part="ptTokens" variable="ebmtTranslateRequest"/>
+         </bpws:copy>
+      </bpws:assign>
+      <bpws:invoke inputVariable="ebmtTranslateRequest" operation="translate" outputVariable="ebmtTranslateResponse" partnerLink="EBMTTranslationPL" portType="impl:EBMT"/>
+      <bpws:assign>
+         <bpws:copy>
+            <bpws:from part="translateReturn" variable="ebmtTranslateResponse"/>
+            <bpws:to part="translateReturn" variable="translateResponse"/>
+         </bpws:copy>
+      </bpws:assign>
+      <bpws:reply operation="translate" partnerLink="TranslationProcessPL" portType="ns1:EBMTTranslation" variable="translateResponse"/>
+   </bpws:sequence>
+</bpws:process>

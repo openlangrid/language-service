@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdlCatalog>
+
+  <wsdlEntry
+	location="project:TranslationWithParallelText/wsdl/TranslationWithParallelText.wsdl"
+	classpath="wsdl/TranslationWithParallelText.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:TranslationWithParallelText/wsdl/AbstractParallelText.wsdl"
+	classpath="wsdl/AbstractParallelText.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:TranslationWithParallelText/wsdl/AbstractTranslation.wsdl"
+	classpath="wsdl/AbstractTranslation.wsdl"
+  />
+
+</wsdlCatalog>

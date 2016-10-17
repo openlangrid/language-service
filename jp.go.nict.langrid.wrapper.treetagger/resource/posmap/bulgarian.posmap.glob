@@ -1,0 +1,13 @@
+# bulgarian PartOfSpeech map
+Nc*=noun.common
+Np*=noun.proper
+A*=adjective
+H*=adjective
+P*=other
+M*=other
+V*=verb
+D*=adverb
+C*=other
+T*=other
+R=other
+I=other

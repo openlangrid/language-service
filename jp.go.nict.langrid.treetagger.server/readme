@@ -1,0 +1,30 @@
+JTreeTagger :front-end server for treetagger
+
+必要要件
+ OS:treetaggerに準拠
+
+build.xmlのmakeExecutableJarタスクを実行してください。
+ 最終のアウトプットは下記ディレクトリ以下全て
+ "${project-root}"/jtreetagger
+ 
+構成
+ jtreetagger/JTreeTagger.jar: 実行形式のサーバ本体
+ jtreetagger/jtreetagger.conf: サーバのコンフィグファイル、サーバ起動時に第2引数で指定する（オプション
+ jtreetagger/JTreeTagger-en.shell: EN用サーバの起動用参考スクリプト
+ jtreetagger/lib: 必要なライブラリの格納場所
+ jtreetagger/log: サーバの日替わりログ置き場
+ 
+Command
+ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./lib
+ java -jar JTreeTagger.jar language(en,fr,it,ru,bg,nl,de,es) configuration-file:option(ex:./jtreetagger.conf)
+
+起動できない場合には
+ 1. jtreetagger/libに以下のライブラリがあるか確認してください。
+  langrid-commons-1.2.jar
+  langrid-language-1.2.jar
+  langrid-treetagger-engine-1.2.1.jar
+  langrid-treetagger-client-1.2.jar
+  libTreeTaggerLinuxJNIEngine.so
+ 
+ 2. LD_LIBRARY_PATHに1.のライブラリ群のパスを追加してください。
+ 3. ポートを確認してください、デフォルトのポートは50001です。

@@ -1,0 +1,24 @@
+# spanish PartOfSpeech map
+F*=other
+S*=other
+AR*=other
+ADJ*=adjective
+ADV*=adverb
+AL*=other
+C*=other
+D*=other
+I*=other
+NC*=noun.common
+NP*=noun.proper
+NE*=other
+O*=other
+P*=other
+Q*=other
+R*=other
+V*=verb
+DM=noun.pronoun
+INT=noun.pronoun
+PPC=noun.pronoun
+PPO=noun.pronoun
+PPX=noun.pronoun
+REL=noun.pronoun

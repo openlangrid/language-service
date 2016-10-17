@@ -1,0 +1,46 @@
+<project name="langrid-treetagger-server-1.2" default="makeExecutableJar">
+	<property file="./build.properties"/>
+	<import file="./common.xml" />
+
+	<path id="classpath.compile">
+		<fileset file="${dist}/langrid-treetagger-engine-1.2.1.jar" />
+		<fileset file="${dist}/langrid-treetagger-engine-linux-jni-1.2.1.jar" />
+	</path>
+
+	<target name="makeExecutableJar" depends="compile">
+		<mkdir dir="./jtreetagger/lib"/>
+		<mkdir dir="./jtreetagger/log"/>
+		<copy file="${common.xml.dir}/lib/langrid-commons-1.2.jar" todir="./jtreetagger/lib"/>
+		<copy file="${common.xml.dir}/lib/langrid-language-1.2.jar" todir="./jtreetagger/lib"/>
+		<copy file="../wrapper_dist/jars/langrid-treetagger-engine-1.2.1.jar" todir="./jtreetagger/lib"/>
+		<copy file="../wrapper_dist/jars/langrid-treetagger-engine-linux-jni-1.2.1.jar" todir="./jtreetagger/lib"/>
+		<copy file="../wrapper_dist/jars/langrid-treetagger-client-1.2.jar" todir="./jtreetagger/lib"/>
+		<copy file="../jp.go.nict.langrid.treetagger.engine.linux.jni/lib/libTreeTaggerLinuxJNIEngine.so" todir="./jtreetagger/lib"/>
+		<copy file="../jp.go.nict.langrid.treetagger.engine.linux.jni/lib/libtreetagger.so" todir="./jtreetagger/lib"/>
+		<copy file="./jtreetagger-en.conf" todir="./jtreetagger"/>
+		<copy file="./jtreetagger-de.conf" todir="./jtreetagger"/>
+		<copy file="./JTreeTagger-en.shell" todir="./jtreetagger"/>
+		<copy file="./JTreeTagger-de.shell" todir="./jtreetagger"/>
+		<jar jarfile="./jtreetagger/${jar.name}.jar">
+			<fileset dir="build"
+				includes="**/*.class,**/*.properties"
+			/>
+			<manifest>
+				<attribute name="Main-Class" value="${class.main}"/>
+				<attribute 
+					name="Class-Path"
+					value="${lib.path}/langrid-commons-1.2.jar ${lib.path}/langrid-language-1.2.jar ${lib.path}/langrid-treetagger-engine-1.2.1.jar ${lib.path}/langrid-treetagger-engine-linux-jni-1.2.1.jar ${lib.path}/langrid-treetagger-client-1.2.jar"
+				/>
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="clean">
+		<delete dir="./jtreetagger"/>
+		<delete dir="./build"/>
+		<delete dir="./build.test"/>
+	</target>
+	
+	<target name="remake" depends="clean,makeExecutableJar">
+	</target>
+</project>

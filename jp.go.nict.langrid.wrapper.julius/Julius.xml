@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<bean id="target" class="jp.go.nict.langrid.servicecontainer.handler.TargetServiceFactory" >
+		<property name="decorators">
+			<list>
+				<bean class="jp.go.nict.langrid.servicecontainer.decorator.ThreadDecorator">
+					<property name="maxThreads" value="2" />
+					<property name="maxWaitMillisForThread" value="20000" />
+				</bean>
+			</list>
+		</property>
+		<property name="service">
+			<bean class="jp.go.nict.langrid.wrapper.julius.JuliusService">
+				<property name="ComponentServiceFactory">
+					<bean class="jp.go.nict.langrid.servicecontainer.executor.java.JavaComponentServiceFactory" />
+				</property>
+				<property name="JuliusPath" value="/home/haruo31/docs/2011-09/langrid-mig/julius-4.1.5/julius/julius" />
+				<property name="modelConfig">
+					<list>
+						<bean class="jp.go.nict.langrid.wrapper.julius.modelconfig.ModelConfigBean">
+							<property name="name" value="standard" />
+							<property name="path" value="/path/to/model/japanese-models/jconf/standard.jconf" />
+							<property name="language" value="ja" />
+							<property name="recognizedCharset" value="euc_jp" />
+						</bean>
+						<bean class="jp.go.nict.langrid.wrapper.julius.modelconfig.ModelConfigBean">
+							<property name="name" value="light" />
+							<property name="path" value="/path/to/model/japanese-models/jconf/light.jconf" />
+							<property name="language" value="ja" />
+							<property name="recognizedCharset" value="euc_jp" />
+						</bean>
+					</list>
+				</property>
+			</bean>
+		</property>
+	</bean>
+</beans>

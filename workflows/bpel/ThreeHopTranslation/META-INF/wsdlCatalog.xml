@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdlCatalog>
+
+  <wsdlEntry
+	location="project:ThreeHopTranslation/wsdl/ThreeHopTranslation.wsdl"
+	classpath="wsdl/ThreeHopTranslation.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:ThreeHopTranslation/wsdl/AbstractTranslation.wsdl"
+	classpath="wsdl/AbstractTranslation.wsdl"
+  />
+
+</wsdlCatalog>

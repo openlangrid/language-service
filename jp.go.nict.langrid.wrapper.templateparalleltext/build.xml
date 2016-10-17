@@ -1,0 +1,7 @@
+<project name="langrid-wrapper-templateparalleltext-1.2" default="dist">
+	<import file="../jp.go.nict.langrid.wrapper.common/common.xml" />
+	<path id="classpath.compile">
+		<fileset file="../jp.go.nict.langrid.wrapper.common.db/lib/commons-dbcp-1.2.2.jar" />
+		<fileset file="../wrapper_dist/jars.test/langrid-wrapper-common-db-1.2-tests.jar" />
+	</path>
+</project>

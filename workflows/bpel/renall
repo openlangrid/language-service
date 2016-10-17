@@ -1,0 +1,9 @@
+#!/bin/sh
+
+files="./ae_temp_*"
+for p in ${files}; do
+  p2=${p/\.\/ae_temp_/}
+  p3=${p2/_bpr/}
+  mv ${p} ${p3}
+done
+

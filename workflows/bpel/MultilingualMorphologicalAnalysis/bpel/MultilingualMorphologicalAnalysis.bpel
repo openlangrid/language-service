@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+BPEL Process Definition
+Edited using ActiveBPEL(tm) Designer Version 2.1.0 (http://www.active-endpoints.com)
+-->
+<process xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/" 
+xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/" 
+xmlns:ns1="http://langrid.nict.go.jp/langrid-service_1_2/services/MultilingualMorphologicalAnalysis" 
+xmlns:ns2="http://langrid.nict.go.jp/langrid-service_1_2/services/Klt" 
+xmlns:ns3="http://langrid.nict.go.jp/langrid-service_1_2/services/ICTCLAS" 
+xmlns:ns4="http://langrid.nict.go.jp/langrid-service_1_2/services/Mecab" 
+xmlns:ns5="http://langrid.nict.go.jp/langrid-service_1_2/services/TreeTagger" 
+xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+name="MultilingualMorphologicalAnalysis" 
+suppressJoinFailure="yes" 
+targetNamespace="http://langrid.nict.go.jp/langrid-service_1_2/services/MultilingualMorphologicalAnalysis">
+   <partnerLinks>
+      <partnerLink name="MorphologicalAnalysisPL"  partnerLinkType="ns1:MorphologicalAnalysisPLT"  myRole="analyzer" />
+      <partnerLink name="HMorphologicalAnalysisPL" partnerLinkType="ns1:HMorphologicalAnalysisPLT" partnerRole="hanalyzer"/>
+      <partnerLink name="IMorphologicalAnalysisPL" partnerLinkType="ns1:IMorphologicalAnalysisPLT" partnerRole="ianalyzer"/>
+      <partnerLink name="MMorphologicalAnalysisPL" partnerLinkType="ns1:MMorphologicalAnalysisPLT" partnerRole="manalyzer"/>
+      <partnerLink name="TMorphologicalAnalysisPL" partnerLinkType="ns1:TMorphologicalAnalysisPLT" partnerRole="tanalyzer"/>
+   </partnerLinks>
+   <variables>
+      <variable messageType="ns1:analyzeRequest" name="analyzeRequest"/>
+      <variable messageType="ns1:analyzeResponse" name="analyzeResponse"/>
+      <variable messageType="ns2:analyzeRequest" name="hanalyzeRequest"/>
+      <variable messageType="ns2:analyzeResponse" name="hanalyzeResponse"/>
+      <variable messageType="ns3:analyzeRequest" name="ianalyzeRequest"/>
+      <variable messageType="ns3:analyzeResponse" name="ianalyzeResponse"/>
+      <variable messageType="ns4:analyzeRequest" name="manalyzeRequest"/>
+      <variable messageType="ns4:analyzeResponse" name="manalyzeResponse"/>
+      <variable messageType="ns5:analyzeRequest" name="tanalyzeRequest"/>
+      <variable messageType="ns5:analyzeResponse" name="tanalyzeResponse"/>
+   </variables>
+   <sequence>
+      <receive createInstance="yes" operation="analyze" partnerLink="MorphologicalAnalysisPL" portType="ns1:MultilingualMorphologicalAnalysis" variable="analyzeRequest"/>
+      <switch>
+         <case condition="bpws:getVariableData('analyzeRequest', 'language') = 'ko'">
+            <sequence>
+               <assign>
+                  <copy>
+                     <from part="language" variable="analyzeRequest"/>
+                     <to part="language" variable="hanalyzeRequest"/>
+                  </copy>
+                  <copy>
+                     <from part="text" variable="analyzeRequest"/>
+                     <to part="text" variable="hanalyzeRequest"/>
+                  </copy>
+               </assign>
+               <invoke inputVariable="hanalyzeRequest" name="Ham" operation="analyze" outputVariable="hanalyzeResponse" partnerLink="HMorphologicalAnalysisPL" portType="ns2:MorphologicalAnalysis"/>
+               <assign>
+                  <copy>
+                     <from part="analyzeReturn" variable="hanalyzeResponse"/>
+                     <to part="analyzeReturn" variable="analyzeResponse"/>
+                  </copy>
+               </assign>
+            </sequence>
+         </case>
+         <case condition="bpws:getVariableData('analyzeRequest', 'language')= 'zh'">
+            <sequence>
+               <assign>
+                  <copy>
+                     <from part="language" variable="analyzeRequest"/>
+                     <to part="language" variable="ianalyzeRequest"/>
+                  </copy>
+                  <copy>
+                     <from part="text" variable="analyzeRequest"/>
+                     <to part="text" variable="ianalyzeRequest"/>
+                  </copy>
+               </assign>
+               <invoke inputVariable="ianalyzeRequest" name="ICTCLAS" operation="analyze" outputVariable="ianalyzeResponse" partnerLink="IMorphologicalAnalysisPL" portType="ns3:MorphologicalAnalysis"/>
+               <assign>
+                  <copy>
+                     <from part="analyzeReturn" variable="ianalyzeResponse"/>
+                     <to part="analyzeReturn" variable="analyzeResponse"/>
+                  </copy>
+               </assign>
+            </sequence>
+         </case>
+         <case condition="bpws:getVariableData('analyzeRequest', 'language')='ja'">
+            <sequence>
+               <assign>
+                  <copy>
+                     <from part="language" variable="analyzeRequest"/>
+                     <to part="language" variable="manalyzeRequest"/>
+                  </copy>
+                  <copy>
+                     <from part="text" variable="analyzeRequest"/>
+                     <to part="text" variable="manalyzeRequest"/>
+                  </copy>
+               </assign>
+               <invoke inputVariable="manalyzeRequest" name="Mecab" operation="analyze" outputVariable="manalyzeResponse" partnerLink="MMorphologicalAnalysisPL" portType="ns4:MorphologicalAnalysis"/>
+               <assign>
+                  <copy>
+                     <from part="analyzeReturn" variable="manalyzeResponse"/>
+                     <to part="analyzeReturn" variable="analyzeResponse"/>
+                  </copy>
+               </assign>
+            </sequence>
+         </case>
+         <case condition="(bpws:getVariableData('analyzeRequest', 'language')='en') or (bpws:getVariableData('analyzeRequest', 'language')='de') or (bpws:getVariableData('analyzeRequest', 'language')='it') or (bpws:getVariableData('analyzeRequest', 'language')='es') or (bpws:getVariableData('analyzeRequest', 'language')='fr')">
+            <sequence>
+               <assign>
+                  <copy>
+                     <from part="language" variable="analyzeRequest"/>
+                     <to part="language" variable="tanalyzeRequest"/>
+                  </copy>
+                  <copy>
+                     <from part="text" variable="analyzeRequest"/>
+                     <to part="text" variable="tanalyzeRequest"/>
+                  </copy>
+               </assign>
+               <invoke inputVariable="tanalyzeRequest" name="TreeTagger" operation="analyze" outputVariable="tanalyzeResponse" partnerLink="TMorphologicalAnalysisPL" portType="ns5:MorphologicalAnalysis"/>
+               <assign>
+                  <copy>
+                     <from part="analyzeReturn" variable="tanalyzeResponse"/>
+                     <to part="analyzeReturn" variable="analyzeResponse"/>
+                  </copy>
+               </assign>
+            </sequence>
+         </case>
+      </switch>
+      <reply operation="analyze" partnerLink="MorphologicalAnalysisPL" portType="ns1:MultilingualMorphologicalAnalysis" variable="analyzeResponse"/>
+   </sequence>
+</process>

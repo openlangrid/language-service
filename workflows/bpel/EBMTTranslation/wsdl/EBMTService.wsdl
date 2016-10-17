@@ -1,0 +1,647 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://orchid.kuee.kyoto-u.ac.jp:8080/wrapper-1.2/services/EBMT" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://orchid.kuee.kyoto-u.ac.jp:8080/wrapper-1.2/services/EBMT" xmlns:intf="http://orchid.kuee.kyoto-u.ac.jp:8080/wrapper-1.2/services/EBMT" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns1="http://langrid.nict.go.jp/ws_1_2/" xmlns:tns2="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/" xmlns:tns3="http://langrid.nict.go.jp/ws_1_2/paralleltext/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDLはApache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)によって生成されました / [en]-(WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT))-->
+ <wsdl:types>
+  <schema targetNamespace="http://orchid.kuee.kyoto-u.ac.jp:8080/wrapper-1.2/services/EBMT" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/paralleltext/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOf_xsd_string">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_tns2_Translation">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns2:Translation[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_tns3_ParallelText">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns3:ParallelText[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://langrid.nict.go.jp/ws_1_2/" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://orchid.kuee.kyoto-u.ac.jp:8080/wrapper-1.2/services/EBMT"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/paralleltext/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="LangridException">
+    <sequence>
+     <element name="description" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="AccessLimitExceededException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="InvalidParameterException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence>
+       <element name="parameterName" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="LanguagePairNotUniquelyDecidedException">
+    <complexContent>
+     <extension base="tns1:InvalidParameterException">
+      <sequence>
+       <element name="candidates" nillable="true" type="impl:ArrayOf_xsd_string"/>
+       <element name="message" nillable="true" type="xsd:string"/>
+       <element name="parameterName1" nillable="true" type="xsd:string"/>
+       <element name="parameterName2" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="UnsupportedLanguagePairException">
+    <complexContent>
+     <extension base="tns1:InvalidParameterException">
+      <sequence>
+       <element name="language1" nillable="true" type="xsd:string"/>
+       <element name="language2" nillable="true" type="xsd:string"/>
+       <element name="parameterName1" nillable="true" type="xsd:string"/>
+       <element name="parameterName2" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="NoAccessPermissionException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="NoValidEndpointsException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ProcessFailedException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ServerBusyException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ServiceNotActiveException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence>
+       <element name="serviceId" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ServiceNotFoundException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence>
+       <element name="serviceId" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://orchid.kuee.kyoto-u.ac.jp:8080/wrapper-1.2/services/EBMT"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/paralleltext/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="Translation">
+    <sequence>
+     <element name="headWord" nillable="true" type="xsd:string"/>
+     <element name="targetWords" nillable="true" type="impl:ArrayOf_xsd_string"/>
+    </sequence>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://langrid.nict.go.jp/ws_1_2/paralleltext/" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://orchid.kuee.kyoto-u.ac.jp:8080/wrapper-1.2/services/EBMT"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ParallelText">
+    <sequence>
+     <element name="source" nillable="true" type="xsd:string"/>
+     <element name="target" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="getDictionaryStatusResponse">
+
+      <wsdl:part name="getDictionaryStatusReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="preprocessDictionaryRequest">
+
+      <wsdl:part name="contents" type="impl:ArrayOf_tns2_Translation"/>
+
+      <wsdl:part name="sourceLang" type="xsd:string"/>
+
+      <wsdl:part name="targetLang" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="NoAccessPermissionException">
+
+      <wsdl:part name="fault" type="tns1:NoAccessPermissionException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="preprocessParallelTextRequest">
+
+      <wsdl:part name="contents" type="impl:ArrayOf_tns3_ParallelText"/>
+
+      <wsdl:part name="sourceLang" type="xsd:string"/>
+
+      <wsdl:part name="targetLang" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="ServiceNotActiveException">
+
+      <wsdl:part name="fault" type="tns1:ServiceNotActiveException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="ServiceNotFoundException">
+
+      <wsdl:part name="fault" type="tns1:ServiceNotFoundException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="ServerBusyException">
+
+      <wsdl:part name="fault" type="tns1:ServerBusyException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="translateRequest">
+
+      <wsdl:part name="sourceLang" type="xsd:string"/>
+
+      <wsdl:part name="targetLang" type="xsd:string"/>
+
+      <wsdl:part name="source" type="xsd:string"/>
+
+      <wsdl:part name="dicTokens" type="impl:ArrayOf_xsd_string"/>
+
+      <wsdl:part name="ptTokens" type="impl:ArrayOf_xsd_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="translateResponse">
+
+      <wsdl:part name="translateReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="removeDictionaryResponse">
+
+      <wsdl:part name="removeDictionaryReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getParallelTextStatusRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="preprocessDictionaryResponse">
+
+      <wsdl:part name="preprocessDictionaryReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="removeParallelTextResponse">
+
+      <wsdl:part name="removeParallelTextReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="removeDictionaryRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="removeParallelTextRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getParallelTextStatusResponse">
+
+      <wsdl:part name="getParallelTextStatusReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="ProcessFailedException">
+
+      <wsdl:part name="fault" type="tns1:ProcessFailedException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getDictionaryStatusRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="InvalidParameterException">
+
+      <wsdl:part name="fault" type="tns1:InvalidParameterException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="LanguagePairNotUniquelyDecidedException">
+
+      <wsdl:part name="fault" type="tns1:LanguagePairNotUniquelyDecidedException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="NoValidEndpointsException">
+
+      <wsdl:part name="fault" type="tns1:NoValidEndpointsException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="UnsupportedLanguagePairException">
+
+      <wsdl:part name="fault" type="tns1:UnsupportedLanguagePairException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="AccessLimitExceededException">
+
+      <wsdl:part name="fault" type="tns1:AccessLimitExceededException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="preprocessParallelTextResponse">
+
+      <wsdl:part name="preprocessParallelTextReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="EBMT">
+
+      <wsdl:operation name="translate" parameterOrder="sourceLang targetLang source dicTokens ptTokens">
+
+         <wsdl:input message="impl:translateRequest" name="translateRequest"/>
+
+         <wsdl:output message="impl:translateResponse" name="translateResponse"/>
+
+         <wsdl:fault message="impl:UnsupportedLanguagePairException" name="UnsupportedLanguagePairException"/>
+
+         <wsdl:fault message="impl:ServiceNotFoundException" name="ServiceNotFoundException"/>
+
+         <wsdl:fault message="impl:ServiceNotActiveException" name="ServiceNotActiveException"/>
+
+         <wsdl:fault message="impl:NoValidEndpointsException" name="NoValidEndpointsException"/>
+
+         <wsdl:fault message="impl:LanguagePairNotUniquelyDecidedException" name="LanguagePairNotUniquelyDecidedException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:ServerBusyException" name="ServerBusyException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:ProcessFailedException" name="ProcessFailedException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="preprocessDictionary" parameterOrder="contents sourceLang targetLang">
+
+         <wsdl:input message="impl:preprocessDictionaryRequest" name="preprocessDictionaryRequest"/>
+
+         <wsdl:output message="impl:preprocessDictionaryResponse" name="preprocessDictionaryResponse"/>
+
+         <wsdl:fault message="impl:UnsupportedLanguagePairException" name="UnsupportedLanguagePairException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:LanguagePairNotUniquelyDecidedException" name="LanguagePairNotUniquelyDecidedException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="preprocessParallelText" parameterOrder="contents sourceLang targetLang">
+
+         <wsdl:input message="impl:preprocessParallelTextRequest" name="preprocessParallelTextRequest"/>
+
+         <wsdl:output message="impl:preprocessParallelTextResponse" name="preprocessParallelTextResponse"/>
+
+         <wsdl:fault message="impl:UnsupportedLanguagePairException" name="UnsupportedLanguagePairException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:LanguagePairNotUniquelyDecidedException" name="LanguagePairNotUniquelyDecidedException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getDictionaryStatus" parameterOrder="token">
+
+         <wsdl:input message="impl:getDictionaryStatusRequest" name="getDictionaryStatusRequest"/>
+
+         <wsdl:output message="impl:getDictionaryStatusResponse" name="getDictionaryStatusResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getParallelTextStatus" parameterOrder="token">
+
+         <wsdl:input message="impl:getParallelTextStatusRequest" name="getParallelTextStatusRequest"/>
+
+         <wsdl:output message="impl:getParallelTextStatusResponse" name="getParallelTextStatusResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="removeParallelText" parameterOrder="token">
+
+         <wsdl:input message="impl:removeParallelTextRequest" name="removeParallelTextRequest"/>
+
+         <wsdl:output message="impl:removeParallelTextResponse" name="removeParallelTextResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="removeDictionary" parameterOrder="token">
+
+         <wsdl:input message="impl:removeDictionaryRequest" name="removeDictionaryRequest"/>
+
+         <wsdl:output message="impl:removeDictionaryResponse" name="removeDictionaryResponse"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="EBMTSoapBinding" type="impl:EBMT">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="translate">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="translateRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ebmt.wrapper.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="translateResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://orchid.kuee.kyoto-u.ac.jp:8080/wrapper-1.2/services/EBMT" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnsupportedLanguagePairException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnsupportedLanguagePairException" namespace="http://orchid.kuee.kyoto-u.ac.jp:8080/wrapper-1.2/services/EBMT" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceNotFoundException" namespace="http://orchid.kuee.kyoto-u.ac.jp:8080/wrapper-1.2/services/EBMT" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceNotActiveException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceNotActiveException" namespace="http://orchid.kuee.kyoto-u.ac.jp:8080/wrapper-1.2/services/EBMT" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoValidEndpointsException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoValidEndpointsException" namespace="http://orchid.kuee.kyoto-u.ac.jp:8080/wrapper-1.2/services/EBMT" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="LanguagePairNotUniquelyDecidedException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="LanguagePairNotUniquelyDecidedException" namespace="http://orchid.kuee.kyoto-u.ac.jp:8080/wrapper-1.2/services/EBMT" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://orchid.kuee.kyoto-u.ac.jp:8080/wrapper-1.2/services/EBMT" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServerBusyException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServerBusyException" namespace="http://orchid.kuee.kyoto-u.ac.jp:8080/wrapper-1.2/services/EBMT" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://orchid.kuee.kyoto-u.ac.jp:8080/wrapper-1.2/services/EBMT" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ProcessFailedException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ProcessFailedException" namespace="http://orchid.kuee.kyoto-u.ac.jp:8080/wrapper-1.2/services/EBMT" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://orchid.kuee.kyoto-u.ac.jp:8080/wrapper-1.2/services/EBMT" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="preprocessDictionary">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="preprocessDictionaryRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ebmt.wrapper.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="preprocessDictionaryResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://orchid.kuee.kyoto-u.ac.jp:8080/wrapper-1.2/services/EBMT" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnsupportedLanguagePairException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnsupportedLanguagePairException" namespace="http://orchid.kuee.kyoto-u.ac.jp:8080/wrapper-1.2/services/EBMT" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://orchid.kuee.kyoto-u.ac.jp:8080/wrapper-1.2/services/EBMT" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="LanguagePairNotUniquelyDecidedException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="LanguagePairNotUniquelyDecidedException" namespace="http://orchid.kuee.kyoto-u.ac.jp:8080/wrapper-1.2/services/EBMT" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="preprocessParallelText">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="preprocessParallelTextRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ebmt.wrapper.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="preprocessParallelTextResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://orchid.kuee.kyoto-u.ac.jp:8080/wrapper-1.2/services/EBMT" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnsupportedLanguagePairException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnsupportedLanguagePairException" namespace="http://orchid.kuee.kyoto-u.ac.jp:8080/wrapper-1.2/services/EBMT" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://orchid.kuee.kyoto-u.ac.jp:8080/wrapper-1.2/services/EBMT" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="LanguagePairNotUniquelyDecidedException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="LanguagePairNotUniquelyDecidedException" namespace="http://orchid.kuee.kyoto-u.ac.jp:8080/wrapper-1.2/services/EBMT" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getDictionaryStatus">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getDictionaryStatusRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ebmt.wrapper.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getDictionaryStatusResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://orchid.kuee.kyoto-u.ac.jp:8080/wrapper-1.2/services/EBMT" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getParallelTextStatus">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getParallelTextStatusRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ebmt.wrapper.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getParallelTextStatusResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://orchid.kuee.kyoto-u.ac.jp:8080/wrapper-1.2/services/EBMT" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="removeParallelText">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="removeParallelTextRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ebmt.wrapper.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="removeParallelTextResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://orchid.kuee.kyoto-u.ac.jp:8080/wrapper-1.2/services/EBMT" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="removeDictionary">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="removeDictionaryRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ebmt.wrapper.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="removeDictionaryResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://orchid.kuee.kyoto-u.ac.jp:8080/wrapper-1.2/services/EBMT" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="EBMTService">
+
+      <wsdl:port binding="impl:EBMTSoapBinding" name="EBMT">
+
+         <wsdlsoap:address location="http://orchid.kuee.kyoto-u.ac.jp:8080/wrapper-1.2/services/EBMT"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://localhost:8080/workflow-support/services/TemporalBilingualDictionaryWithLongestMatchSearch" xmlns:intf="http://localhost:8080/workflow-support/services/TemporalBilingualDictionaryWithLongestMatchSearch" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns1="http://langrid.nict.go.jp/ws_1_2/morphologicalanalysis/" xmlns:tns2="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/" xmlns:tns3="http://langrid.nict.go.jp/ws_1_2/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://localhost:8080/workflow-support/services/TemporalBilingualDictionaryWithLongestMatchSearch">
+
+ <wsdl:types>
+  <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://langrid.nict.go.jp/ws_1_2/morphologicalanalysis/">
+   <import namespace="http://localhost:8080/workflow-support/services/TemporalBilingualDictionaryWithLongestMatchSearch"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="Morpheme">
+    <sequence>
+     <element name="lemma" nillable="true" type="xsd:string"/>
+     <element name="partOfSpeech" nillable="true" type="xsd:string"/>
+     <element name="word" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+  </schema>
+  <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://localhost:8080/workflow-support/services/TemporalBilingualDictionaryWithLongestMatchSearch">
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/morphologicalanalysis/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOf_tns1_Morpheme">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:Morpheme[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_xsd_string">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_tns2_Translation">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns2:Translation[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_tns2_TranslationWithPosition">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns2:TranslationWithPosition[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/">
+   <import namespace="http://localhost:8080/workflow-support/services/TemporalBilingualDictionaryWithLongestMatchSearch"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/morphologicalanalysis/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="Translation">
+    <sequence>
+     <element name="headWord" nillable="true" type="xsd:string"/>
+     <element name="targetWords" nillable="true" type="impl:ArrayOf_xsd_string"/>
+    </sequence>
+   </complexType>
+   <complexType name="TranslationWithPosition">
+    <sequence>
+     <element name="numberOfMorphemes" type="xsd:int"/>
+     <element name="startIndex" type="xsd:int"/>
+     <element name="translation" nillable="true" type="tns2:Translation"/>
+    </sequence>
+   </complexType>
+  </schema>
+  <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://langrid.nict.go.jp/ws_1_2/">
+   <import namespace="http://localhost:8080/workflow-support/services/TemporalBilingualDictionaryWithLongestMatchSearch"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/morphologicalanalysis/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="LangridException">
+    <sequence>
+     <element name="description" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="AccessLimitExceededException">
+    <complexContent>
+     <extension base="tns3:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="InvalidParameterException">
+    <complexContent>
+     <extension base="tns3:LangridException">
+      <sequence>
+       <element name="parameterName" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="LanguageNotUniquelyDecidedException">
+    <complexContent>
+     <extension base="tns3:InvalidParameterException">
+      <sequence>
+       <element name="candidates" nillable="true" type="impl:ArrayOf_xsd_string"/>
+       <element name="message" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="UnsupportedLanguageException">
+    <complexContent>
+     <extension base="tns3:InvalidParameterException">
+      <sequence>
+       <element name="language" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="NoAccessPermissionException">
+    <complexContent>
+     <extension base="tns3:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="NoValidEndpointsException">
+    <complexContent>
+     <extension base="tns3:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ProcessFailedException">
+    <complexContent>
+     <extension base="tns3:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ServerBusyException">
+    <complexContent>
+     <extension base="tns3:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ServiceNotActiveException">
+    <complexContent>
+     <extension base="tns3:LangridException">
+      <sequence>
+       <element name="serviceId" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ServiceNotFoundException">
+    <complexContent>
+     <extension base="tns3:LangridException">
+      <sequence>
+       <element name="serviceId" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="searchAllLongestMatchingTermsRequest">
+
+      <wsdl:part name="headLang" type="xsd:string"/>
+
+      <wsdl:part name="morphemes" type="impl:ArrayOf_tns1_Morpheme"/>
+
+      <wsdl:part name="temporalDict" type="impl:ArrayOf_tns2_Translation"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getSupportedLanguagesRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="ServiceNotActiveException">
+
+      <wsdl:part name="fault" type="tns3:ServiceNotActiveException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="UnsupportedLanguageException">
+
+      <wsdl:part name="fault" type="tns3:UnsupportedLanguageException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="ServiceNotFoundException">
+
+      <wsdl:part name="fault" type="tns3:ServiceNotFoundException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="ServerBusyException">
+
+      <wsdl:part name="fault" type="tns3:ServerBusyException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="NoAccessPermissionException">
+
+      <wsdl:part name="fault" type="tns3:NoAccessPermissionException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getLastUpdateRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="searchAllLongestMatchingTermsResponse">
+
+      <wsdl:part name="searchAllLongestMatchingTermsReturn" type="impl:ArrayOf_tns2_TranslationWithPosition"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="InvalidParameterException">
+
+      <wsdl:part name="fault" type="tns3:InvalidParameterException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="NoValidEndpointsException">
+
+      <wsdl:part name="fault" type="tns3:NoValidEndpointsException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getSupportedLanguagesResponse">
+
+      <wsdl:part name="getSupportedLanguagesReturn" type="impl:ArrayOf_xsd_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getLastUpdateResponse">
+
+      <wsdl:part name="getLastUpdateReturn" type="xsd:dateTime"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="AccessLimitExceededException">
+
+      <wsdl:part name="fault" type="tns3:AccessLimitExceededException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="ProcessFailedException">
+
+      <wsdl:part name="fault" type="tns3:ProcessFailedException"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="TemporalBilingualDictionaryWithLongestMatchSearch">
+
+      <wsdl:operation name="searchAllLongestMatchingTerms" parameterOrder="headLang morphemes temporalDict">
+
+         <wsdl:input message="impl:searchAllLongestMatchingTermsRequest" name="searchAllLongestMatchingTermsRequest"/>
+
+         <wsdl:output message="impl:searchAllLongestMatchingTermsResponse" name="searchAllLongestMatchingTermsResponse"/>
+
+         <wsdl:fault message="impl:ServiceNotFoundException" name="ServiceNotFoundException"/>
+
+         <wsdl:fault message="impl:UnsupportedLanguageException" name="UnsupportedLanguageException"/>
+
+         <wsdl:fault message="impl:ServiceNotActiveException" name="ServiceNotActiveException"/>
+
+         <wsdl:fault message="impl:NoValidEndpointsException" name="NoValidEndpointsException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:ServerBusyException" name="ServerBusyException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:ProcessFailedException" name="ProcessFailedException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getSupportedLanguages">
+
+         <wsdl:input message="impl:getSupportedLanguagesRequest" name="getSupportedLanguagesRequest"/>
+
+         <wsdl:output message="impl:getSupportedLanguagesResponse" name="getSupportedLanguagesResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getLastUpdate">
+
+         <wsdl:input message="impl:getLastUpdateRequest" name="getLastUpdateRequest"/>
+
+         <wsdl:output message="impl:getLastUpdateResponse" name="getLastUpdateResponse"/>
+
+         <wsdl:fault message="impl:ServiceNotFoundException" name="ServiceNotFoundException"/>
+
+         <wsdl:fault message="impl:ServiceNotActiveException" name="ServiceNotActiveException"/>
+
+         <wsdl:fault message="impl:NoValidEndpointsException" name="NoValidEndpointsException"/>
+
+         <wsdl:fault message="impl:ServerBusyException" name="ServerBusyException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:ProcessFailedException" name="ProcessFailedException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="TemporalBilingualDictionaryWithLongestMatchSearchSoapBinding" type="impl:TemporalBilingualDictionaryWithLongestMatchSearch">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="searchAllLongestMatchingTerms">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="searchAllLongestMatchingTermsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://workflowsupport.ws_1_2.wrapper.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="searchAllLongestMatchingTermsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/workflow-support/services/TemporalBilingualDictionaryWithLongestMatchSearch" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="ServiceNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceNotFoundException" namespace="http://localhost:8080/workflow-support/services/TemporalBilingualDictionaryWithLongestMatchSearch" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="UnsupportedLanguageException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnsupportedLanguageException" namespace="http://localhost:8080/workflow-support/services/TemporalBilingualDictionaryWithLongestMatchSearch" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceNotActiveException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceNotActiveException" namespace="http://localhost:8080/workflow-support/services/TemporalBilingualDictionaryWithLongestMatchSearch" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoValidEndpointsException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoValidEndpointsException" namespace="http://localhost:8080/workflow-support/services/TemporalBilingualDictionaryWithLongestMatchSearch" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/workflow-support/services/TemporalBilingualDictionaryWithLongestMatchSearch" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServerBusyException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServerBusyException" namespace="http://localhost:8080/workflow-support/services/TemporalBilingualDictionaryWithLongestMatchSearch" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/workflow-support/services/TemporalBilingualDictionaryWithLongestMatchSearch" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ProcessFailedException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ProcessFailedException" namespace="http://localhost:8080/workflow-support/services/TemporalBilingualDictionaryWithLongestMatchSearch" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/workflow-support/services/TemporalBilingualDictionaryWithLongestMatchSearch" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getSupportedLanguages">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getSupportedLanguagesRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws_1_2.wrapper.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getSupportedLanguagesResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/workflow-support/services/TemporalBilingualDictionaryWithLongestMatchSearch" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getLastUpdate">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getLastUpdateRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ws_1_2.wrapper.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getLastUpdateResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/workflow-support/services/TemporalBilingualDictionaryWithLongestMatchSearch" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="ServiceNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceNotFoundException" namespace="http://localhost:8080/workflow-support/services/TemporalBilingualDictionaryWithLongestMatchSearch" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceNotActiveException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceNotActiveException" namespace="http://localhost:8080/workflow-support/services/TemporalBilingualDictionaryWithLongestMatchSearch" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoValidEndpointsException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoValidEndpointsException" namespace="http://localhost:8080/workflow-support/services/TemporalBilingualDictionaryWithLongestMatchSearch" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServerBusyException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServerBusyException" namespace="http://localhost:8080/workflow-support/services/TemporalBilingualDictionaryWithLongestMatchSearch" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/workflow-support/services/TemporalBilingualDictionaryWithLongestMatchSearch" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ProcessFailedException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ProcessFailedException" namespace="http://localhost:8080/workflow-support/services/TemporalBilingualDictionaryWithLongestMatchSearch" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/workflow-support/services/TemporalBilingualDictionaryWithLongestMatchSearch" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="TemporalBilingualDictionaryWithLongestMatchSearch">
+
+      <wsdl:port binding="impl:TemporalBilingualDictionaryWithLongestMatchSearchSoapBinding" name="TemporalBilingualDictionaryWithLongestMatchSearch">
+
+         <wsdlsoap:address location="http://langrid.nict.go.jp/langrid-1.2/invoker/TemporalBilingualDictionaryWithLongestMatchSearch"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

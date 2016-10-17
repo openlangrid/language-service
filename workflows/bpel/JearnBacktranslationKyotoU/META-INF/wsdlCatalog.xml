@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdlCatalog>
+
+  <wsdlEntry
+	location="project:JearnBacktranslationKyotoU/wsdl/unknown.wsdl"
+	classpath="wsdl/unknown.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:JearnBacktranslationKyotoU/wsdl/JearnTranslationKyotoU.wsdl"
+	classpath="wsdl/JearnTranslationKyotoU.wsdl"
+  />
+
+</wsdlCatalog>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+targetNamespace="http://trans.nict.go.jp/active-bpel/services/JearnTranslationService"
+xmlns:tns="http://trans.nict.go.jp/active-bpel/services/JearnTranslationService"
+xmlns:mt="http://langrid.nict.go.jp/langrid-service_1_2/services/MultilingualTranslationNictJServer"
+xmlns:mma="http://langrid.nict.go.jp/langrid-service_1_2/services/MultilingualMorphologicalAnalysis"
+xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"> 
+
+  <wsdl:message name="translateRequest">
+    <wsdl:part name="sourceLang" type="xsd:string"/>
+    <wsdl:part name="targetLang" type="xsd:string"/>
+    <wsdl:part name="source" type="xsd:string"/>
+  </wsdl:message>
+  <wsdl:message name="translateResponse">
+    <wsdl:part name="translateReturn" type="xsd:string"/>
+  </wsdl:message>
+  <wsdl:portType name="Translate">
+    <wsdl:operation name="translate">
+      <wsdl:input name="translateRequest" message="tns:translateRequest"/>
+      <wsdl:output name="translateResponse" message="tns:translateResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+
+<plnk:partnerLinkType name="TranslatePLT">
+   <plnk:role name="translator">
+      <plnk:portType name="tns:Translate"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+<plnk:partnerLinkType name="MTranslatePLT">
+   <plnk:role name="mtranslator">
+      <plnk:portType name="mt:Translation"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+<plnk:partnerLinkType name="MorphologicalAnalysisPLT">
+   <plnk:role name="analyzer">
+      <plnk:portType name="mma:MorphologicalAnalysis"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+</wsdl:definitions>

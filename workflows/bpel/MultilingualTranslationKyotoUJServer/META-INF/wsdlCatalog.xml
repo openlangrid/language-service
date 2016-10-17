@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdlCatalog>
+
+  <wsdlEntry
+	location="project:MultilingualTranslationKyotoUJServer/wsdl/unknown.wsdl"
+	classpath="wsdl/unknown.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:MultilingualTranslationKyotoUJServer/wsdl/KyotoUCLWT.wsdl"
+	classpath="wsdl/KyotoUCLWT.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:MultilingualTranslationKyotoUJServer/wsdl/KyotoUJServer.wsdl"
+	classpath="wsdl/KyotoUJServer.wsdl"
+  />
+
+</wsdlCatalog>

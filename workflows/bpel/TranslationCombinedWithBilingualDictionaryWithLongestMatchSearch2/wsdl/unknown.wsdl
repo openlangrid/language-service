@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+	targetNamespace="http://langrid.nict.go.jp/langrid-1.2/services/TranslationCombinedWithBilingualDictionaryWithLongestMatchSearch2"
+	xmlns:tns="http://langrid.nict.go.jp/langrid-1.2/services/TranslationCombinedWithBilingualDictionaryWithLongestMatchSearch2"
+	xmlns:ns1="http://langrid.nict.go.jp/langrid-1.2/services/TranslationCombinedWithBilingualDictionaryWithLongestMatchSearch2"
+	xmlns:ns2="http://localhost:8080/wrapper-mock-1.2/services/AbstractMorphologicalAnalysis"
+	xmlns:ns3="http://localhost:8080/wrapper-mock-1.2.N/services/AbstractBilingualDictionaryWithLongestMatchSearch"
+	xmlns:ns4="http://localhost:8080/wrapper-mock-1.2/services/AbstractTranslation"
+	xmlns:ns5="http://localhost:8080/workflow-support/services/ReplacementTerm"
+	xmlns:ns7="http://trans.nict.go.jp/collabo/services/StringOperationService"
+	xmlns:ns8="http://localhost:8080/workflow-support/services/ConstructSourceAndMorphemesAndCodes"
+	xmlns:ns10="http://localhost:8080/workflow-support/services/TemporalBilingualDictionaryWithLongestMatchSearch"
+	xmlns:nsbd="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/"
+	xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+>
+  <wsdl:types>
+  <schema targetNamespace="http://langrid.nict.go.jp/langrid-1.2/services/TranslationCombinedWithBilingualDictionaryWithLongestMatchSearch2" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOf_xsd_string">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="Translation">
+    <sequence>
+     <element name="headWord" nillable="true" type="xsd:string"/>
+     <element name="targetWords" nillable="true" type="tns:ArrayOf_xsd_string"/>
+    </sequence>
+   </complexType>
+   <complexType name="TranslationWithPosition">
+    <sequence>
+     <element name="numberOfMorphemes" type="xsd:int"/>
+     <element name="startIndex" type="xsd:int"/>
+     <element name="translation" nillable="true" type="nsbd:Translation"/>
+    </sequence>
+   </complexType>
+   <complexType name="ArrayOf_Translation">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="nsbd:Translation[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_TranslationWithPosition">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="nsbd:TranslationWithPosition[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+  </wsdl:types>
+  <wsdl:message name="translateRequest">
+    <wsdl:part name="sourceLang" type="xsd:string"/>
+    <wsdl:part name="targetLang" type="xsd:string"/>
+    <wsdl:part name="source" type="xsd:string"/>
+    <wsdl:part name="temporalDict" type="nsbd:ArrayOf_Translation"/>
+    <wsdl:part name="dictTargetLang" type="xsd:string"/>
+  </wsdl:message>
+  <wsdl:message name="translateResponse">
+    <wsdl:part name="translateReturn" type="xsd:string"/>
+  </wsdl:message>
+  <wsdl:portType name="Translate">
+    <wsdl:operation name="translate">
+      <wsdl:input name="translateRequest" message="tns:translateRequest"/>
+      <wsdl:output name="translateResponse" message="tns:translateResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+
+	<plnk:partnerLinkType xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" name="selfPLT">
+	   <plnk:role name="self">
+	      <plnk:portType name="tns:Translate"/>
+	   </plnk:role>
+	</plnk:partnerLinkType>
+	<plnk:partnerLinkType xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" name="MorphologicalAnalysisPLT">
+	   <plnk:role name="service">
+	      <plnk:portType name="ns2:MorphologicalAnalysis"/>
+	   </plnk:role>
+	</plnk:partnerLinkType>
+	<plnk:partnerLinkType xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+		name="BilingualDictionaryWithLongestMatchSearchPLT">
+	   <plnk:role name="service">
+	      <plnk:portType name="ns3:BilingualDictionaryWithLongestMatchSearch"/>
+	   </plnk:role>
+	</plnk:partnerLinkType>
+	<plnk:partnerLinkType xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" name="ReplacementPLT">
+	   <plnk:role name="service">
+	      <plnk:portType name="ns5:ReplacementTerm"/>
+	   </plnk:role>
+	</plnk:partnerLinkType>
+	<plnk:partnerLinkType xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" name="TranslationPLT">
+	   <plnk:role name="service">
+	      <plnk:portType name="ns4:Translation"/>
+	   </plnk:role>
+	</plnk:partnerLinkType>
+	<plnk:partnerLinkType name="StringOperatorPLT">
+	   <plnk:role name="service">
+	      <plnk:portType name="ns7:StringOperationService"/>
+	   </plnk:role>
+	</plnk:partnerLinkType>
+	<plnk:partnerLinkType name="ConstructSourceAndMorphemesAndCodesPLT">
+	   <plnk:role name="service">
+	      <plnk:portType name="ns8:ConstructSourceAndMorphemesAndCodes"/>
+	   </plnk:role>
+	</plnk:partnerLinkType>
+	<plnk:partnerLinkType name="TemporalBilingualDictionaryWithLongestMatchSearchPLT">
+	   <plnk:role name="service">
+	      <plnk:portType name="ns10:TemporalBilingualDictionaryWithLongestMatchSearch"/>
+	   </plnk:role>
+	</plnk:partnerLinkType>
+</wsdl:definitions>

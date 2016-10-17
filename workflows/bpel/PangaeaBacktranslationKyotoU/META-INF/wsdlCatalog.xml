@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdlCatalog>
+
+  <wsdlEntry
+	location="project:PangaeaBacktranslationKyotoU/wsdl/unknown.wsdl"
+	classpath="wsdl/unknown.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:PangaeaBacktranslationKyotoU/wsdl/PangaeaTranslationKyotoU.wsdl"
+	classpath="wsdl/PangaeaTranslationKyotoU.wsdl"
+  />
+
+</wsdlCatalog>

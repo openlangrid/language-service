@@ -1,0 +1,596 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+BPEL Process Definition
+Edited using ActiveBPEL(r) Designer Version 4.1.0 (http://www.active-endpoints.com)
+-->
+<bpws:process
+	xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+	xmlns:ns="http://schemas.xmlsoap.org/soap/encoding/"
+	xmlns:ns1="http://langrid.nict.go.jp/langrid-1.2/services/TranslationCombinedWithBilingualDictionary"
+	xmlns:ns2="http://localhost:8080/wrapper-mock-1.2/services/AbstractMorphologicalAnalysis"
+	xmlns:ns3="http://localhost:8080/workflow-support/services/ReplacementTerm"
+	xmlns:ns4="http://localhost:8080/wrapper-mock-1.2/services/AbstractBilingualDictionary"
+	xmlns:ns5="http://localhost:8080/wrapper-mock-1.2/services/AbstractTranslation"
+	xmlns:ns7="http://trans.nict.go.jp/collabo/services/StringOperationService"
+	xmlns:ns8="http://localhost:8080/workflow-support/services/ConstructSourceAndMorphemesAndCodes"
+	xmlns:ns9="http://localhost:8080/workflow-support/services/GetLongestMatchingTerm"
+	xmlns:ns10="http://localhost:8080/workflow-support/services/TemporalBilingualDictionaryWithLongestMatchSearch"
+	xmlns:nsbd="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	name="TranslationCombinedWithBilingualDictionary"
+	suppressJoinFailure="yes"
+	targetNamespace="http://langrid.nict.go.jp/langrid-1.2/services/TranslationCombinedWithBilingualDictionary"
+>
+	<bpws:partnerLinks>
+		<bpws:partnerLink name="selfPL" myRole="self" partnerLinkType="ns1:selfPLT"/>
+		<bpws:partnerLink name="MorphologicalAnalysisPL" partnerLinkType="ns1:MorphologicalAnalysisPLT" partnerRole="service"/>
+		<bpws:partnerLink name="ReplacementPL" partnerLinkType="ns1:ReplacementPLT" partnerRole="service"/>
+		<bpws:partnerLink name="BilingualDictionaryPL" partnerLinkType="ns1:BilingualDictionaryPLT" partnerRole="service"/>
+		<bpws:partnerLink name="TranslationPL" partnerLinkType="ns1:TranslationPLT" partnerRole="service"/>
+		<bpws:partnerLink name="StringOperatorPL" partnerLinkType="ns1:StringOperatorPLT" partnerRole="service"/>
+		<bpws:partnerLink
+			name="ConstructSourceAndMorphemesAndCodesPL"
+			partnerLinkType="ns1:ConstructSourceAndMorphemesAndCodesPLT"
+			partnerRole="service"/>
+		<bpws:partnerLink
+			name="GetLongestMatchingTermPL"
+			partnerLinkType="ns1:GetLongestMatchingTermPLT"
+			partnerRole="service"/>
+		<bpws:partnerLink
+			name="TemporalBilingualDictionaryWithLongestMatchSearchPL"
+			partnerLinkType="ns1:TemporalBilingualDictionaryWithLongestMatchSearchPLT"
+			partnerRole="service"/>
+	</bpws:partnerLinks>
+	<bpws:variables>
+		<bpws:variable messageType="ns1:translateRequest" name="translateRequest"/>
+		<bpws:variable messageType="ns1:translateResponse" name="translateResponse"/>
+		<bpws:variable messageType="ns2:analyzeRequest" name="analyzeRequest"/>
+		<bpws:variable messageType="ns2:analyzeResponse" name="analyzeResponse"/>
+		<bpws:variable messageType="ns5:translateRequest" name="translateRequest1"/>
+		<bpws:variable messageType="ns5:translateResponse" name="translateResponse1"/>
+		<bpws:variable name="constructSMCRequestForTemporalDict" messageType="ns8:constructSMCRequest"/>
+		<bpws:variable name="constructSMCResponseForTemporalDict" messageType="ns8:constructSMCResponse"/>
+		<bpws:variable name="constructSMCRequest" messageType="ns8:constructSMCRequest"/>
+		<bpws:variable name="constructSMCResponse" messageType="ns8:constructSMCResponse"/>
+		<bpws:variable name="searchAllLongestMatchingTermsRequest" messageType="ns10:searchAllLongestMatchingTermsRequest"/>
+		<bpws:variable name="searchAllLongestMatchingTermsResponse" messageType="ns10:searchAllLongestMatchingTermsResponse"/>
+
+		<bpws:variable name="dictTargetLang" type="xsd:string"/>
+		<bpws:variable name="temporalDict" type="nsbd:ArrayOf_Translation"/>
+	</bpws:variables>
+	<bpws:sequence>
+		<bpws:receive
+			createInstance="yes"
+			operation="translate"
+			partnerLink="selfPL"
+			portType="ns1:Translate"
+			variable="translateRequest"
+			/>
+      <bpws:assign>
+         <bpws:copy>
+            <bpws:from>
+               <analyzeReturn xmlns:aensTYPE="http://localhost:8080/wrapper-mock-1.2.N/services/AbstractMorphologicalAnalysis" xmlns:ext="http://www.activebpel.org/2006/09/bpel/extension/activity" xmlns:ns12="http://langrid.nict.go.jp/ws_1_2/morphologicalanalysis/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:ns="http://schemas.xmlsoap.org/soap/encoding/" xmlns:ns1="http://langrid.nict.go.jp/langrid-1.2/services/TranslationCombinedWithBilingualDictionaryWithLongestMatchSearch" xmlns:ns10="http://localhost:8080/workflow-support/services/TemporalBilingualDictionaryWithLongestMatchSearch" xmlns:ns2="http://localhost:8080/wrapper-mock-1.2/services/AbstractMorphologicalAnalysis" xmlns:ns3="http://localhost:8080/workflow-support/services/ReplacementTerm" xmlns:ns4="http://localhost:8080/wrapper-mock-1.2.N/services/AbstractBilingualDictionaryWithLongestMatchSearch" xmlns:ns5="http://localhost:8080/wrapper-mock-1.2/services/AbstractTranslation" xmlns:ns7="http://trans.nict.go.jp/collabo/services/StringOperationService" xmlns:ns8="http://localhost:8080/workflow-support/services/ConstructSourceAndMorphemesAndCodes" xmlns:nsbd="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="aensTYPE:ArrayOf_tns1_Morpheme"/>
+            </bpws:from>
+            <bpws:to part="analyzeReturn" variable="analyzeResponse"/>
+         </bpws:copy>
+      </bpws:assign>
+		<bpws:scope name="get_DictTargetLang">
+			<bpws:faultHandlers>
+				<bpws:catchAll>
+					<bpws:assign>
+						<bpws:copy>
+							<bpws:from variable="translateRequest" part="targetLang" />
+							<bpws:to variable="dictTargetLang" />
+						</bpws:copy>
+					</bpws:assign>
+				</bpws:catchAll>
+			</bpws:faultHandlers>
+			<bpws:assign>
+				<bpws:copy>
+					<bpws:from variable="translateRequest" part="dictTargetLang" />
+					<bpws:to variable="dictTargetLang" />
+				</bpws:copy>
+			</bpws:assign>
+		</bpws:scope>
+
+		<bpws:scope name="get_TemporalDict">
+			<bpws:faultHandlers>
+				<bpws:catchAll>
+					<bpws:assign>
+						<bpws:copy>
+							<bpws:from>
+								<temporalDict
+									xmlns:ns2="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/"
+									xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+									xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+									xsi:type="ns2:ArrayOf_Translation"/>
+							</bpws:from>
+							<bpws:to variable="temporalDict" />
+						</bpws:copy>
+					</bpws:assign>
+				</bpws:catchAll>
+			</bpws:faultHandlers>
+			<bpws:assign>
+				<bpws:copy>
+					<bpws:from variable="translateRequest" part="temporalDict" />
+					<bpws:to variable="temporalDict" />
+				</bpws:copy>
+			</bpws:assign>
+		</bpws:scope>
+
+		<!-- invoke MorphologicalAnalysis -->
+		<bpws:assign name="prepare_invoking_MorphologicalAnalysis">
+			<bpws:copy>
+				<bpws:from variable="translateRequest" part="sourceLang"/>
+				<bpws:to variable="analyzeRequest" part="language"/>
+			</bpws:copy>
+			<bpws:copy>
+				<bpws:from variable="translateRequest" part="source"/>
+				<bpws:to variable="analyzeRequest" part="text"/>
+			</bpws:copy>
+		</bpws:assign>
+      <bpws:invoke inputVariable="analyzeRequest" name="MorphologicalAnalysisPL_analyze" operation="analyze" outputVariable="analyzeResponse" partnerLink="MorphologicalAnalysisPL" portType="ns2:MorphologicalAnalysis">
+         <bpws:catchAll>
+            <bpws:assign>
+               <bpws:copy>
+                  <bpws:from part="source" variable="translateRequest"/>
+                  <bpws:to part="analyzeReturn" query="/analyzeReturn/Morpmes[0]/word" variable="analyzeResponse"/>
+               </bpws:copy>
+               <bpws:copy>
+                  <bpws:from part="source" variable="translateRequest"/>
+                  <bpws:to part="analyzeReturn" query="/analyzeReturn/Morpmes[0]/lemma" variable="analyzeResponse"/>
+               </bpws:copy>
+               <bpws:copy>
+                  <bpws:from>other</bpws:from>
+                  <bpws:to part="analyzeReturn" query="/analyzeReturn/Morpmes[0]/partOfSpeech" variable="analyzeResponse"/>
+               </bpws:copy>
+            </bpws:assign>
+         </bpws:catchAll>
+      </bpws:invoke>
+
+		<bpws:assign name="prepare_invoking_TemporalBilingualDictionaryWithLongestMatchSearch">
+			<bpws:copy>
+				<bpws:from variable="translateRequest" part="sourceLang" />
+				<bpws:to variable="searchAllLongestMatchingTermsRequest" part="headLang" />
+			</bpws:copy>
+			<bpws:copy>
+				<bpws:from variable="analyzeResponse" part="analyzeReturn" />
+				<bpws:to variable="searchAllLongestMatchingTermsRequest" part="morphemes" />
+			</bpws:copy>
+			<bpws:copy>
+				<bpws:from variable="temporalDict" />
+				<bpws:to variable="searchAllLongestMatchingTermsRequest" part="temporalDict" />
+			</bpws:copy>
+		</bpws:assign>
+		<bpws:invoke
+			name="TemporalBilingualDictionaryWithLongestMatchSearch_searchAllLongestMatchingTerms"
+			partnerLink="TemporalBilingualDictionaryWithLongestMatchSearchPL"
+			portType="ns10:TemporalBilingualDictionaryWithLongestMatchSearch"
+			operation="searchAllLongestMatchingTerms"
+			inputVariable="searchAllLongestMatchingTermsRequest"
+			outputVariable="searchAllLongestMatchingTermsResponse"
+			/>
+
+		<!-- ConstructSourceAndMorphemesAndCodes for temporal dictionary -->
+		<bpws:assign name="prepare_invoking_ConstructSourceAndMorphemesAndCodesPL_for_temporalDict">
+			<bpws:copy>
+				<bpws:from variable="translateRequest" part="sourceLang" />
+				<bpws:to variable="constructSMCRequestForTemporalDict" part="sourceLang" />
+			</bpws:copy>
+			<bpws:copy>
+				<bpws:from variable="analyzeResponse" part="analyzeReturn" />
+				<bpws:to variable="constructSMCRequestForTemporalDict" part="morphemes" />
+			</bpws:copy>
+			<bpws:copy>
+				<bpws:from variable="searchAllLongestMatchingTermsResponse"
+					part="searchAllLongestMatchingTermsReturn" />
+				<bpws:to variable="constructSMCRequestForTemporalDict" part="translations" />
+			</bpws:copy>
+		</bpws:assign>
+		<bpws:invoke
+			name="ConstructSourceAndMorphemesAndCodesPL_constructSMC_for_temporalDict"
+			partnerLink="ConstructSourceAndMorphemesAndCodesPL"
+			portType="ns8:ConstructSourceAndMorphemesAndCodes"
+			operation="constructSMC"
+			inputVariable="constructSMCRequestForTemporalDict"
+			outputVariable="constructSMCResponseForTemporalDict"
+			/>
+
+		<bpws:scope name="morpheme_scan">
+			<bpws:variables>
+				<bpws:variable name="counter" type="xsd:int" />
+				<bpws:variable name="counterForTranslationWithPosition" type="xsd:int" />
+				<bpws:variable name="numberOfMorphemes" type="xsd:int" />
+				<bpws:variable name="searchRequest" messageType="ns4:searchRequest"/>
+				<bpws:variable name="searchResponse" messageType="ns4:searchResponse"/>
+				<bpws:variable name="getLongestMatchingTermRequest" messageType="ns9:getLongestMatchingTermRequest" />
+				<bpws:variable name="getLongestMatchingTermResponse" messageType="ns9:getLongestMatchingTermResponse" />
+			</bpws:variables>
+			<bpws:sequence>
+				<bpws:assign>
+					<bpws:copy>
+						<bpws:from>1</bpws:from>
+						<bpws:to variable="counter" />
+					</bpws:copy>
+					<bpws:copy>
+						<bpws:from>1</bpws:from>
+						<bpws:to variable="counterForTranslationWithPosition" />
+					</bpws:copy>
+					<bpws:copy>
+						<bpws:from expression="bpws:getVariableData(
+							'constructSMCResponseForTemporalDict'
+							, 'constructSMCReturn'
+							, 'count(/constructSMCReturn/morphemes/Morpheme)')" />
+						<bpws:to variable="numberOfMorphemes" />
+					</bpws:copy>
+					<bpws:copy>
+						<bpws:from variable="translateRequest" part="sourceLang"/>
+						<bpws:to variable="searchRequest" part="headLang" />
+					</bpws:copy>
+					<bpws:copy>
+						<bpws:from variable="dictTargetLang"/>
+						<bpws:to variable="searchRequest" part="targetLang" />
+					</bpws:copy>
+					<bpws:copy>
+						<bpws:from expression="'prefix'"/>
+						<bpws:to variable="searchRequest" part="matchingMethod"/>
+					</bpws:copy>
+					<bpws:copy>
+						<bpws:from variable="translateRequest" part="sourceLang"/>
+						<bpws:to variable="getLongestMatchingTermRequest" part="headLang" />
+					</bpws:copy>
+					<bpws:copy>
+						<bpws:from expression="bpws:getVariableData(
+							'constructSMCResponseForTemporalDict'
+							, 'constructSMCReturn'
+							, '/constructSMCReturn/morphemes')" />
+						<bpws:to variable="getLongestMatchingTermRequest" part="morphemes" />
+					</bpws:copy>
+					<bpws:copy>
+						<bpws:from>
+							<translations
+								xmlns:aensTYPE="http://localhost:8080/workflow-support/services/ConstructSourceAndMorphemesAndCodes"
+								xmlns:ns2="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/"
+								xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+								xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+								xsi:type="aensTYPE:ArrayOf_tns2_TranslationWithPosition"/>
+						</bpws:from>
+						<bpws:to variable="constructSMCRequest" part="translations" />
+					</bpws:copy>
+				</bpws:assign>
+				<bpws:while condition="bpws:getVariableData('counter') &lt;= bpws:getVariableData('numberOfMorphemes')">
+					<bpws:sequence>
+						<bpws:assign>
+							<bpws:copy>
+								<bpws:from variable="constructSMCResponseForTemporalDict"
+									part="constructSMCReturn"
+									query="/constructSMCReturn/morphemes/Morpheme[bpws:getVariableData('counter')]/word"/>
+								<bpws:to variable="searchRequest" part="headWord"/>
+							</bpws:copy>
+						</bpws:assign>
+						<bpws:invoke
+							name="BilingualDictionaryPL_search"
+							partnerLink="BilingualDictionaryPL"
+							portType="ns4:BilingualDictionary"
+							operation="search"
+							inputVariable="searchRequest"
+							outputVariable="searchResponse"
+							>
+							<bpws:catchAll>
+								<bpws:assign>
+									<bpws:copy>
+										<bpws:from>
+											<searchByMorphemesReturn
+												xmlns:aensTYPE="http://localhost:8080/wrapper-mock-1.2/services/AbstractBilingualDictionary"
+												xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+												xsi:type="aensTYPE:ArrayOf_tns2_Translation" />
+										</bpws:from>
+										<bpws:to variable="searchResponse" part="searchReturn" />
+									</bpws:copy>
+								</bpws:assign>
+							</bpws:catchAll>
+						</bpws:invoke>
+						<bpws:switch>
+							<bpws:case condition="bpws:getVariableData(
+								'searchResponse', 'searchReturn', 'count(/searchReturn/Translation)'
+								) &gt; 0">
+								<bpws:sequence>
+									<bpws:assign>
+										<bpws:copy>
+											<bpws:from expression="bpws:getVariableData('counter') - 1" />
+											<bpws:to variable="getLongestMatchingTermRequest" part="startIndex"/>
+										</bpws:copy>
+										<bpws:copy>
+											<bpws:from variable="searchResponse" part="searchReturn" />
+											<bpws:to variable="getLongestMatchingTermRequest" part="translations"/>
+										</bpws:copy>
+									</bpws:assign>
+									<bpws:invoke
+										name="GetLongestMatchingTermPL_getLongestMatchingTerm"
+										partnerLink="GetLongestMatchingTermPL"
+										portType="ns9:GetLongestMatchingTerm"
+										operation="getLongestMatchingTerm"
+										inputVariable="getLongestMatchingTermRequest"
+										outputVariable="getLongestMatchingTermResponse"
+										/>
+									<bpws:switch>
+										<bpws:case condition="bpws:getVariableData(
+											'getLongestMatchingTermResponse'
+											, 'getLongestMatchingTermReturn'
+											, 'boolean(/getLongestMatchingTermReturn/TranslationWithPosition)'
+											)">
+											<bpws:assign>
+												<bpws:copy>
+													<bpws:from variable="getLongestMatchingTermResponse"
+														part="getLongestMatchingTermReturn"
+														query="/getLongestMatchingTermReturn/TranslationWithPosition"
+														/>
+													<bpws:to variable="constructSMCRequest" part="translations"
+														query="/translations/TranslationWithPosition[bpws:getVariableData('counterForTranslationWithPosition')]"
+														/>
+												</bpws:copy>
+												<bpws:copy>
+													<bpws:from expression="bpws:getVariableData('counterForTranslationWithPosition') + 1" />
+													<bpws:to variable="counterForTranslationWithPosition" />
+												</bpws:copy>
+												<bpws:copy>
+													<bpws:from expression="bpws:getVariableData('counter') +
+														bpws:getVariableData('getLongestMatchingTermResponse'
+															, 'getLongestMatchingTermReturn'
+															, '/getLongestMatchingTermReturn/TranslationWithPosition/numberOfMorphemes')" />
+													<bpws:to variable="counter"/>
+												</bpws:copy>
+											</bpws:assign>
+										</bpws:case>
+										<bpws:otherwise>
+											<bpws:assign>
+												<bpws:copy>
+													<bpws:from expression="bpws:getVariableData('counter') + 1" />
+													<bpws:to variable="counter"/>
+												</bpws:copy>
+											</bpws:assign>
+										</bpws:otherwise>
+									</bpws:switch>
+								</bpws:sequence>
+							</bpws:case>
+							<bpws:otherwise>
+								<bpws:assign>
+									<bpws:copy>
+										<bpws:from expression="bpws:getVariableData('counter') + 1" />
+										<bpws:to variable="counter"/>
+									</bpws:copy>
+								</bpws:assign>
+							</bpws:otherwise>
+						</bpws:switch>
+					</bpws:sequence>
+				</bpws:while>
+			</bpws:sequence>
+		</bpws:scope>
+
+		<!-- ConstructSourceAndMorphemesAndCodes for dictionary -->
+		<bpws:assign name="prepare_invoking_ConstructSourceAndMorphemesAndCodesPL">
+			<bpws:copy>
+				<bpws:from variable="translateRequest" part="sourceLang" />
+				<bpws:to variable="constructSMCRequest" part="sourceLang" />
+			</bpws:copy>
+			<bpws:copy>
+				<bpws:from variable="constructSMCResponseForTemporalDict" part="constructSMCReturn"
+					query="/constructSMCReturn/morphemes" />
+				<bpws:to variable="constructSMCRequest" part="morphemes" />
+			</bpws:copy>
+		</bpws:assign>
+		<bpws:invoke
+			name="ConstructSourceAndMorphemesAndCodesPL_constructSMC"
+			partnerLink="ConstructSourceAndMorphemesAndCodesPL"
+			portType="ns8:ConstructSourceAndMorphemesAndCodes"
+			operation="constructSMC"
+			inputVariable="constructSMCRequest"
+			outputVariable="constructSMCResponse"
+			/>
+
+		<!-- Translate -->
+		<bpws:assign>
+			<bpws:copy>
+				<bpws:from variable="translateRequest" part="sourceLang" />
+				<bpws:to variable="translateRequest1" part="sourceLang" />
+			</bpws:copy>
+			<bpws:copy>
+				<bpws:from variable="translateRequest" part="targetLang" />
+				<bpws:to variable="translateRequest1" part="targetLang" />
+			</bpws:copy>
+			<bpws:copy>
+				<bpws:from variable="constructSMCResponse" part="constructSMCReturn"
+					query="/constructSMCReturn/source" />
+				<bpws:to variable="translateRequest1" part="source" />
+			</bpws:copy>
+		</bpws:assign>
+		<bpws:invoke
+			 name="TranslationPL_translate"
+			 partnerLink="TranslationPL"
+			 portType="ns5:Translation"
+			 operation="translate"
+			 inputVariable="translateRequest1"
+			 outputVariable="translateResponse1"
+			 />
+
+		<!-- FullToHalf -->
+		<bpws:scope name="invocation_of_StringOperatorPL_full2HalfSize">
+			<bpws:variables>
+				<bpws:variable name="full2HalfSizeRequest" messageType="ns7:full2HalfSizeRequest"/>
+				<bpws:variable name="full2HalfSizeResponse" messageType="ns7:full2HalfSizeResponse"/>
+			</bpws:variables>
+			<bpws:sequence>
+				<bpws:assign>
+				   <bpws:copy>
+				      <bpws:from variable="translateResponse1" part="translateReturn"/>
+				      <bpws:to variable="full2HalfSizeRequest" part="text"/>
+				   </bpws:copy>
+				</bpws:assign>
+				<bpws:invoke
+					name="StringOperatorPL_full2HalfSize"
+					partnerLink="StringOperatorPL"
+					portType="ns7:StringOperationService"
+					operation="full2HalfSize"
+					inputVariable="full2HalfSizeRequest"
+					outputVariable="full2HalfSizeResponse"
+					/>
+				<bpws:assign>
+				   <bpws:copy>
+				      <bpws:from variable="full2HalfSizeResponse" part="full2HalfSizeReturn"/>
+				      <bpws:to variable="translateResponse1" part="translateReturn"/>
+				   </bpws:copy>
+				</bpws:assign>
+			</bpws:sequence>
+		</bpws:scope>
+
+		<bpws:scope name="replaceTerms">
+			<bpws:variables>
+				<bpws:variable name="replaceRequest" messageType="ns3:replaceRequest"/>
+				<bpws:variable name="replaceResponse" messageType="ns3:replaceResponse"/>
+				<bpws:variable name="counter" type="xsd:int"/>
+				<bpws:variable name="numOfWords" type="xsd:int"/>
+				<bpws:variable name="numOfCodesForTemporalDict" type="xsd:int"/>
+				<bpws:variable name="numOfCodes" type="xsd:int"/>
+			</bpws:variables>
+			<bpws:sequence>
+				<bpws:assign>
+					<bpws:copy>
+						<bpws:from>0</bpws:from>
+						<bpws:to variable="numOfWords" />
+					</bpws:copy>
+					<bpws:copy>
+						<bpws:from>1</bpws:from>
+						<bpws:to variable="counter" />
+					</bpws:copy>
+					<bpws:copy>
+						<bpws:from expression="bpws:getVariableData(
+							'constructSMCResponseForTemporalDict'
+							, 'constructSMCReturn'
+							, 'count(/constructSMCReturn/codes/string)')" />
+						<bpws:to variable="numOfCodesForTemporalDict" />
+					</bpws:copy>
+					<bpws:copy>
+						<bpws:from expression="bpws:getVariableData(
+							'constructSMCResponse'
+							, 'constructSMCReturn'
+							, 'count(/constructSMCReturn/codes/string)')" />
+						<bpws:to variable="numOfCodes" />
+					</bpws:copy>
+					<bpws:copy>
+						<bpws:from>
+							<searchWords
+								xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+								xsi:type="ns1:ArrayOf_xsd_string" />
+						</bpws:from>
+						<bpws:to variable="replaceRequest" part="searchWords" />
+					</bpws:copy>
+					<bpws:copy>
+						<bpws:from>
+							<replacementWords
+								xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+								xsi:type="ns1:ArrayOf_xsd_string" />
+						</bpws:from>
+						<bpws:to variable="replaceRequest" part="replacementWords" />
+					</bpws:copy>
+				</bpws:assign>
+				<bpws:while
+					name="copy_codes_and_targetWords_of_temporalDict"
+					condition="bpws:getVariableData('counter') &lt;= bpws:getVariableData('numOfCodesForTemporalDict')"
+					>
+					<bpws:assign>
+						<bpws:copy>
+							<bpws:from variable="constructSMCResponseForTemporalDict"
+								part="constructSMCReturn" query="/constructSMCReturn/codes/string[bpws:getVariableData('counter')]" />
+							<bpws:to variable="replaceRequest" part="searchWords"
+								query="/searchWords/string[bpws:getVariableData('numOfWords') + 1]" />
+						</bpws:copy>
+						<bpws:copy>
+							<bpws:from variable="constructSMCResponseForTemporalDict"
+								part="constructSMCReturn" query="/constructSMCReturn/targetWords/string[bpws:getVariableData('counter')]" />
+							<bpws:to variable="replaceRequest" part="replacementWords"
+								query="/replacementWords/string[bpws:getVariableData('numOfWords') + 1]" />
+						</bpws:copy>
+						<bpws:copy>
+							<bpws:from expression="bpws:getVariableData('counter') + 1" />
+							<bpws:to variable="counter" />
+						</bpws:copy>
+						<bpws:copy>
+							<bpws:from expression="bpws:getVariableData('numOfWords') + 1" />
+							<bpws:to variable="numOfWords" />
+						</bpws:copy>
+					</bpws:assign>
+				</bpws:while>
+				<bpws:assign>
+					<bpws:copy>
+						<bpws:from>1</bpws:from>
+						<bpws:to variable="counter" />
+					</bpws:copy>
+				</bpws:assign>
+				<bpws:while
+					name="copy_codes_and_targetWords"
+					condition="bpws:getVariableData('counter') &lt;= bpws:getVariableData('numOfCodes')"
+					>
+					<bpws:assign>
+						<bpws:copy>
+							<bpws:from variable="constructSMCResponse"
+								part="constructSMCReturn" query="/constructSMCReturn/codes/string[bpws:getVariableData('counter')]" />
+							<bpws:to variable="replaceRequest" part="searchWords"
+								query="/searchWords/string[bpws:getVariableData('numOfWords') + 1]" />
+						</bpws:copy>
+						<bpws:copy>
+							<bpws:from variable="constructSMCResponse"
+								part="constructSMCReturn" query="/constructSMCReturn/targetWords/string[bpws:getVariableData('counter')]" />
+							<bpws:to variable="replaceRequest" part="replacementWords"
+								query="/replacementWords/string[bpws:getVariableData('numOfWords') + 1]" />
+						</bpws:copy>
+						<bpws:copy>
+							<bpws:from expression="bpws:getVariableData('counter') + 1" />
+							<bpws:to variable="counter" />
+						</bpws:copy>
+						<bpws:copy>
+							<bpws:from expression="bpws:getVariableData('numOfWords') + 1" />
+							<bpws:to variable="numOfWords" />
+						</bpws:copy>
+					</bpws:assign>
+				</bpws:while>
+				<bpws:assign name="prepare_invoking_TermReplacement">
+					<bpws:copy>
+						<bpws:from variable="translateRequest" part="targetLang"/>
+						<bpws:to variable="replaceRequest" part="sourceLang"/>
+					</bpws:copy>
+					<bpws:copy>
+						<bpws:from variable="translateResponse1" part="translateReturn" />
+						<bpws:to variable="replaceRequest" part="text"/>
+					</bpws:copy>
+				</bpws:assign>
+				<bpws:invoke
+					name="ReplacementPL_replace_postTranslation"
+					partnerLink="ReplacementPL"
+					portType="ns3:ReplacementTerm"
+					operation="replace"
+					inputVariable="replaceRequest"
+					outputVariable="replaceResponse"
+					/>
+				<bpws:assign>
+					<bpws:copy>
+						<bpws:from variable="replaceResponse" part="replaceReturn" />
+						<bpws:to variable="translateResponse1" part="translateReturn" />
+					</bpws:copy>
+				</bpws:assign>
+			</bpws:sequence>
+		</bpws:scope>
+
+		<bpws:assign>
+			<bpws:copy>
+				<bpws:from variable="translateResponse1" part="translateReturn"/>
+				<bpws:to variable="translateResponse" part="translateReturn" />
+			</bpws:copy>
+		</bpws:assign>
+		<bpws:reply
+			partnerLink="selfPL"
+			portType="ns1:Translate"
+			operation="translate"
+			variable="translateResponse"
+			/>
+	</bpws:sequence>
+</bpws:process>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions 
+targetNamespace="http://trans.nict.go.jp/collabo/services/CodeGenerationService"
+xmlns:apachesoap="http://xml.apache.org/xml-soap"
+xmlns:impl="http://trans.nict.go.jp/collabo/services/CodeGenerationService"
+xmlns:intf="http://trans.nict.go.jp/collabo/services/CodeGenerationService"
+xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+   <wsdl:message name="generateResponse">
+
+      <wsdl:part name="generateReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="generateRequest">
+
+      <wsdl:part name="language" type="xsd:string"/>
+
+      <wsdl:part name="term" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="CodeGenerationService">
+
+      <wsdl:operation name="generate" parameterOrder="language term">
+
+         <wsdl:input message="impl:generateRequest" name="generateRequest"/>
+
+         <wsdl:output message="impl:generateResponse" name="generateResponse"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="CodeGenerationServiceSoapBinding" type="impl:CodeGenerationService">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="generate">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="generateRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://service.community.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="generateResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://trans.nict.go.jp/collabo/services/CodeGenerationService" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="CodeGenerationServiceService">
+
+      <wsdl:port binding="impl:CodeGenerationServiceSoapBinding" name="CodeGenerationService">
+
+         <wsdlsoap:address location="http://192.168.0.2:8080/collabo/services/CodeGenerationService"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+<plnk:partnerLinkType name="CodeGeneratorPLT">
+   <plnk:role name="codegenerator">
+      <plnk:portType name="impl:CodeGenerationService"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+
+</wsdl:definitions>

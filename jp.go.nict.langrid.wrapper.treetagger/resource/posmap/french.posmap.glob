@@ -1,0 +1,14 @@
+# french PartOfSpeech map
+AB*=other
+ADJ*=adjective
+ADV*=adverb
+D*=other
+I*=other
+K*=other
+NAM*=noun.proper
+NOM*=noun.common
+PRO*=noun.pronoun
+NUM*=other
+P*=other
+S*=other
+V*=verb

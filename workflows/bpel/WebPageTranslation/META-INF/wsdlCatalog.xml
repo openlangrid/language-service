@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdlCatalog>
+
+  <wsdlEntry
+	location="project:WebPageTranslation/wsdl/unknown.wsdl"
+	classpath="wsdl/unknown.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:WebPageTranslation/wsdl/HTMLAnalysisService.wsdl"
+	classpath="wsdl/HTMLAnalysisService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:WebPageTranslation/wsdl/ReplacementTermService.wsdl"
+	classpath="wsdl/ReplacementTermService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:WebPageTranslation/wsdl/HTMLApplyTemplateService.wsdl"
+	classpath="wsdl/HTMLApplyTemplateService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:WebPageTranslation/wsdl/TranslationCombinedWithBilingualDictionaryWithLongestMatchSearch.wsdl"
+	classpath="wsdl/TranslationCombinedWithBilingualDictionaryWithLongestMatchSearch.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:WebPageTranslation/wsdl/AbstractTranslation.wsdl"
+	classpath="wsdl/AbstractTranslation.wsdl"
+  />
+
+</wsdlCatalog>

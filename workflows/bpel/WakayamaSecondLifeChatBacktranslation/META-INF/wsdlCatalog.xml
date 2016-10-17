@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdlCatalog>
+
+  <wsdlEntry
+	location="project:WakayamaSecondLifeChatBacktranslation/wsdl/unknown.wsdl"
+	classpath="wsdl/unknown.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:WakayamaSecondLifeChatBacktranslation/wsdl/WakayamaSecondLifeChatTranslation.wsdl"
+	classpath="wsdl/WakayamaSecondLifeChatTranslation.wsdl"
+  />
+
+</wsdlCatalog>

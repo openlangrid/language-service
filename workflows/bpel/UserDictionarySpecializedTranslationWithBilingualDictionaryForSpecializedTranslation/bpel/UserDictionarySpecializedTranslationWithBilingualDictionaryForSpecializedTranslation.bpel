@@ -1,0 +1,639 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+BPEL Process Definition
+Edited using ActiveBPEL(r) Designer Version 4.1.0 (http://www.active-endpoints.com)
+-->
+<bpws:process
+	xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+	xmlns:ns="http://schemas.xmlsoap.org/soap/encoding/"
+	xmlns:ns1="http://langrid.nict.go.jp/langrid-1.2/services/UserDictionarySpecializedTranslationWithBilingualDictionaryForSpecializedTranslation"
+	xmlns:ns2="http://localhost:8080/wrapper-mock-1.2/services/AbstractMorphologicalAnalysis"
+	xmlns:ns3="http://trans.nict.go.jp/collabo/services/TermReplacementService"
+	xmlns:ns4="http://langrid.nict.go.jp/langrid-service_1_2/services/Nii"
+	xmlns:ns5="http://localhost:8080/wrapper-mock-1.2/services/AbstractTranslation"
+	xmlns:ns6="http://trans.nict.go.jp/collabo/services/CodeGenerationService"
+	xmlns:ns7="http://trans.nict.go.jp/collabo/services/StringOperationService"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	name="UserDictionarySpecializedTranslationWithBilingualDictionaryForSpecializedTranslation"
+	suppressJoinFailure="yes"
+	targetNamespace="http://langrid.nict.go.jp/langrid-1.2/services/UserDictionarySpecializedTranslationWithBilingualDictionaryForSpecializedTranslation"
+>
+	<bpws:partnerLinks>
+		<bpws:partnerLink name="selfPL" myRole="self" partnerLinkType="ns1:selfPLT"/>
+		<bpws:partnerLink name="MorphologicalAnalysisPL" partnerLinkType="ns1:MorphologicalAnalysisPLT" partnerRole="analyzer"/>
+		<bpws:partnerLink name="ReplacementPL" partnerLinkType="ns1:ReplacementPLT" partnerRole="replacement"/>
+		<bpws:partnerLink name="BilingualDictionaryPL" partnerLinkType="ns1:BilingualDictionaryPLT" partnerRole="dictionary"/>
+		<bpws:partnerLink name="TranslationPL" partnerLinkType="ns1:TranslationPLT" partnerRole="translator"/>
+		<bpws:partnerLink name="CodeGeneratorPL" partnerLinkType="ns1:CodeGeneratorPLT" partnerRole="codegenerator"/>
+		<bpws:partnerLink name="StringOperatorPL" partnerLinkType="ns1:StringOperatorPLT" partnerRole="stroperator"/>
+	</bpws:partnerLinks>
+	<bpws:variables>
+		<bpws:variable messageType="ns1:translateRequest" name="translateRequest"/>
+		<bpws:variable messageType="ns1:translateResponse" name="translateResponse"/>
+		<bpws:variable messageType="ns2:analyzeRequest" name="analyzeRequest"/>
+		<bpws:variable messageType="ns2:analyzeResponse" name="analyzeResponse"/>
+		<bpws:variable messageType="ns3:replaceRequest" name="preReplaceRequest"/>
+		<bpws:variable messageType="ns3:replaceRequest" name="postReplaceRequest"/>
+		<bpws:variable messageType="ns3:replaceResponse" name="preReplaceResponse"/>
+		<bpws:variable messageType="ns3:replaceResponse" name="postReplaceResponse"/>
+		<bpws:variable messageType="ns3:replaceRequest" name="preReplaceRequestForUserDict"/>
+		<bpws:variable messageType="ns3:replaceRequest" name="postReplaceRequestForUserDict"/>
+		<bpws:variable messageType="ns3:replaceResponse" name="preReplaceResponseForUserDict"/>
+		<bpws:variable messageType="ns3:replaceResponse" name="postReplaceResponseForUserDict"/>
+		<bpws:variable messageType="ns4:searchByMorphemesRequest" name="searchRequest"/>
+		<bpws:variable messageType="ns4:searchByMorphemesResponse" name="searchResponse"/>
+		<bpws:variable messageType="ns5:translateRequest" name="translateRequest1"/>
+		<bpws:variable messageType="ns5:translateResponse" name="translateResponse1"/>
+		<bpws:variable messageType="ns6:generateRequest" name="generateRequest"/>
+		<bpws:variable messageType="ns6:generateResponse" name="generateResponse"/>
+		<bpws:variable messageType="ns7:full2HalfSizeRequest" name="full2HalfSizeRequest"/>
+		<bpws:variable messageType="ns7:full2HalfSizeResponse" name="full2HalfSizeResponse"/>
+		<bpws:variable name="UnsupportedLanguagePairException" messageType="ns4:UnsupportedLanguagePairException" />
+		<bpws:variable name="numberOfUserDictTranslations" type="xsd:int"/>
+		<bpws:variable name="numberOfMorphemes" type="xsd:int"/>
+		<bpws:variable name="numberOfTranslations" type="xsd:int"/>
+		<bpws:variable name="counterForUserDictCodeGeneration" type="xsd:int"/>
+		<bpws:variable name="counterForUserDictWords" type="xsd:int"/>
+		<bpws:variable name="counterForMorphemeCopy" type="xsd:int"/>
+		<bpws:variable name="counterForCodeGeneration" type="xsd:int"/>
+		<bpws:variable name="counterForWords" type="xsd:int"/>
+		<bpws:variable name="currentHeadWord" type="xsd:string"/>
+		<bpws:variable name="currentTargetWord" type="xsd:string"/>
+		<bpws:variable name="dictTargetLang" type="xsd:string"/>
+	</bpws:variables>
+	<bpws:sequence>
+		<bpws:receive
+			createInstance="yes"
+			operation="translate"
+			partnerLink="selfPL"
+			portType="ns1:Translate"
+			variable="translateRequest"
+			/>
+
+		<bpws:scope name="count_UserDictTranlsations">
+			<bpws:faultHandlers>
+				<bpws:catchAll>
+					<bpws:assign>
+						<bpws:copy>
+							<bpws:from>0</bpws:from>
+							<bpws:to variable="numberOfUserDictTranslations" />
+						</bpws:copy>
+					</bpws:assign>
+				</bpws:catchAll>
+			</bpws:faultHandlers>
+			<bpws:assign>
+				<bpws:copy>
+					<bpws:from variable="translateRequest" part="userDict"
+						query="count(/userDict/Translation)" />
+					<bpws:to variable="numberOfUserDictTranslations" />
+				</bpws:copy>
+			</bpws:assign>
+		</bpws:scope>
+		<bpws:scope name="get_DictTargetLang">
+			<bpws:faultHandlers>
+				<bpws:catchAll>
+					<bpws:assign>
+						<bpws:copy>
+							<bpws:from variable="translateRequest" part="targetLang" />
+							<bpws:to variable="dictTargetLang" />
+						</bpws:copy>
+					</bpws:assign>
+				</bpws:catchAll>
+			</bpws:faultHandlers>
+			<bpws:assign>
+				<bpws:copy>
+					<bpws:from variable="translateRequest" part="dictTargetLang" />
+					<bpws:to variable="dictTargetLang" />
+				</bpws:copy>
+			</bpws:assign>
+		</bpws:scope>
+
+		<!-- CodeGeneration loop for userDict-->
+		<bpws:assign>
+			<bpws:copy>
+				<bpws:from>1</bpws:from>
+				<bpws:to variable="counterForUserDictCodeGeneration" />
+			</bpws:copy>
+			<bpws:copy>
+				<bpws:from>1</bpws:from>
+				<bpws:to variable="counterForUserDictWords" />
+			</bpws:copy>
+		</bpws:assign>
+		<bpws:while
+			condition="bpws:getVariableData('counterForUserDictCodeGeneration')
+				&lt;= bpws:getVariableData('numberOfUserDictTranslations')">
+			<bpws:sequence>
+				<bpws:switch>
+					<bpws:case condition="bpws:getVariableData(
+						'translateRequest', 'userDict'
+						, 'count(/userDict/Translation[bpws:getVariableData(
+							&quot;counterForUserDictCodeGeneration&quot;
+							)]/targetWords/string) &gt; 0')"
+						>
+						<bpws:sequence>
+							<bpws:assign>
+								<bpws:copy>
+									<bpws:from variable="translateRequest" part="userDict"
+										query="/userDict/Translation[bpws:getVariableData(
+											'counterForUserDictCodeGeneration'
+											)]/headWord"
+										/>
+									<bpws:to variable="currentHeadWord"/>
+								</bpws:copy>
+								<bpws:copy>
+									<bpws:from variable="translateRequest" part="userDict"
+										query="/userDict/Translation[bpws:getVariableData(
+											'counterForUserDictCodeGeneration'
+											)]/targetWords/string[1]"
+										/>
+									<bpws:to variable="currentTargetWord"/>
+								</bpws:copy>
+							</bpws:assign>
+							<bpws:assign>
+								<bpws:copy>
+									<bpws:from variable="currentHeadWord" />
+									<bpws:to variable="generateRequest" part="term"/>
+								</bpws:copy>
+								<bpws:copy>
+									<bpws:from variable="translateRequest" part="sourceLang"/>
+									<bpws:to variable="generateRequest" part="language"/>
+								</bpws:copy>
+							</bpws:assign>
+							<bpws:invoke
+								name="CodeGeneratorPL_generate_forUserDict"
+								partnerLink="CodeGeneratorPL"
+								portType="ns6:CodeGenerationService"
+								operation="generate"
+								inputVariable="generateRequest"
+								outputVariable="generateResponse"
+								/>
+							<bpws:assign>
+								<bpws:copy>
+									<bpws:from variable="generateRequest" part="term" />
+									<bpws:to variable="preReplaceRequestForUserDict" part="searchWords"
+										query="/searchWords/string[bpws:getVariableData('counterForUserDictWords')]"/>
+								</bpws:copy>
+								<bpws:copy>
+									<bpws:from variable="currentTargetWord"/>
+									<bpws:to variable="postReplaceRequestForUserDict" part="replacementWords"
+									  query="/replacementWords/string[bpws:getVariableData('counterForUserDictWords')]"/>
+								</bpws:copy>
+								<bpws:copy>
+									<bpws:from variable="generateResponse" part="generateReturn"/>
+									<bpws:to variable="preReplaceRequestForUserDict" part="replacementWords"
+									  query="/replacementWords/string[bpws:getVariableData('counterForUserDictWords')]"/>
+								</bpws:copy>
+								<bpws:copy>
+									<bpws:from variable="generateResponse" part="generateReturn"/>
+									<bpws:to variable="postReplaceRequestForUserDict" part="searchWords"
+									  query="/searchWords/string[bpws:getVariableData('counterForUserDictWords')]"/>
+								</bpws:copy>
+								<bpws:copy>
+									<bpws:from expression="bpws:getVariableData('counterForUserDictWords') + 1"/>
+									<bpws:to variable="counterForUserDictWords"/>
+								</bpws:copy>
+							</bpws:assign>
+						</bpws:sequence>
+					</bpws:case>
+				</bpws:switch>
+				<bpws:assign>
+					<bpws:copy>
+						<bpws:from expression="bpws:getVariableData(
+							'counterForUserDictCodeGeneration'
+							) + 1"
+							/>
+						<bpws:to variable="counterForUserDictCodeGeneration"/>
+					</bpws:copy>
+				</bpws:assign>
+			</bpws:sequence>
+		</bpws:while>
+		<bpws:switch>
+			<bpws:case condition="bpws:getVariableData('counterForUserDictWords') &gt; 1">
+				<bpws:sequence>
+					<bpws:assign name="setTextAndLanguageToPreReplaceRequestForUserDict">
+						<bpws:copy>
+							<bpws:from variable="translateRequest" part="source" />
+							<bpws:to variable="preReplaceRequestForUserDict" part="text"/>
+						</bpws:copy>
+						<bpws:copy>
+							<bpws:from variable="translateRequest" part="sourceLang" />
+							<bpws:to variable="preReplaceRequestForUserDict" part="language"/>
+						</bpws:copy>
+					</bpws:assign>
+					<bpws:invoke
+						name="ReplacementPL_replace_pre_forUserDict"
+						partnerLink="ReplacementPL"
+						portType="ns3:TermReplacementService"
+						operation="replace"
+						inputVariable="preReplaceRequestForUserDict"
+						outputVariable="preReplaceResponseForUserDict"
+						/>
+				</bpws:sequence>
+			</bpws:case>
+			<bpws:otherwise>
+				<bpws:assign name="setTranslateRequestSourceToPreReplaceResponseForUserDict">
+					<bpws:copy>
+						<bpws:from variable="translateRequest" part="source" />
+						<bpws:to variable="preReplaceResponseForUserDict" part="replaceReturn"/>
+					</bpws:copy>
+				</bpws:assign>
+			</bpws:otherwise>
+		</bpws:switch>
+
+		<!-- invoke MorphologicalAnalysis -->
+		<bpws:assign>
+			<bpws:copy>
+				<bpws:from variable="translateRequest" part="sourceLang"/>
+				<bpws:to part="language" variable="analyzeRequest"/>
+			</bpws:copy>
+			<bpws:copy>
+				<bpws:from variable="preReplaceResponseForUserDict" part="replaceReturn"/>
+				<bpws:to part="text" variable="analyzeRequest"/>
+			</bpws:copy>
+		</bpws:assign>
+		<bpws:invoke
+			name="MorphologicalAnalysisPL_analyze"
+			partnerLink="MorphologicalAnalysisPL"
+			portType="ns2:MorphologicalAnalysis"
+			operation="analyze"
+			inputVariable="analyzeRequest"
+			outputVariable="analyzeResponse"
+			/>
+		<bpws:assign>
+			<bpws:copy>
+				<bpws:from expression="bpws:getVariableData(
+					'analyzeResponse', 'analyzeReturn'
+					, 'count(/analyzeReturn/Morpheme)' )"
+					/>
+				<bpws:to variable="numberOfMorphemes"/>
+			</bpws:copy>
+		</bpws:assign>
+
+		<!-- invoke BilingualDictionaryForSpecializedTranslation -->
+		<bpws:assign>
+			<bpws:copy>
+				<bpws:from variable="translateRequest" part="sourceLang" />
+				<bpws:to variable="searchRequest" part="headLang" />
+			</bpws:copy>
+			<bpws:copy>
+				<bpws:from variable="dictTargetLang" />
+				<bpws:to variable="searchRequest" part="targetLang" />
+			</bpws:copy>
+			<bpws:copy>
+				<bpws:from variable="analyzeResponse" part="analyzeReturn" />
+				<bpws:to variable="searchRequest" part="morpheme" />
+			</bpws:copy>
+		</bpws:assign>
+		<bpws:invoke
+			name="BilingualDictionaryPL_searchByMorphemes"
+			partnerLink="BilingualDictionaryPL"
+			operation="searchByMorphemes"
+			portType="ns4:Nii"
+			inputVariable="searchRequest"
+			outputVariable="searchResponse"
+			>
+			<bpws:catchAll>
+				<bpws:assign>
+					<bpws:copy>
+						<bpws:from>
+							<searchByMorphemesReturn
+								xmlns:aensTYPE="http://langrid.nict.go.jp/langrid-service_1_2/services/Nii"
+								xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+								xsi:type="aensTYPE:ArrayOf_tns2_Translation" />
+						</bpws:from>
+						<bpws:to variable="searchResponse" part="searchByMorphemesReturn" />
+					</bpws:copy>
+				</bpws:assign>
+			</bpws:catchAll>
+		</bpws:invoke>
+		<bpws:assign>
+			<bpws:copy>
+				<bpws:from expression="bpws:getVariableData('searchResponse'
+					, 'searchByMorphemesReturn'
+					, 'count(/searchByMorphemesReturn/Translation)' )"
+					/>
+				<bpws:to variable="numberOfTranslations"/>
+			</bpws:copy>
+		</bpws:assign>
+
+		<!-- CodeGeneration loop -->
+		<bpws:assign>
+			<bpws:copy>
+				<bpws:from>1</bpws:from>
+				<bpws:to variable="counterForCodeGeneration"/>
+			</bpws:copy>
+			<bpws:copy>
+				<bpws:from>1</bpws:from>
+				<bpws:to variable="counterForWords" />
+			</bpws:copy>
+		</bpws:assign>
+		<bpws:while
+			name="makeReplacementWordsAndSearchWords"
+			condition="bpws:getVariableData('counterForCodeGeneration')
+				&lt;= bpws:getVariableData('numberOfTranslations')">
+			<bpws:sequence>
+				<bpws:switch>
+					<bpws:case condition="bpws:getVariableData(
+						'searchResponse', 'searchByMorphemesReturn'
+						, 'count(/searchByMorphemesReturn/Translation[bpws:getVariableData(
+							&quot;counterForCodeGeneration&quot;
+							)]/targetWords/string) &gt; 0')"
+						>
+						<bpws:sequence>
+							<bpws:assign>
+								<bpws:copy>
+									<bpws:from variable="searchResponse" part="searchByMorphemesReturn"
+										query="/searchByMorphemesReturn/Translation[bpws:getVariableData(
+										  	'counterForCodeGeneration'
+										  	)]/headWord"
+										/>
+									<bpws:to variable="currentHeadWord"/>
+								</bpws:copy>
+								<bpws:copy>
+									<bpws:from variable="searchResponse" part="searchByMorphemesReturn"
+										query="/searchByMorphemesReturn/Translation[bpws:getVariableData(
+										  	'counterForCodeGeneration'
+											)]/targetWords/string[1]"
+										/>
+									<bpws:to variable="currentTargetWord"/>
+								</bpws:copy>
+							</bpws:assign>
+							<bpws:assign>
+								<bpws:copy>
+									<bpws:from variable="translateRequest" part="sourceLang"/>
+									<bpws:to variable="generateRequest" part="language" />
+								</bpws:copy>
+								<bpws:copy>
+									<bpws:from variable="currentHeadWord" />
+									<bpws:to variable="generateRequest" part="term" />
+								</bpws:copy>
+							</bpws:assign>
+							<bpws:invoke
+								 name="CodeGenerationPL_generate"
+								 partnerLink="CodeGeneratorPL"
+								 portType="ns6:CodeGenerationService"
+								 operation="generate"
+								 inputVariable="generateRequest"
+								 outputVariable="generateResponse"
+								 />
+							<bpws:assign>
+								<bpws:copy>
+									<bpws:from variable="generateResponse" part="generateReturn" />
+									<bpws:to variable="preReplaceRequest"
+										part="replacementWords"
+										query="/replacementWords/string[bpws:getVariableData('counterForWords')]"
+										/>
+								</bpws:copy>
+								<bpws:copy>
+									<bpws:from variable="generateResponse" part="generateReturn" />
+									<bpws:to variable="postReplaceRequest"
+										part="searchWords"
+										query="/searchWords/string[bpws:getVariableData('counterForWords')]"
+										/>
+								</bpws:copy>
+								<bpws:copy>
+									<bpws:from variable="currentHeadWord" />
+									<bpws:to variable="preReplaceRequest"
+										part="searchWords"
+										query="/searchWords/string[bpws:getVariableData('counterForWords')]"
+										/>
+								</bpws:copy>
+								<bpws:copy>
+									<bpws:from variable="currentTargetWord" />
+									<bpws:to variable="postReplaceRequest"
+										part="replacementWords"
+										query="/replacementWords/string[bpws:getVariableData('counterForWords')]"
+										/>
+								</bpws:copy>
+								<bpws:copy>
+									<bpws:from expression="bpws:getVariableData('counterForWords') + 1"/>
+									<bpws:to variable="counterForWords"/>
+								</bpws:copy>
+							</bpws:assign>
+						</bpws:sequence>
+					</bpws:case>
+				</bpws:switch>
+				<bpws:assign>
+					<bpws:copy>
+						<bpws:from expression="bpws:getVariableData('counterForCodeGeneration') + 1"/>
+						<bpws:to variable="counterForCodeGeneration"/>
+					</bpws:copy>
+				</bpws:assign>
+			</bpws:sequence>
+		</bpws:while>
+
+		<bpws:switch>
+			<bpws:case condition="bpws:getVariableData('counterForWords') &gt; 1">
+				<bpws:sequence>
+					<!-- Morpheme copy loop for PreTermReplacement-->
+					<bpws:assign>
+						<bpws:copy>
+							<bpws:from>1</bpws:from>
+							<bpws:to variable="counterForMorphemeCopy"/>
+						</bpws:copy>
+					</bpws:assign>
+					<bpws:while
+						name="makeMorpheme"
+						condition="bpws:getVariableData('counterForMorphemeCopy')
+							&lt;= bpws:getVariableData('numberOfMorphemes')">
+						<bpws:sequence>
+							<bpws:assign>
+								<bpws:copy>
+									<bpws:from variable="analyzeResponse" part="analyzeReturn"
+										query="/analyzeReturn/Morpheme[bpws:getVariableData(
+											'counterForMorphemeCopy')]"
+										/>
+									<bpws:to variable="preReplaceRequest" part="morpheme"
+										query="/morpheme/Morpheme[bpws:getVariableData(
+											'counterForMorphemeCopy')]"
+										/>
+								</bpws:copy>
+							</bpws:assign>
+							<bpws:assign name="countUpLoopVariable">
+								<bpws:copy>
+									<bpws:from expression="bpws:getVariableData(
+										'counterForMorphemeCopy') + 1"
+										/>
+									<bpws:to variable="counterForMorphemeCopy"/>
+								</bpws:copy>
+							</bpws:assign>
+						</bpws:sequence>
+					</bpws:while>
+
+					<!-- PreTermReplacement -->
+					<bpws:assign name="setTextAndLanguageToPreReplaceRequest">
+						<bpws:copy>
+							<bpws:from variable="preReplaceResponseForUserDict" part="replaceReturn"/>
+							<bpws:to variable="preReplaceRequest" part="text"/>
+						</bpws:copy>
+						<bpws:copy>
+							<bpws:from variable="translateRequest" part="sourceLang" />
+							<bpws:to variable="preReplaceRequest" part="language"/>
+						</bpws:copy>
+					</bpws:assign>
+					<bpws:invoke
+						name="ReplacementPL_replace_preTranslation"
+						partnerLink="ReplacementPL"
+						portType="ns3:TermReplacementService"
+						operation="replace"
+						inputVariable="preReplaceRequest"
+						outputVariable="preReplaceResponse"
+						/>
+				</bpws:sequence>
+			</bpws:case>
+			<bpws:otherwise>
+				<bpws:assign>
+					<bpws:copy>
+						<bpws:from variable="preReplaceResponseForUserDict" part="replaceReturn" />
+						<bpws:to variable="preReplaceResponse" part="replaceReturn" />
+					</bpws:copy>
+				</bpws:assign>
+			</bpws:otherwise>
+		</bpws:switch>
+
+		<!-- Translate -->
+		<bpws:assign>
+			<bpws:copy>
+				<bpws:from variable="translateRequest" part="sourceLang" />
+				<bpws:to variable="translateRequest1" part="sourceLang" />
+			</bpws:copy>
+			<bpws:copy>
+				<bpws:from variable="translateRequest" part="targetLang" />
+				<bpws:to variable="translateRequest1" part="targetLang" />
+			</bpws:copy>
+			<bpws:copy>
+				<bpws:from variable="preReplaceResponse" part="replaceReturn" />
+				<bpws:to variable="translateRequest1" part="source" />
+			</bpws:copy>
+		</bpws:assign>
+		<bpws:invoke
+			 name="TranslationPL_translate"
+			 partnerLink="TranslationPL"
+			 portType="ns5:Translation"
+			 operation="translate"
+			 inputVariable="translateRequest1"
+			 outputVariable="translateResponse1"
+			 />
+
+		<!-- FullToHalf -->
+		<bpws:assign>
+		   <bpws:copy>
+		      <bpws:from variable="translateResponse1" part="translateReturn"/>
+		      <bpws:to variable="full2HalfSizeRequest" part="text"/>
+		   </bpws:copy>
+		</bpws:assign>
+		<bpws:invoke
+			name="StringOperatorPL_full2HalfSize"
+			partnerLink="StringOperatorPL"
+			portType="ns7:StringOperationService"
+			operation="full2HalfSize"
+			inputVariable="full2HalfSizeRequest"
+			outputVariable="full2HalfSizeResponse"
+			/>
+		<bpws:assign>
+		   <bpws:copy>
+		      <bpws:from variable="full2HalfSizeResponse" part="full2HalfSizeReturn"/>
+		      <bpws:to variable="translateResponse1" part="translateReturn"/>
+		   </bpws:copy>
+		</bpws:assign>
+
+		<bpws:switch>
+			<bpws:case condition="bpws:getVariableData('counterForWords') &gt; 1">
+				<bpws:sequence>
+					<!-- PostTermReplacement -->
+					<bpws:assign>
+						<bpws:copy>
+							<bpws:from variable="preReplaceRequest" part="replacementWords"/>
+							<bpws:to variable="postReplaceRequest" part="searchWords" />
+						</bpws:copy>
+						<bpws:copy>
+							<bpws:from variable="translateResponse1" part="translateReturn"/>
+							<bpws:to variable="postReplaceRequest" part="text" />
+						</bpws:copy>
+						<bpws:copy>
+							<bpws:from>
+								<morpheme
+									xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+									xmlns:aensTYPE="http://trans.nict.go.jp/collabo/services/TermReplacementService"
+									xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+									xsi:type="aensTYPE:ArrayOf_tns1_Morpheme"
+									/>
+							</bpws:from>
+							<bpws:to variable="postReplaceRequest" part="morpheme"/>
+						</bpws:copy>
+						<bpws:copy>
+							<bpws:from variable="translateRequest" part="targetLang"/>
+							<bpws:to variable="postReplaceRequest" part="language"/>
+						</bpws:copy>
+					</bpws:assign>
+					<bpws:invoke
+						name="ReplacementPL_replace_postTranslation"
+						partnerLink="ReplacementPL"
+						portType="ns3:TermReplacementService"
+						operation="replace"
+						inputVariable="postReplaceRequest"
+						outputVariable="postReplaceResponse"
+						/>
+				</bpws:sequence>
+			</bpws:case>
+			<bpws:otherwise>
+				<bpws:sequence>
+					<bpws:assign>
+						<bpws:copy>
+							<bpws:from variable="translateResponse1" part="translateReturn" />
+							<bpws:to variable="postReplaceResponse" part="replaceReturn" />
+						</bpws:copy>
+					</bpws:assign>
+				</bpws:sequence>
+			</bpws:otherwise>
+		</bpws:switch>
+
+		<bpws:switch>
+			<bpws:case condition="bpws:getVariableData('counterForUserDictWords') &gt; 1">
+				<bpws:sequence>
+					<bpws:assign name="setTextAndLanguageToPostReplaceRequestForUserDict">
+						<bpws:copy>
+							<bpws:from variable="postReplaceResponse" part="replaceReturn" />
+							<bpws:to variable="postReplaceRequestForUserDict" part="text"/>
+						</bpws:copy>
+						<bpws:copy>
+							<bpws:from variable="translateRequest" part="targetLang" />
+							<bpws:to variable="postReplaceRequestForUserDict" part="language"/>
+						</bpws:copy>
+					</bpws:assign>
+					<bpws:invoke
+						 name="ReplacementPL_replace_post_forUserDict"
+						 partnerLink="ReplacementPL"
+						 portType="ns3:TermReplacementService"
+						 operation="replace"
+						 inputVariable="postReplaceRequestForUserDict"
+						 outputVariable="postReplaceResponseForUserDict"
+						 />
+					<bpws:assign>
+						<bpws:copy>
+							<bpws:from variable="postReplaceResponseForUserDict" part="replaceReturn"/>
+							<bpws:to variable="translateResponse" part="translateReturn"/>
+						</bpws:copy>
+					</bpws:assign>
+				</bpws:sequence>
+			</bpws:case>
+			<bpws:otherwise>
+				<bpws:sequence>
+					<bpws:assign>
+						<bpws:copy>
+							<bpws:from variable="postReplaceResponse" part="replaceReturn"/>
+							<bpws:to variable="translateResponse" part="translateReturn"/>
+						</bpws:copy>
+					</bpws:assign>
+				</bpws:sequence>
+			</bpws:otherwise>
+		</bpws:switch>
+
+		<bpws:reply
+			partnerLink="selfPL"
+			portType="ns1:Translate"
+			operation="translate"
+			variable="translateResponse"
+			/>
+	</bpws:sequence>
+</bpws:process>

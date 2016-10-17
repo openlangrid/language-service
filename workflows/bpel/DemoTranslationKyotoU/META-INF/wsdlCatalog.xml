@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdlCatalog>
+
+  <wsdlEntry
+	location="project:DemoTranslationKyotoU/wsdl/MultilingualMorphologicalAnalysis.wsdl"
+	classpath="wsdl/MultilingualMorphologicalAnalysis.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:DemoTranslationKyotoU/wsdl/DemoDictionaryServiceService.wsdl"
+	classpath="wsdl/DemoDictionaryServiceService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:DemoTranslationKyotoU/wsdl/MultilingualTranslationKyotoUJServer.wsdl"
+	classpath="wsdl/MultilingualTranslationKyotoUJServer.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:DemoTranslationKyotoU/wsdl/StringOperationServiceService.wsdl"
+	classpath="wsdl/StringOperationServiceService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:DemoTranslationKyotoU/wsdl/CodeGenerationServiceService.wsdl"
+	classpath="wsdl/CodeGenerationServiceService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:DemoTranslationKyotoU/wsdl/unknown.wsdl"
+	classpath="wsdl/unknown.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:DemoTranslationKyotoU/wsdl/TermReplacementServiceService.wsdl"
+	classpath="wsdl/TermReplacementServiceService.wsdl"
+  />
+
+</wsdlCatalog>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+BPEL Process Definition
+Edited using ActiveBPEL(r) Designer Version 4.1.0 (http://www.active-endpoints.com)
+-->
+<bpws:process xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:ns="http://schemas.xmlsoap.org/soap/encoding/" xmlns:ns1="http://langrid.nict.go.jp/langrid/services/TwoHopTranslation" xmlns:ns2="http://localhost:8080/wrapper-mock-1.2/services/AbstractTranslation" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="TwoHopTranslation" suppressJoinFailure="yes" targetNamespace="http://langrid.nict.go.jp/langrid/services/TwoHopTranslation">
+   <bpws:partnerLinks>
+      <bpws:partnerLink myRole="translator" name="TwoHopTranslationPL" partnerLinkType="ns1:TwoHopTranslationPLT"/>
+      <bpws:partnerLink name="FirstTranslationPL" partnerLinkType="ns1:TranslationPLT" partnerRole="translator"/>
+      <bpws:partnerLink name="SecondTranslationPL" partnerLinkType="ns1:TranslationPLT" partnerRole="translator"/>
+   </bpws:partnerLinks>
+   <bpws:variables>
+      <bpws:variable messageType="ns1:multihopTranslateRequest" name="multihopTranslateRequest"/>
+      <bpws:variable messageType="ns1:multihopTranslateResponse" name="multihopTranslateResponse"/>
+      <bpws:variable messageType="ns2:translateRequest" name="translateRequest"/>
+      <bpws:variable messageType="ns2:translateResponse" name="translateResponse"/>
+      <bpws:variable messageType="ns2:translateRequest" name="translateRequest1"/>
+      <bpws:variable messageType="ns2:translateResponse" name="translateResponse1"/>
+   </bpws:variables>
+   <bpws:sequence>
+      <bpws:receive createInstance="yes" operation="multihopTranslate" partnerLink="TwoHopTranslationPL" portType="ns1:TwoHopTranslation" variable="multihopTranslateRequest"/>
+      <bpws:assign>
+         <bpws:copy>
+            <bpws:from part="sourceLang" variable="multihopTranslateRequest"/>
+            <bpws:to part="sourceLang" variable="translateRequest"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="intermediateLangs" query="/intermediateLangs/string[1]" variable="multihopTranslateRequest"/>
+            <bpws:to part="targetLang" variable="translateRequest"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="source" variable="multihopTranslateRequest"/>
+            <bpws:to part="source" variable="translateRequest"/>
+         </bpws:copy>
+      </bpws:assign>
+      <bpws:invoke inputVariable="translateRequest" name="FirstTranslation" operation="translate" outputVariable="translateResponse" partnerLink="FirstTranslationPL" portType="ns2:Translation"/>
+      <bpws:assign>
+         <bpws:copy>
+            <bpws:from part="intermediateLangs" query="/intermediateLangs/string[1]" variable="multihopTranslateRequest"/>
+            <bpws:to part="sourceLang" variable="translateRequest1"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="targetLang" variable="multihopTranslateRequest"/>
+            <bpws:to part="targetLang" variable="translateRequest1"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="translateReturn" variable="translateResponse"/>
+            <bpws:to part="source" variable="translateRequest1"/>
+         </bpws:copy>
+      </bpws:assign>
+      <bpws:invoke inputVariable="translateRequest1" name="SecondTranslation" operation="translate" outputVariable="translateResponse1" partnerLink="SecondTranslationPL" portType="ns2:Translation"/>
+      <bpws:assign>
+         <bpws:copy>
+            <bpws:from part="translateReturn" variable="translateResponse"/>
+            <bpws:to part="multihopTranslateReturn" query="/multihopTranslateReturn/intermediates/string[1]" variable="multihopTranslateResponse"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="translateReturn" variable="translateResponse1"/>
+            <bpws:to part="multihopTranslateReturn" query="/multihopTranslateReturn/target" variable="multihopTranslateResponse"/>
+         </bpws:copy>
+      </bpws:assign>
+      <bpws:reply operation="multihopTranslate" partnerLink="TwoHopTranslationPL" portType="ns1:TwoHopTranslation" variable="multihopTranslateResponse"/>
+   </bpws:sequence>
+</bpws:process>

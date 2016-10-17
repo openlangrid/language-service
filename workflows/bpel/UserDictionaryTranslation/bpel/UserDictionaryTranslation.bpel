@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+BPEL Process Definition
+Edited using ActiveBPEL(tm) Designer Version 3.0.0 (http://www.active-endpoints.com)
+-->
+<process xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:ns1="http://langrid.nict.go.jp/langrid/services/UserDictionaryTranslationService" xmlns:ns2="http://trans.nict.go.jp/collabo/services/KyotoTourismDictionaryService" xmlns:ns3="http://trans.nict.go.jp/collabo/services/StringOperationService" xmlns:ns4="http://langrid.nict.go.jp/langrid-service_1_2/services/MultilingualMorphologicalAnalysis" xmlns:ns5="http://langrid.nict.go.jp/langrid-service_1_2/services/MultilingualTranslationNictJServer" xmlns:ns6="http://trans.nict.go.jp/collabo/services/CodeGenerationService" xmlns:ns7="http://trans.nict.go.jp/collabo/services/TermReplacementService" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="UserDictionaryTranslation" suppressJoinFailure="yes" targetNamespace="http://langrid.nict.go.jp/langrid/services/UserDictionaryTranslationService">
+   <partnerLinks>
+      <partnerLink name="CodeGeneratorPL" partnerLinkType="ns1:CodeGeneratorPLT" partnerRole="codegenerator"/>
+      <partnerLink name="ReplacementPL" partnerLinkType="ns1:ReplacementPLT" partnerRole="replacement"/>
+      <partnerLink myRole="translator" name="TranslatePL" partnerLinkType="ns1:TranslatePLT"/>
+      <partnerLink name="MTranslatePL" partnerLinkType="ns1:MTranslatePLT" partnerRole="mtranslator"/>
+      <partnerLink name="StringOperatorPL" partnerLinkType="ns1:StringOperatorPLT" partnerRole="stroperator"/>
+   </partnerLinks>
+   <variables>
+      <variable messageType="ns6:generateRequest" name="generateRequest"/>
+      <variable messageType="ns6:generateResponse" name="generateResponse"/>
+      <variable messageType="ns1:translateRequest" name="translateRequest"/>
+      <variable messageType="ns1:translateResponse" name="translateResponse"/>
+      <variable messageType="ns5:translateRequest" name="mTranslateRequest"/>
+      <variable messageType="ns5:translateResponse" name="mTranslateResponse"/>
+      <variable name="counterForCodeGeneration" type="xsd:int"/>
+      <variable messageType="ns7:replaceRequest" name="postReplaceRequestForUserDict"/>
+      <variable messageType="ns7:replaceRequest" name="preReplaceRequestForUserDict"/>
+      <variable messageType="ns7:replaceResponse" name="preReplaceResponseForUserDict"/>
+      <variable messageType="ns7:replaceResponse" name="postReplaceResponseForUserDict"/>
+      <variable name="translatedTextWithCodes" type="xsd:string"/>
+      <variable messageType="ns3:full2HalfSizeRequest" name="full2HalfSizeRequest"/>
+      <variable messageType="ns3:full2HalfSizeResponse" name="full2HalfSizeResponse"/>
+   </variables>
+   <sequence>
+      <receive createInstance="yes" operation="translate" partnerLink="TranslatePL" portType="ns1:Translate" variable="translateRequest"/>
+      <sequence>
+         <assign>
+            <copy>
+               <from>1</from>
+               <to variable="counterForCodeGeneration"/>
+            </copy>
+            <copy>
+               <from part="sourceLang" variable="translateRequest"/>
+               <to part="language" variable="preReplaceRequestForUserDict"/>
+            </copy>
+            <copy>
+               <from part="source" variable="translateRequest"/>
+               <to part="text" variable="preReplaceRequestForUserDict"/>
+            </copy>
+            <copy>
+               <from>
+                  <morpheme xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:aensTYPE="http://trans.nict.go.jp/collabo/services/TermReplacementService" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="aensTYPE:ArrayOf_tns1_Morpheme"/>
+               </from>
+               <to part="morpheme" variable="preReplaceRequestForUserDict"/>
+            </copy>
+            <copy>
+               <from>
+                  <searchWords xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"/>
+               </from>
+               <to part="searchWords" variable="preReplaceRequestForUserDict"/>
+            </copy>
+            <copy>
+               <from>
+                  <replacementWords xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"/>
+               </from>
+               <to part="replacementWords" variable="preReplaceRequestForUserDict"/>
+            </copy>
+            <copy>
+               <from>
+                  <searchWords xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"/>
+               </from>
+               <to part="searchWords" variable="postReplaceRequestForUserDict"/>
+            </copy>
+            <copy>
+               <from>
+                  <replacementWords xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"/>
+               </from>
+               <to part="replacementWords" variable="postReplaceRequestForUserDict"/>
+            </copy>
+         </assign>
+         <while condition="bpws:getVariableData('counterForCodeGeneration') &lt;= bpws:getVariableData('translateRequest', 'userDict', 'count(/userDict/Translation)')">
+            <sequence>
+               <assign>
+                  <copy>
+                     <from part="userDict" query="/userDict/Translation[bpws:getVariableData('counterForCodeGeneration')]/headWord" variable="translateRequest"/>
+                     <to part="term" variable="generateRequest"/>
+                  </copy>
+                  <copy>
+                     <from part="sourceLang" variable="translateRequest"/>
+                     <to part="language" variable="generateRequest"/>
+                  </copy>
+               </assign>
+               <invoke inputVariable="generateRequest" name="CodeGeneration" operation="generate" outputVariable="generateResponse" partnerLink="CodeGeneratorPL" portType="ns6:CodeGenerationService"/>
+               <assign>
+                  <copy>
+                     <from part="userDict" query="/userDict/Translation[bpws:getVariableData('counterForCodeGeneration')]/headWord" variable="translateRequest"/>
+                     <to part="searchWords" query="/searchWords/string[bpws:getVariableData('counterForCodeGeneration')]" variable="preReplaceRequestForUserDict"/>
+                  </copy>
+                  <copy>
+                     <from part="userDict" query="/userDict/Translation[bpws:getVariableData('counterForCodeGeneration')]/targetWords[1]/string" variable="translateRequest"/>
+                     <to part="replacementWords" query="/replacementWords/string[bpws:getVariableData('counterForCodeGeneration')]" variable="postReplaceRequestForUserDict"/>
+                  </copy>
+                  <copy>
+                     <from part="generateReturn" variable="generateResponse"/>
+                     <to part="replacementWords" query="/replacementWords/string[bpws:getVariableData('counterForCodeGeneration')]" variable="preReplaceRequestForUserDict"/>
+                  </copy>
+                  <copy>
+                     <from part="generateReturn" variable="generateResponse"/>
+                     <to part="searchWords" query="/searchWords/string[bpws:getVariableData('counterForCodeGeneration')]" variable="postReplaceRequestForUserDict"/>
+                  </copy>
+                  <copy>
+                     <from expression="bpws:getVariableData('counterForCodeGeneration') + 1"/>
+                     <to variable="counterForCodeGeneration"/>
+                  </copy>
+               </assign>
+            </sequence>
+         </while>
+         <invoke inputVariable="preReplaceRequestForUserDict" name="Pre_Term_Replacement" operation="replace" outputVariable="preReplaceResponseForUserDict" partnerLink="ReplacementPL" portType="ns7:TermReplacementService"/>
+      </sequence>
+      <sequence>
+         <assign>
+            <copy>
+               <from part="sourceLang" variable="translateRequest"/>
+               <to part="sourceLang" variable="mTranslateRequest"/>
+            </copy>
+            <copy>
+               <from part="targetLang" variable="translateRequest"/>
+               <to part="targetLang" variable="mTranslateRequest"/>
+            </copy>
+            <copy>
+               <from part="replaceReturn" variable="preReplaceResponseForUserDict"/>
+               <to part="source" variable="mTranslateRequest"/>
+            </copy>
+         </assign>
+         <invoke inputVariable="mTranslateRequest" name="MultilingualTranslation" operation="translate" outputVariable="mTranslateResponse" partnerLink="MTranslatePL" portType="ns5:Translation"/>
+         <assign>
+            <copy>
+               <from part="translateReturn" variable="mTranslateResponse"/>
+               <to part="text" variable="full2HalfSizeRequest"/>
+            </copy>
+         </assign>
+         <invoke inputVariable="full2HalfSizeRequest" operation="full2HalfSize" outputVariable="full2HalfSizeResponse" partnerLink="StringOperatorPL" portType="ns3:StringOperationService"/>
+         <assign>
+            <copy>
+               <from part="full2HalfSizeReturn" variable="full2HalfSizeResponse"/>
+               <to variable="translatedTextWithCodes"/>
+            </copy>
+         </assign>
+      </sequence>
+      <sequence>
+         <assign>
+            <copy>
+               <from variable="translatedTextWithCodes"/>
+               <to part="text" variable="postReplaceRequestForUserDict"/>
+            </copy>
+            <copy>
+               <from>
+                  <morpheme xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:aensTYPE="http://trans.nict.go.jp/collabo/services/TermReplacementService" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="aensTYPE:ArrayOf_tns1_Morpheme"/>
+               </from>
+               <to part="morpheme" variable="postReplaceRequestForUserDict"/>
+            </copy>
+            <copy>
+               <from part="targetLang" variable="translateRequest"/>
+               <to part="language" variable="postReplaceRequestForUserDict"/>
+            </copy>
+         </assign>
+         <invoke inputVariable="postReplaceRequestForUserDict" name="Post_Term_Replacement" operation="replace" outputVariable="postReplaceResponseForUserDict" partnerLink="ReplacementPL" portType="ns7:TermReplacementService"/>
+         <assign>
+            <copy>
+               <from part="replaceReturn" variable="postReplaceResponseForUserDict"/>
+               <to part="translateReturn" variable="translateResponse"/>
+            </copy>
+         </assign>
+      </sequence>
+      <reply operation="translate" partnerLink="TranslatePL" portType="ns1:Translate" variable="translateResponse"/>
+   </sequence>
+</process>

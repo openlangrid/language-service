@@ -1,0 +1,7 @@
+CREATE INDEX idx_synset_synset on synset(synset);
+CREATE INDEX idx_synset_def_synset on synset_def(synset);
+CREATE INDEX idx_word_lemma on word(lemma);
+CREATE INDEX idx_word_wordid_lang ON sense(wordid, lang);
+CREATE INDEX idx_sense_wordid ON sense(wordid);
+CREATE INDEX idx_sense_synset ON sense(synset);
+CREATE INDEX idx_synlink_synset1 ON synlink(synset1);

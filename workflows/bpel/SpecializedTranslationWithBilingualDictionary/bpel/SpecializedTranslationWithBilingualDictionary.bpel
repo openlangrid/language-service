@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+BPEL Process Definition
+Edited using ActiveBPEL(r) Designer Version 4.1.0 (http://www.active-endpoints.com)
+-->
+<bpws:process xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+	xmlns:ns="http://schemas.xmlsoap.org/soap/encoding/"
+	xmlns:ns1="http://langrid.nict.go.jp/langrid-1.2/services/SpecializedTranslationWithBilingualDictionary"
+	xmlns:ns2="http://localhost:8080/wrapper-mock-1.2/services/AbstractMorphologicalAnalysis"
+	xmlns:ns3="http://trans.nict.go.jp/collabo/services/TermReplacementService"
+	xmlns:ns4="http://localhost:8080/wrapper-mock-1.2/services/AbstractBilingualDictionary"
+	xmlns:ns5="http://localhost:8080/wrapper-mock-1.2/services/AbstractTranslation"
+	xmlns:ns6="http://trans.nict.go.jp/collabo/services/CodeGenerationService"
+	xmlns:ns7="http://trans.nict.go.jp/collabo/services/StringOperationService"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	name="SpecializedTranslationWithBilingualDictionary"
+	suppressJoinFailure="yes" targetNamespace="http://langrid.nict.go.jp/langrid-1.2/services/SpecializedTranslationWithBilingualDictionary">
+	<bpws:partnerLinks>
+		<bpws:partnerLink myRole="translator" name="selfPL" partnerLinkType="ns1:selfPLT"/>
+		<bpws:partnerLink name="MorphologicalAnalysisPL" partnerLinkType="ns1:MorphologicalAnalysisPLT" partnerRole="analyzer"/>
+		<bpws:partnerLink name="ReplacementPL" partnerLinkType="ns1:ReplacementPLT" partnerRole="replacement"/>
+		<bpws:partnerLink name="BilingualDictionaryPL" partnerLinkType="ns1:BilingualDictionaryPLT" partnerRole="dictionary"/>
+		<bpws:partnerLink name="TranslationPL" partnerLinkType="ns1:TranslationPLT" partnerRole="translator"/>
+		<bpws:partnerLink name="CodeGeneratorPL" partnerLinkType="ns1:CodeGeneratorPLT" partnerRole="codegenerator"/>
+		<bpws:partnerLink name="StringOperatorPL" partnerLinkType="ns1:StringOperatorPLT" partnerRole="stroperator"/>
+	</bpws:partnerLinks>
+	<bpws:variables>
+		<bpws:variable messageType="ns1:translateRequest" name="translateRequest"/>
+		<bpws:variable messageType="ns1:translateResponse" name="translateResponse"/>
+		<bpws:variable messageType="ns2:analyzeRequest" name="analyzeRequest"/>
+		<bpws:variable messageType="ns2:analyzeResponse" name="analyzeResponse"/>
+		<bpws:variable messageType="ns3:replaceRequest" name="replaceRequest"/>
+		<bpws:variable messageType="ns3:replaceResponse" name="replaceResponse"/>
+		<bpws:variable messageType="ns4:searchRequest" name="searchRequest"/>
+		<bpws:variable messageType="ns4:searchResponse" name="searchResponse"/>
+		<bpws:variable messageType="ns4:UnsupportedLanguagePairException" name="UnsupportedLanguagePairException" />
+		<bpws:variable messageType="ns5:translateRequest" name="translateRequest1"/>
+		<bpws:variable messageType="ns5:translateResponse" name="translateResponse1"/>
+		<bpws:variable messageType="ns6:generateRequest" name="generateRequest"/>
+		<bpws:variable messageType="ns6:generateResponse" name="generateResponse"/>
+		<bpws:variable messageType="ns7:full2HalfSizeRequest" name="full2HalfSizeRequest"/>
+		<bpws:variable messageType="ns7:full2HalfSizeResponse" name="full2HalfSizeResponse"/>
+		<bpws:variable name="headPointer" type="xsd:int"/>
+		<bpws:variable name="numberOfMorphemes" type="xsd:int"/>
+		<bpws:variable name="numberOfDirectionWords" type="xsd:int"/>
+		<bpws:variable name="counter" type="xsd:int"/>
+		<bpws:variable name="selectedWord" type="xsd:string"/>
+		<bpws:variable name="tailPointer" type="xsd:int"/>
+		<bpws:variable name="tailPointerSelected" type="xsd:int"/>
+		<bpws:variable name="targetWord" type="xsd:string"/>
+		<bpws:variable name="directionWord" type="xsd:string"/>
+		<bpws:variable name="selectedWordTranslated" type="xsd:string"/>
+		<bpws:variable name="replaceCounter" type="xsd:int"/>
+	</bpws:variables>
+	<bpws:sequence>
+		<bpws:receive createInstance="yes" operation="translate" partnerLink="selfPL" portType="ns1:Translate" variable="translateRequest"/>
+		<bpws:assign>
+			<bpws:copy>
+				<bpws:from part="sourceLang" variable="translateRequest"/>
+				<bpws:to part="language" variable="analyzeRequest"/>
+			</bpws:copy>
+			<bpws:copy>
+				<bpws:from part="source" variable="translateRequest"/>
+				<bpws:to part="text" variable="analyzeRequest"/>
+			</bpws:copy>
+		</bpws:assign>
+		<bpws:invoke inputVariable="analyzeRequest" name="MorphologicalAnalysisPL_analyze" operation="analyze" outputVariable="analyzeResponse" partnerLink="MorphologicalAnalysisPL" portType="ns2:MorphologicalAnalysis"/>
+		<bpws:assign>
+			<bpws:copy>
+				<bpws:from expression="1"/>
+				<bpws:to variable="headPointer"/>
+			</bpws:copy>
+			<bpws:copy>
+				<bpws:from expression="bpws:getVariableData('analyzeResponse', 'analyzeReturn', 'count(/analyzeReturn/Morpheme)' )"/>
+				<bpws:to variable="numberOfMorphemes"/>
+			</bpws:copy>
+			<bpws:copy>
+				<bpws:from part="sourceLang" variable="translateRequest"/>
+				<bpws:to part="headLang" variable="searchRequest"/>
+			</bpws:copy>
+			<bpws:copy>
+				<bpws:from part="targetLang" variable="translateRequest"/>
+				<bpws:to part="targetLang" variable="searchRequest"/>
+			</bpws:copy>
+			<bpws:copy>
+				<bpws:from expression="1"/>
+				<bpws:to variable="replaceCounter"/>
+			</bpws:copy>
+			<bpws:copy>
+				<bpws:from expression="''"/>
+				<bpws:to part="searchWords" query="/searchWords/string[1]" variable="replaceRequest"/>
+			</bpws:copy>
+			<bpws:copy>
+				<bpws:from expression="''"/>
+				<bpws:to part="replacementWords" query="/replacementWords/string[1]" variable="replaceRequest"/>
+			</bpws:copy>
+		</bpws:assign>
+		<bpws:assign>
+			<bpws:copy>
+				<bpws:from expression="''" />
+				<bpws:to variable="translateRequest1" part="source" />
+			</bpws:copy>
+		</bpws:assign>
+		<bpws:while condition="bpws:getVariableData('headPointer') &lt;= bpws:getVariableData('numberOfMorphemes')">
+			<bpws:sequence>
+				<bpws:assign>
+					<bpws:copy>
+						<bpws:from part="analyzeReturn" query="/analyzeReturn/Morpheme[bpws:getVariableData('headPointer')]/word" variable="analyzeResponse"/>
+						<bpws:to part="headWord" variable="searchRequest"/>
+					</bpws:copy>
+					<bpws:copy>
+						<bpws:from expression="'prefix'"/>
+						<bpws:to part="matchingMethod" variable="searchRequest"/>
+					</bpws:copy>
+				</bpws:assign>
+				<bpws:invoke
+					name="BilingualDictionaryPL_search"
+					inputVariable="searchRequest"
+					operation="search"
+					outputVariable="searchResponse"
+					partnerLink="BilingualDictionaryPL"
+					portType="ns4:BilingualDictionary"
+					>
+					<bpws:catchAll>
+						<bpws:assign>
+							<bpws:copy>
+								<bpws:from>
+									<searchByMorphemesReturn
+										xmlns:aensTYPE="http://localhost:8080/wrapper-mock-1.2/services/AbstractBilingualDictionary"
+										xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+										xsi:type="aensTYPE:ArrayOf_tns2_Translation" />
+								</bpws:from>
+								<bpws:to variable="searchResponse" part="searchReturn" />
+							</bpws:copy>
+						</bpws:assign>
+					</bpws:catchAll>
+				</bpws:invoke>
+				<bpws:switch>
+					<bpws:case condition="
+						(bpws:getVariableData('searchResponse', 'searchReturn', 'count(/searchReturn/Translation)') = 0)
+						or (bpws:getVariableData('searchResponse', 'searchReturn', 'count(/searchReturn/Translation/string)') = 0)">
+						<bpws:sequence>
+							<bpws:assign>
+								<bpws:copy>
+									<bpws:from expression="concat( bpws:getVariableData('translateRequest1', 'source') , bpws:getVariableData('analyzeResponse', 'analyzeReturn', '/analyzeReturn/Morpheme[ bpws:getVariableData(&quot;headPointer&quot;) ]/word') )"/>
+									<bpws:to part="source" variable="translateRequest1"/>
+								</bpws:copy>
+								<bpws:copy>
+									<bpws:from expression="bpws:getVariableData('headPointer') + 1"/>
+									<bpws:to variable="headPointer"/>
+								</bpws:copy>
+							</bpws:assign>
+						</bpws:sequence>
+					</bpws:case>
+					<bpws:otherwise>
+						<bpws:sequence>
+							<bpws:assign>
+								<bpws:copy>
+									<bpws:from part="searchReturn" query="count(/searchReturn/Translation)" variable="searchResponse"/>
+									<bpws:to variable="numberOfDirectionWords"/>
+								</bpws:copy>
+								<bpws:copy>
+									<bpws:from expression="1"/>
+									<bpws:to variable="counter"/>
+								</bpws:copy>
+								<bpws:copy>
+									<bpws:from expression="''"/>
+									<bpws:to variable="selectedWord"/>
+								</bpws:copy>
+								<bpws:copy>
+									<bpws:from variable="headPointer"/>
+									<bpws:to variable="tailPointerSelected"/>
+								</bpws:copy>
+								<bpws:copy>
+									<bpws:from expression="''"/>
+									<bpws:to variable="selectedWordTranslated"/>
+								</bpws:copy>
+							</bpws:assign>
+							<bpws:while condition="bpws:getVariableData('counter') &lt;= bpws:getVariableData('numberOfDirectionWords')">
+								<bpws:sequence>
+									<bpws:assign>
+										<bpws:copy>
+											<bpws:from part="searchReturn" query="/searchReturn/Translation[ bpws:getVariableData('counter') ]/headWord" variable="searchResponse"/>
+											<bpws:to variable="directionWord"/>
+										</bpws:copy>
+										<bpws:copy>
+											<bpws:from variable="headPointer"/>
+											<bpws:to variable="tailPointer"/>
+										</bpws:copy>
+										<bpws:copy>
+											<bpws:from part="analyzeReturn" query="/analyzeReturn/Morpheme[ bpws:getVariableData('headPointer') ]/word" variable="analyzeResponse"/>
+											<bpws:to variable="targetWord"/>
+										</bpws:copy>
+									</bpws:assign>
+									<bpws:switch>
+										<bpws:case condition="string-length('directionWord') &gt; string-length('selectedWord')">
+											<bpws:sequence>
+												<bpws:while condition="(string-length(bpws:getVariableData('directionWord')) &gt; string-length(bpws:getVariableData('targetWord'))) and (bpws:getVariableData('tailPointer') &lt; bpws:getVariableData('numberOfMorphemes'))">
+													<bpws:assign>												 
+														<bpws:copy>
+															<bpws:from expression="bpws:getVariableData('tailPointer') + 1"/>
+															<bpws:to variable="tailPointer"/>
+														</bpws:copy>
+														<bpws:copy>
+															<bpws:from expression="concat(bpws:getVariableData('targetWord'), bpws:getVariableData('analyzeResponse', 'analyzeReturn', '/analyzeReturn/Morpheme[bpws:getVariableData(&quot;tailPointer&quot;)]/word'))"/>
+															<bpws:to variable="targetWord"/>
+														</bpws:copy>
+													</bpws:assign>
+												</bpws:while>
+												<bpws:switch>
+													<bpws:case condition="bpws:getVariableData('targetWord') = bpws:getVariableData('directionWord')">
+														<bpws:sequence>
+															<bpws:assign>
+																<bpws:copy>
+																	<bpws:from variable="directionWord"/>
+																	<bpws:to variable="selectedWord"/>
+																</bpws:copy>
+																<bpws:copy>
+																	<bpws:from part="searchReturn" query="/searchReturn/Translation[ bpws:getVariableData('counter') ]/targetWords/string[1]" variable="searchResponse"/>
+																	<bpws:to variable="selectedWordTranslated"/>
+																</bpws:copy>
+																<bpws:copy>
+																	 <bpws:from variable="tailPointer"/>
+																	 <bpws:to variable="tailPointerSelected"/>
+																</bpws:copy>
+															</bpws:assign>
+														</bpws:sequence>
+													</bpws:case>
+												</bpws:switch>
+											</bpws:sequence>
+										</bpws:case>
+									</bpws:switch>
+									<bpws:assign>
+										<bpws:copy>
+											<bpws:from expression="bpws:getVariableData('counter') + 1"/>
+											<bpws:to variable="counter"/>
+										</bpws:copy>
+									</bpws:assign>
+								</bpws:sequence>
+							</bpws:while>
+							<bpws:switch>
+								<bpws:case condition="bpws:getVariableData('selectedWord') = ''">
+									<bpws:assign>
+										<bpws:copy>
+											<bpws:from expression="concat( bpws:getVariableData('translateRequest1', 'source') , bpws:getVariableData('analyzeResponse', 'analyzeReturn', '/analyzeReturn/Morpheme[ bpws:getVariableData(&quot;headPointer&quot;) ]/word') )"/>
+											<bpws:to part="source" variable="translateRequest1"/>
+										</bpws:copy>
+										<bpws:copy>
+											<bpws:from expression="bpws:getVariableData('headPointer') + 1"/>
+											<bpws:to variable="headPointer"/>
+										</bpws:copy>
+									</bpws:assign>
+								</bpws:case>
+								<bpws:otherwise>
+									<bpws:sequence>
+										<bpws:assign>
+											<bpws:copy>
+												<bpws:from variable="translateRequest" part="sourceLang"/>
+												<bpws:to variable="generateRequest" part="language" />
+											</bpws:copy>
+											<bpws:copy>
+												<bpws:from variable="selectedWord" />
+												<bpws:to variable="generateRequest" part="term" />
+											</bpws:copy>
+										</bpws:assign>
+										<bpws:invoke
+											 name="CodeGenerationPL_generate"
+											 partnerLink="CodeGeneratorPL"
+											 portType="ns6:CodeGenerationService"
+											 operation="generate"
+											 inputVariable="generateRequest"
+											 outputVariable="generateResponse"
+											 />
+										<bpws:assign>
+											<bpws:copy>
+												<bpws:from expression="concat(
+													bpws:getVariableData('translateRequest1', 'source')
+													, bpws:getVariableData('generateResponse', 'generateReturn')
+													)"/>
+												<bpws:to part="source" variable="translateRequest1"/>
+											</bpws:copy>
+											<bpws:copy>
+												<bpws:from variable="generateResponse" part="generateReturn" />
+												<bpws:to part="searchWords" query="/searchWords/string[bpws:getVariableData('replaceCounter')]" variable="replaceRequest"/>
+											</bpws:copy>
+											<bpws:copy>
+												<bpws:from variable="selectedWordTranslated"/>
+												<bpws:to part="replacementWords" query="/replacementWords/string[bpws:getVariableData('replaceCounter')]" variable="replaceRequest"/>
+											</bpws:copy>
+											<bpws:copy>
+												<bpws:from expression="bpws:getVariableData('replaceCounter') + 1"/>
+												<bpws:to variable="replaceCounter"/>
+											</bpws:copy>
+											<bpws:copy>
+												<bpws:from expression="bpws:getVariableData('tailPointerSelected') + 1"/>
+												<bpws:to variable="headPointer"/>
+											</bpws:copy>
+										</bpws:assign>
+									</bpws:sequence>
+								</bpws:otherwise>
+							</bpws:switch>
+						</bpws:sequence>
+					</bpws:otherwise>
+				</bpws:switch>
+			</bpws:sequence>
+		</bpws:while>
+		<bpws:assign>
+			<bpws:copy>
+				<bpws:from part="sourceLang" variable="translateRequest"/>
+				<bpws:to part="sourceLang" variable="translateRequest1"/>
+			</bpws:copy>
+			<bpws:copy>
+				<bpws:from part="targetLang" variable="translateRequest"/>
+				<bpws:to part="targetLang" variable="translateRequest1"/>
+			</bpws:copy>
+		</bpws:assign>
+		<bpws:invoke inputVariable="translateRequest1" name="TranslationPL_translate" operation="translate" outputVariable="translateResponse1" partnerLink="TranslationPL" portType="ns5:Translation"/>
+
+		<!-- FullToHalf -->
+		<bpws:assign>
+		   <bpws:copy>
+		      <bpws:from variable="translateResponse1" part="translateReturn"/>
+		      <bpws:to variable="full2HalfSizeRequest" part="text"/>
+		   </bpws:copy>
+		</bpws:assign>
+		<bpws:invoke
+			name="StringOperatorPL_full2HalfSize"
+			partnerLink="StringOperatorPL"
+			portType="ns7:StringOperationService"
+			operation="full2HalfSize"
+			inputVariable="full2HalfSizeRequest"
+			outputVariable="full2HalfSizeResponse"
+			/>
+		<bpws:assign>
+		   <bpws:copy>
+		      <bpws:from variable="full2HalfSizeResponse" part="full2HalfSizeReturn"/>
+		      <bpws:to variable="translateResponse1" part="translateReturn"/>
+		   </bpws:copy>
+		</bpws:assign>
+
+		<bpws:assign>
+			<bpws:copy>
+				<bpws:from part="translateReturn" variable="translateResponse1"/>
+				<bpws:to part="text" variable="replaceRequest"/>
+			</bpws:copy>
+			<bpws:copy>
+				<bpws:from>
+					<morpheme xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:aensTYPE="http://trans.nict.go.jp/collabo/services/TermReplacementService" xmlns:ns1="http://langrid.nict.go.jp/langrid-1.2/services/SpecializedTranslation2" xmlns:ns2="http://localhost:8080/wrapper-mock-1.2/services/AbstractExtractableBilingualDictionary" xmlns:ns3="http://trans.nict.go.jp/collabo/services/StringOperationService" xmlns:ns4="http://localhost:8080/wrapper-mock-1.2/services/AbstractMorphologicalAnalysis" xmlns:ns6="http://trans.nict.go.jp/collabo/services/CodeGenerationService" xmlns:ns7="http://trans.nict.go.jp/collabo/services/TermReplacementService" xmlns:ns8="http://trans.nict.go.jp/collabo/services/TermSearchService" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:ns="http://schemas.xmlsoap.org/soap/encoding/" xmlns:ns5="http://localhost:8080/wrapper-mock-1.2/services/AbstractTranslation" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="aensTYPE:ArrayOf_tns1_Morpheme"/>
+				</bpws:from>
+				<bpws:to part="morpheme" variable="replaceRequest"/>
+			</bpws:copy>
+			<bpws:copy>
+				<bpws:from part="targetLang" variable="translateRequest"/>
+				<bpws:to part="language" variable="replaceRequest"/>
+			</bpws:copy>
+		</bpws:assign>
+		<bpws:invoke inputVariable="replaceRequest" name="ReplacementPL_replace" operation="replace" outputVariable="replaceResponse" partnerLink="ReplacementPL" portType="ns3:TermReplacementService"/>
+		<bpws:assign>
+			<bpws:copy>
+				<bpws:from part="replaceReturn" variable="replaceResponse"/>
+				<bpws:to part="translateReturn" variable="translateResponse"/>
+			</bpws:copy>
+		</bpws:assign>
+		<bpws:reply operation="translate" partnerLink="selfPL" portType="ns1:Translate" variable="translateResponse"/>
+	</bpws:sequence>
+</bpws:process>

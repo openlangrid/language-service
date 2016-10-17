@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://landev.nict.go.jp/wrapper-mock-1.2.N/services/WebPageTranslation" xmlns:ns4="http://localhost:8080/wrapper-mock-1.2/services/AbstractTranslation" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns5="http://langrid.nict.go.jp/langrid-1.2/services/TranslationCombinedWithBilingualDictionaryWithLongestMatchSearch" xmlns:impl="http://landev.nict.go.jp/wrapper-mock-1.2.N/services/WebPageTranslation" xmlns:intf="http://landev.nict.go.jp/wrapper-mock-1.2.N/services/WebPageTranslation" xmlns:ns1="http://langrid.nict.go.jp/workflow-support/services/ApplyTemplate" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:ns3="http://langrid.nict.go.jp/workflow-support/services/ReplacementTerm" xmlns:ns2="http://langrid.nict.go.jp/workflow-support/services/AnalysisHtml" xmlns:tns1="landev.nict.go.jp/wrapper-mock-1.2.N/services/WebPageTranslation" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+<plnk:partnerLinkType xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" name="SelfPLT">
+   <plnk:role name="self">
+      <plnk:portType name="impl:WebPageTranslation"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+<plnk:partnerLinkType xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" name="ApplyTemplatePLT">
+   <plnk:role name="applyTemplate">
+      <plnk:portType name="ns1:HTMLApplyTemplate"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+<plnk:partnerLinkType xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" name="AnalysisPLT">
+   <plnk:role name="analysis">
+      <plnk:portType name="ns2:HTMLAnalysis"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+<plnk:partnerLinkType xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" name="ReplaceTemplatePLT">
+   <plnk:role name="replace">
+      <plnk:portType name="ns3:ReplacementTerm"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+<plnk:partnerLinkType xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" name="AbstractTranslationPLT1">
+   <plnk:role name="translater">
+      <plnk:portType name="ns4:Translation"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+<plnk:partnerLinkType xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" name="ReplaceSentencePLT">
+   <plnk:role name="replace">
+      <plnk:portType name="ns3:ReplacementTerm"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+<plnk:partnerLinkType xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" name="TagReplacePLT">
+   <plnk:role name="replace">
+      <plnk:portType name="ns3:ReplacementTerm"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+<plnk:partnerLinkType xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" name="TagReplacementBack">
+   <plnk:role name="replace">
+      <plnk:portType name="ns3:ReplacementTerm"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+<plnk:partnerLinkType xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" name="BackTagReplacementPLT">
+   <plnk:role name="replace">
+      <plnk:portType name="ns3:ReplacementTerm"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+<plnk:partnerLinkType xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" name="BackSkeletonHTMLonSentencePLT">
+   <plnk:role name="replace">
+      <plnk:portType name="ns3:ReplacementTerm"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+<plnk:partnerLinkType xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" name="BackReplacementTemplatePLT">
+   <plnk:role name="replace">
+      <plnk:portType name="ns3:ReplacementTerm"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+<plnk:partnerLinkType xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" name="AbstractTranslationPLT2">
+   <plnk:role name="translater">
+      <plnk:portType name="ns4:Translation"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+<plnk:partnerLinkType xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" name="AbstractTranslationPLT3">
+   <plnk:role name="translater">
+      <plnk:portType name="ns4:Translation"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+<plnk:partnerLinkType xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" name="AbstractTranslationPLT4">
+   <plnk:role name="translater">
+      <plnk:portType name="ns4:Translation"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+<plnk:partnerLinkType xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" name="TranslationPLT1">
+   <plnk:role name="translator">
+      <plnk:portType name="ns5:TranslationWithTemporalDictionary"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+<plnk:partnerLinkType xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" name="TranslationPLT2">
+   <plnk:role name="translator">
+      <plnk:portType name="ns5:TranslationWithTemporalDictionary"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+<plnk:partnerLinkType xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" name="TranslationPLT3">
+   <plnk:role name="translator">
+      <plnk:portType name="ns5:TranslationWithTemporalDictionary"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+<plnk:partnerLinkType xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" name="TranslationPLT4">
+   <plnk:role name="translator">
+      <plnk:portType name="ns5:TranslationWithTemporalDictionary"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+  <wsdl:types>
+    <schema targetNamespace="http://landev.nict.go.jp/wrapper-mock-1.2.N/services/WebPageTranslation" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOf_xsd_string">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string[]" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_tns1_PairTemplate">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:PairTemplate[]" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+    <complexType name="translateResponse">
+    <sequence>
+     <element name="backTransLang" nillable="true" type="xsd:string"/>
+     <element name="backTransWebPageContents" nillable="true" type="xsd:string"/>
+     <element name="targetLang" nillable="true" type="xsd:string"/>
+     <element name="targetWebPageContents" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+  </schema>
+  </wsdl:types>
+  <wsdl:message name="translateResponse">
+    <wsdl:part name="translateReturn" type="impl:translateResponse"/>
+  </wsdl:message>
+  <wsdl:message name="translateRequest">
+    <wsdl:part name="sourceLang" type="xsd:string"/>
+    <wsdl:part name="intermediateLangs" type="impl:ArrayOf_xsd_string"/>
+    <wsdl:part name="targetLang" type="xsd:string"/>
+    <wsdl:part name="htmlText" type="xsd:string"/>
+    <wsdl:part name="templates" type="impl:ArrayOf_tns1_PairTemplate"/>
+  </wsdl:message>
+  <wsdl:message name="translateSetting">
+    <wsdl:part name="sourceLang" type="xsd:string"/>
+    <wsdl:part name="targetLang" type="xsd:string"/>
+    <wsdl:part name="targetText" type="impl:ArrayOf_xsd_string"/>
+  </wsdl:message>
+  <wsdl:message name="stringArray">
+    <wsdl:part name="array" type="impl:ArrayOf_xsd_string"/>
+  </wsdl:message>
+  <wsdl:portType name="WebPageTranslation">
+    <wsdl:operation name="translate" parameterOrder="sourceLang intermediateLangs targetLang htmlText templates">
+      <wsdl:input name="translateRequest" message="impl:translateRequest"/>
+      <wsdl:output name="translateResponse" message="impl:translateResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

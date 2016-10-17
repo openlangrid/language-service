@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpws:process exitOnStandardFault="yes" name="TranslationWithParallelText"
+    suppressJoinFailure="yes"
+    targetNamespace="http://langrid.nict.go.jp/process/TranslationWithParallelText"
+    xmlns:bpws="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:ns1="http://langrid.nict.go.jp/process/TranslationWithParallelText" xmlns:ns2="servicegrid:servicetype:nict.nlp:Translation" xmlns:ns="servicegrid:servicetype:nict.nlp:ParallelText">
+    
+    <bpws:import namespace="http://langrid.nict.go.jp/process/TranslationWithParallelText" location="../wsdl/TranslationWithParallelText.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"></bpws:import>
+    <bpws:import namespace="servicegrid:servicetype:nict.nlp:Translation" location="../wsdl/AbstractTranslation.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"></bpws:import>
+    <bpws:import namespace="servicegrid:servicetype:nict.nlp:ParallelText" location="../wsdl/AbstractParallelText.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"></bpws:import>
+    <bpws:partnerLinks>
+        <bpws:partnerLink name="TranslationWithParallelTextPL" partnerLinkType="ns1:TranslationWithParallelTextPLT" myRole="self"></bpws:partnerLink>
+        <bpws:partnerLink name="ParallelTextPL" partnerLinkType="ns1:ParallelTextPLT" partnerRole="search"></bpws:partnerLink>
+        <bpws:partnerLink name="TranslationPL" partnerLinkType="ns1:TranslationPLT" partnerRole="translator"></bpws:partnerLink>
+    </bpws:partnerLinks>
+    <bpws:variables>
+        <bpws:variable name="translateRequest" messageType="ns1:translateRequest"></bpws:variable>
+        
+        <bpws:variable name="translateResponse" messageType="ns1:translateResponse"></bpws:variable>
+        
+        <bpws:variable name="ParallelTextPLResponse" messageType="ns:searchResponse"></bpws:variable>
+        <bpws:variable name="ParallelTextPLRequest" messageType="ns:searchRequest"></bpws:variable>
+        <bpws:variable name="TranslationPLResponse" messageType="ns2:translateResponse"></bpws:variable>
+        <bpws:variable name="TranslationPLRequest" messageType="ns2:translateRequest"></bpws:variable>
+    </bpws:variables>
+    <bpws:sequence name="Sequence">
+        <bpws:receive name="Receive" partnerLink="TranslationWithParallelTextPL" createInstance="yes" operation="translate" portType="ns1:TranslationService" variable="translateRequest"></bpws:receive>
+        <bpws:assign validate="no" name="Assign1">
+            <bpws:copy>
+                <bpws:from part="source" variable="translateRequest"></bpws:from>
+                <bpws:to part="text" variable="ParallelTextPLRequest"></bpws:to>
+            </bpws:copy>
+            <bpws:copy>
+                <bpws:from part="sourceLang" variable="translateRequest"></bpws:from>
+                <bpws:to part="sourceLang" variable="ParallelTextPLRequest"></bpws:to>
+            </bpws:copy>
+            <bpws:copy>
+                <bpws:from part="targetLang" variable="translateRequest"></bpws:from>
+                <bpws:to part="targetLang" variable="ParallelTextPLRequest"></bpws:to>
+            </bpws:copy>
+            <bpws:copy>
+                <bpws:from>
+                    <![CDATA['complete']]>
+                </bpws:from>
+                <bpws:to part="matchingMethod" variable="ParallelTextPLRequest"></bpws:to>
+            </bpws:copy>
+            
+        </bpws:assign>
+        <bpws:invoke name="ParallelTextSearch" partnerLink="ParallelTextPL" operation="search" portType="ns:ParallelTextService" inputVariable="ParallelTextPLRequest" outputVariable="ParallelTextPLResponse"></bpws:invoke>
+        
+        
+        
+        <bpws:if name="If">
+            <bpws:condition><![CDATA[count($ParallelTextPLResponse.searchReturn/ParallelText) =0]]></bpws:condition>
+            <bpws:sequence name="Sequence1">
+                
+                <bpws:assign validate="no" name="Assign">
+                    <bpws:copy>
+                        <bpws:from part="source" variable="translateRequest"></bpws:from>
+                        <bpws:to part="source" variable="TranslationPLRequest"></bpws:to>
+                    </bpws:copy>
+                    <bpws:copy>
+                        <bpws:from part="targetLang" variable="translateRequest"></bpws:from>
+                        <bpws:to part="targetLang" variable="TranslationPLRequest"></bpws:to>
+                    </bpws:copy>
+                    <bpws:copy>
+                        <bpws:from part="sourceLang" variable="translateRequest"></bpws:from>
+                        <bpws:to part="sourceLang" variable="TranslationPLRequest"></bpws:to>
+                    </bpws:copy>
+                </bpws:assign>
+                <bpws:invoke name="Translation" partnerLink="TranslationPL" operation="translate" portType="ns2:TranslationService" inputVariable="TranslationPLRequest" outputVariable="TranslationPLResponse"></bpws:invoke>
+                <bpws:assign validate="no" name="Assign2">
+                    <bpws:copy>
+                        <bpws:from part="translateReturn" variable="TranslationPLResponse"></bpws:from>
+                        <bpws:to part="translateReturn" variable="translateResponse"></bpws:to>
+                    </bpws:copy>
+                </bpws:assign>
+            </bpws:sequence>
+            <bpws:else>
+                <bpws:sequence name="Sequence2">
+                    <bpws:assign validate="no" name="Assign3">
+                        <bpws:copy>
+                            <bpws:from part="searchReturn" variable="ParallelTextPLResponse">
+                                <bpws:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[/searchReturn/ParallelText[1]/target]]></bpws:query>
+                            </bpws:from>
+                            <bpws:to part="translateReturn" variable="translateResponse"></bpws:to>
+                        </bpws:copy>
+                    </bpws:assign>
+                </bpws:sequence>
+            </bpws:else>
+        </bpws:if>
+        <bpws:reply name="Reply" partnerLink="TranslationWithParallelTextPL" operation="translate" portType="ns1:TranslationService" variable="translateResponse"></bpws:reply>
+        
+        
+    </bpws:sequence>
+</bpws:process>

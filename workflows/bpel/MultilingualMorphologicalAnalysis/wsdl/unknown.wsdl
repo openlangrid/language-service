@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+  targetNamespace="http://langrid.nict.go.jp/langrid-service_1_2/services/MultilingualMorphologicalAnalysis"
+  xmlns:apachesoap="http://xml.apache.org/xml-soap"
+  xmlns:impl="http://langrid.nict.go.jp/langrid-service_1_2/services/MultilingualMorphologicalAnalysis"
+  xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+  xmlns:tns1="http://langrid.nict.go.jp/ws_1_2/morphologicalanalysis/"
+  xmlns:tns2="http://langrid.nict.go.jp/ws_1_2/"
+  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+  xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+  xmlns:h="http://langrid.nict.go.jp/langrid-service_1_2/services/Klt"
+  xmlns:i="http://langrid.nict.go.jp/langrid-service_1_2/services/ICTCLAS"
+  xmlns:m="http://langrid.nict.go.jp/langrid-service_1_2/services/Mecab"
+  xmlns:t="http://langrid.nict.go.jp/langrid-service_1_2/services/TreeTagger">
+ <wsdl:types>
+  <schema
+    targetNamespace="http://langrid.nict.go.jp/ws_1_2/morphologicalanalysis/"
+    xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/"/>
+   <import namespace="http://langrid.nict.go.jp/langrid-service_1_2/services/MultilingualMorphologicalAnalysis"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="Morpheme">
+    <sequence>
+     <element name="lemma" nillable="true" type="xsd:string"/>
+     <element name="partOfSpeech" nillable="true" type="xsd:string"/>
+     <element name="word" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="AnalysisFailedException">
+    <complexContent>
+     <extension base="tns2:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://langrid.nict.go.jp/langrid-service_1_2/services/MultilingualMorphologicalAnalysis"
+	 xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/morphologicalanalysis/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOf_tns1_Morpheme">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:Morpheme[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_xsd_string">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://langrid.nict.go.jp/ws_1_2/" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://langrid.nict.go.jp/langrid-service_1_2/services/MultilingualMorphologicalAnalysis"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/morphologicalanalysis/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="LangridException">
+    <sequence>
+     <element name="description" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="AccessLimitExceededException">
+    <complexContent>
+     <extension base="tns2:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="InvalidParameterException">
+    <complexContent>
+     <extension base="tns2:LangridException">
+      <sequence>
+       <element name="parameterName" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="UnsupportedLanguageException">
+    <complexContent>
+     <extension base="tns2:InvalidParameterException">
+      <sequence>
+       <element name="language" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="LanguageNotUniquelyDecidedException">
+    <complexContent>
+     <extension base="tns2:InvalidParameterException">
+      <sequence>
+       <element name="candidates" nillable="true" type="impl:ArrayOf_xsd_string"/>
+       <element name="message" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="NoAccessPermissionException">
+    <complexContent>
+     <extension base="tns2:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ServiceConfigurationException">
+    <complexContent>
+     <extension base="tns2:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ServiceNotActiveException">
+    <complexContent>
+     <extension base="tns2:LangridException">
+      <sequence>
+       <element name="serviceId" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="UnknownException">
+    <complexContent>
+     <extension base="tns2:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="ServiceConfigurationException">
+
+      <wsdl:part name="fault" type="tns2:ServiceConfigurationException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="analyzeResponse">
+
+      <wsdl:part name="analyzeReturn" type="impl:ArrayOf_tns1_Morpheme"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="analyzeRequest">
+
+      <wsdl:part name="language" type="xsd:string"/>
+
+      <wsdl:part name="text" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="NoAccessPermissionException">
+
+      <wsdl:part name="fault" type="tns2:NoAccessPermissionException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="InvalidParameterException">
+
+      <wsdl:part name="fault" type="tns2:InvalidParameterException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="UnsupportedLanguageException">
+
+      <wsdl:part name="fault" type="tns2:UnsupportedLanguageException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="AccessLimitExceededException">
+
+      <wsdl:part name="fault" type="tns2:AccessLimitExceededException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="UnknownException">
+
+      <wsdl:part name="fault" type="tns2:UnknownException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="LanguageNotUniquelyDecidedException">
+
+      <wsdl:part name="fault" type="tns2:LanguageNotUniquelyDecidedException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="AnalysisFailedException">
+
+      <wsdl:part name="fault" type="tns1:AnalysisFailedException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="ServiceNotActiveException">
+
+      <wsdl:part name="fault" type="tns2:ServiceNotActiveException"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="MultilingualMorphologicalAnalysis">
+
+      <wsdl:operation name="analyze" parameterOrder="language text">
+
+         <wsdl:input message="impl:analyzeRequest" name="analyzeRequest"/>
+
+         <wsdl:output message="impl:analyzeResponse" name="analyzeResponse"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:UnsupportedLanguageException" name="UnsupportedLanguageException"/>
+
+         <wsdl:fault message="impl:AnalysisFailedException" name="AnalysisFailedException"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:ServiceNotActiveException" name="ServiceNotActiveException"/>
+
+         <wsdl:fault message="impl:LanguageNotUniquelyDecidedException" name="LanguageNotUniquelyDecidedException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+<plnk:partnerLinkType name="MorphologicalAnalysisPLT">
+   <plnk:role name="analyzer">
+      <plnk:portType name="impl:MultilingualMorphologicalAnalysis"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+
+<plnk:partnerLinkType name="IMorphologicalAnalysisPLT">
+   <plnk:role name="ianalyzer">
+      <plnk:portType name="i:MorphologicalAnalysis"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+
+<plnk:partnerLinkType name="MMorphologicalAnalysisPLT">
+   <plnk:role name="manalyzer">
+      <plnk:portType name="m:MorphologicalAnalysis"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+
+<plnk:partnerLinkType name="TMorphologicalAnalysisPLT">
+   <plnk:role name="tanalyzer">
+      <plnk:portType name="t:MorphologicalAnalysis"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+
+<plnk:partnerLinkType name="HMorphologicalAnalysisPLT">
+   <plnk:role name="hanalyzer">
+      <plnk:portType name="h:MorphologicalAnalysis"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+
+</wsdl:definitions>

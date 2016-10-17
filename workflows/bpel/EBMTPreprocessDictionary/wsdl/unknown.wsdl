@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:ns1="http://localhost:8080/wrapper-1.2/services/EBMT" xmlns:ns2="http://localhost:8080/wrapper-mock-1.2/services/AbstractBilingualDictionary" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://langrid.nict.go.jp/langrid-1.2/services/EBMTPreprocessDictionary" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="EBMTPreprocessDictionary" targetNamespace="http://langrid.nict.go.jp/langrid-1.2/services/EBMTPreprocessDictionary">
+<plnk:partnerLinkType xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" name="PreprocessPLT">
+   <plnk:role name="preprocessor">
+     <plnk:portType name="tns:EBMTPreprocessDictionary"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+<plnk:partnerLinkType xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" name="PreprocessDictionaryPLT">
+   <plnk:role name="dicpreprocess">
+      <plnk:portType name="ns1:EBMT"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+<plnk:partnerLinkType xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" name="SearchPLT">
+   <plnk:role name="dicservice">
+      <plnk:portType name="ns2:BilingualDictionary"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+  <!-- <wsdl:import location="EBMT.wsdl" namespace="http://localhost:8080/wrapper-1.2/services/EBMT"/>  -->
+  <!-- <wsdl:import location="AbstractBilingualDictionary.wsdl" namespace="http://localhost:8080/wrapper-mock-1.2/services/AbstractBilingualDictionary"/>  -->
+
+  <wsdl:message name="preprocessRequest">
+    <wsdl:part name="headLang" type="xsd:string"/>
+    <wsdl:part name="targetLang" type="xsd:string"/>
+    <wsdl:part name="headWord" type="xsd:string"></wsdl:part>
+    <wsdl:part name="matchingMethod" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="preprocessResponse">
+    <wsdl:part name="token" type="xsd:string"/>
+  </wsdl:message>
+  <wsdl:portType name="EBMTPreprocessDictionary">
+    <wsdl:operation name="preprocess">
+      <wsdl:input message="tns:preprocessRequest"/>
+      <wsdl:output message="tns:preprocessResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

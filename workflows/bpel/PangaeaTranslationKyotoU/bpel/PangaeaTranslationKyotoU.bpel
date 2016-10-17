@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+BPEL Process Definition
+Edited using ActiveBPEL(tm) Designer Version 2.1.0 (http://www.active-endpoints.com)
+-->
+<process xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+xmlns:ns1="http://trans.nict.go.jp/active-bpel/services/PangaeaTranslationKyotoUService"
+xmlns:ns2="http://trans.nict.go.jp/collabo/services/PangaeaDictionaryService"
+xmlns:ns3="http://trans.nict.go.jp/collabo/services/StringOperationService"
+xmlns:ns4="http://langrid.nict.go.jp/langrid-service_1_2/services/MultilingualMorphologicalAnalysis"
+xmlns:ns5="http://langrid.nict.go.jp/langrid-1.2/services/MultilingualTranslationKyotoUJServer"
+xmlns:ns6="http://trans.nict.go.jp/collabo/services/CodeGenerationService"
+xmlns:ns7="http://trans.nict.go.jp/collabo/services/TermReplacementService"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+name="PangaeaTranslationKyotoU" suppressJoinFailure="yes"
+targetNamespace="http://trans.nict.go.jp/active-bpel/services/PangaeaTranslationKyotoU">
+   <partnerLinks>
+      <partnerLink name="CDictionaryPL" partnerLinkType="ns1:CDictionaryPLT" partnerRole="cdict"/>
+      <partnerLink name="StringOperatorPL" partnerLinkType="ns1:StringOperatorPLT" partnerRole="stroperator"/>
+      <partnerLink name="CodeGeneratorPL" partnerLinkType="ns1:CodeGeneratorPLT" partnerRole="codegenerator"/>
+      <partnerLink name="ReplacementPL" partnerLinkType="ns1:ReplacementPLT" partnerRole="replacement"/>
+      <partnerLink name="MorphologicalAnalysisPL" partnerLinkType="ns1:MorphologicalAnalysisPLT" partnerRole="analyzer"/>
+      <partnerLink myRole="translator" name="TranslatePL" partnerLinkType="ns1:TranslatePLT"/>
+      <partnerLink name="MTranslatePL" partnerLinkType="ns1:MTranslatePLT" partnerRole="mtranslator"/>
+   </partnerLinks>
+   <variables>
+      <variable messageType="ns3:spaceTrimmingRequest" name="spaceTrimmingRequest"/>
+      <variable messageType="ns3:spaceTrimmingResponse" name="spaceTrimmingResponse"/>
+      <variable messageType="ns3:full2HalfSizeRequest" name="full2HalfSizeRequest"/>
+      <variable messageType="ns3:full2HalfSizeResponse" name="full2HalfSizeResponse"/>
+      <variable messageType="ns4:analyzeRequest" name="AnalyzeRequest"/>
+      <variable messageType="ns4:analyzeResponse" name="AnalyzeResponse"/>
+      <variable messageType="ns6:generateRequest" name="generateRequest"/>
+      <variable messageType="ns6:generateResponse" name="generateResponse"/>
+      <variable messageType="ns7:replaceRequest" name="preReplaceRequest"/>
+      <variable messageType="ns7:replaceResponse" name="preReplaceResponse"/>
+      <variable messageType="ns7:replaceRequest" name="postReplaceRequest"/>
+      <variable messageType="ns7:replaceResponse" name="postReplaceResponse"/>
+      <variable name="counter1" type="xsd:int"/>
+      <variable messageType="ns2:extractRequest" name="extractRequest"/>
+      <variable messageType="ns2:extractResponse" name="extractResponse"/>
+      <variable messageType="ns2:termSearchRequest" name="termSearchRequest"/>
+      <variable messageType="ns2:termSearchResponse" name="termSearchResponse"/>
+      <variable messageType="ns2:searchRequest" name="searchRequest"/>
+      <variable messageType="ns2:searchResponse" name="searchResponse"/>
+      <variable messageType="ns1:translateRequest" name="translateRequest"/>
+      <variable messageType="ns1:translateResponse" name="translateResponse"/>
+      <variable messageType="ns5:translateRequest" name="mTranslateRequest"/>
+      <variable messageType="ns5:translateResponse" name="mTranslateResponse"/>
+   </variables>
+   <sequence>
+      <receive createInstance="yes" operation="translate" partnerLink="TranslatePL" portType="ns1:Translate" variable="translateRequest"/>
+      <assign>
+         <copy>
+            <from part="sourceLang" variable="translateRequest"/>
+            <to part="language" variable="extractRequest"/>
+         </copy>
+         <copy>
+            <from part="source" variable="translateRequest"/>
+            <to part="text" variable="extractRequest"/>
+         </copy>
+      </assign>
+      <invoke inputVariable="extractRequest" name="TermExtract" operation="extract" outputVariable="extractResponse" partnerLink="CDictionaryPL" portType="ns2:PangaeaDictionaryService"/>
+      <assign>
+         <copy>
+            <from part="extractReturn" variable="extractResponse"/>
+            <to part="term" variable="termSearchRequest"/>
+         </copy>
+      </assign>
+      <switch>
+         <case condition="bpws:getVariableData('extractResponse', 'extractReturn', 'count(/extractReturn/string)') =0">
+            <sequence>
+               <assign>
+                  <copy>
+                     <from part="sourceLang" variable="translateRequest"/>
+                     <to part="sourceLang" variable="mTranslateRequest"/>
+                  </copy>
+                  <copy>
+                     <from part="targetLang" variable="translateRequest"/>
+                     <to part="targetLang" variable="mTranslateRequest"/>
+                  </copy>
+                  <copy>
+                     <from part="source" variable="translateRequest"/>
+                     <to part="source" variable="mTranslateRequest"/>
+                  </copy>
+               </assign>
+               <invoke inputVariable="mTranslateRequest" name="MultilingualTranslation" operation="translate" outputVariable="mTranslateResponse" partnerLink="MTranslatePL" portType="ns5:Translation"/>
+               <assign>
+                  <copy>
+                     <from part="translateReturn" variable="mTranslateResponse"/>
+                     <to part="translateReturn" variable="translateResponse"/>
+                  </copy>
+               </assign>
+            </sequence>
+         </case>
+         <otherwise>
+            <sequence>
+               <assign>
+                  <copy>
+                     <from part="source" variable="translateRequest"/>
+                     <to part="text" variable="spaceTrimmingRequest"/>
+                  </copy>
+               </assign>
+               <invoke inputVariable="spaceTrimmingRequest" name="SpaceTrimming" operation="spaceTrimming" outputVariable="spaceTrimmingResponse" partnerLink="StringOperatorPL" portType="ns3:StringOperationService"/>
+               <assign>
+                  <copy>
+                     <from part="spaceTrimmingReturn" variable="spaceTrimmingResponse"/>
+                     <to part="text" variable="full2HalfSizeRequest"/>
+                  </copy>
+               </assign>
+               <invoke inputVariable="full2HalfSizeRequest" name="Full2HalfSize" operation="full2HalfSize" outputVariable="full2HalfSizeResponse" partnerLink="StringOperatorPL" portType="ns3:StringOperationService"/>
+               <assign>
+                  <copy>
+                     <from part="full2HalfSizeReturn" variable="full2HalfSizeResponse"/>
+                     <to part="text" variable="AnalyzeRequest"/>
+                  </copy>
+                  <copy>
+                     <from part="sourceLang" variable="translateRequest"/>
+                     <to part="language" variable="AnalyzeRequest"/>
+                  </copy>
+               </assign>
+               <invoke inputVariable="AnalyzeRequest" name="MultilingualMorphologicalAnalysis" operation="analyze" outputVariable="AnalyzeResponse" partnerLink="MorphologicalAnalysisPL" portType="ns4:MorphologicalAnalysis"/>
+               <assign>
+                  <copy>
+                     <from part="analyzeReturn" variable="AnalyzeResponse"/>
+                     <to part="morpheme" variable="termSearchRequest"/>
+                  </copy>
+                  <copy>
+                     <from part="analyzeReturn" variable="AnalyzeResponse"/>
+                     <to part="morpheme" variable="preReplaceRequest"/>
+                  </copy>
+                  <copy>
+                     <from part="sourceLang" variable="translateRequest"/>
+                     <to part="language" variable="termSearchRequest"/>
+                  </copy>
+                  <copy>
+                     <from part="extractReturn" variable="extractResponse"/>
+                     <to part="term" variable="termSearchRequest"/>
+                  </copy>
+               </assign>
+               <invoke inputVariable="termSearchRequest" name="TermSearch" operation="termSearch" outputVariable="termSearchResponse" partnerLink="CDictionaryPL" portType="ns2:PangaeaDictionaryService"/>
+               <assign>
+                  <copy>
+                     <from part="termSearchReturn" variable="termSearchResponse"/>
+                     <to part="searchWords" variable="preReplaceRequest"/>
+                  </copy>
+                  <copy>
+                     <from part="termSearchReturn" variable="termSearchResponse"/>
+                     <to part="replacementWords" variable="preReplaceRequest"/>
+                  </copy>
+                  <copy>
+                     <from part="termSearchReturn" variable="termSearchResponse"/>
+                     <to part="searchWords" variable="postReplaceRequest"/>
+                  </copy>
+                  <copy>
+                     <from part="termSearchReturn" variable="termSearchResponse"/>
+                     <to part="replacementWords" variable="postReplaceRequest"/>
+                  </copy>
+                  <copy>
+                     <from expression="1"/>
+                     <to variable="counter1"/>
+                  </copy>
+               </assign>
+               <while condition="bpws:getVariableData('counter1') &lt;= bpws:getVariableData('termSearchResponse', 'termSearchReturn', 'count(/termSearchReturn/string)')">
+                  <sequence>
+                     <assign>
+                        <copy>
+                           <from part="termSearchReturn" query="/termSearchReturn/string[bpws:getVariableData('counter1')]" variable="termSearchResponse"/>
+                           <to part="headWord" variable="searchRequest"/>
+                        </copy>
+                        <copy>
+                           <from part="sourceLang" variable="translateRequest"/>
+                           <to part="headLang" variable="searchRequest"/>
+                        </copy>
+                        <copy>
+                           <from part="targetLang" variable="translateRequest"/>
+                           <to part="targetLang" variable="searchRequest"/>
+                        </copy>
+                        <copy>
+                           <from expression="'string-exact'"/>
+                           <to part="searchMethod" variable="searchRequest"/>
+                        </copy>
+                     </assign>
+                     <invoke inputVariable="searchRequest" name="PangaeaDictionary" operation="search" outputVariable="searchResponse" partnerLink="CDictionaryPL" portType="ns2:PangaeaDictionaryService"/>
+                     <switch>
+                        <case condition="bpws:getVariableData('searchResponse', 'searchReturn', 'count(/searchReturn/Translation[1]/targetWords/string)') !=0">
+                           <sequence>
+                              <assign>
+                                 <copy>
+                                    <from part="termSearchReturn" query="/termSearchReturn/string[bpws:getVariableData('counter1')]" variable="termSearchResponse"/>
+                                    <to part="term" variable="generateRequest"/>
+                                 </copy>
+                                 <copy>
+                                    <from part="sourceLang" variable="translateRequest"/>
+                                    <to part="language" variable="generateRequest"/>
+                                 </copy>
+                              </assign>
+                              <invoke inputVariable="generateRequest" name="CodeGeneration" operation="generate" outputVariable="generateResponse" partnerLink="CodeGeneratorPL" portType="ns6:CodeGenerationService"/>
+                              <assign>
+                                 <copy>
+                                    <from part="termSearchReturn" query="/termSearchReturn/string[bpws:getVariableData('counter1')]" variable="termSearchResponse"/>
+                                    <to part="searchWords" query="/searchWords/string[bpws:getVariableData('counter1')]" variable="preReplaceRequest"/>
+                                 </copy>
+                                 <copy>
+                                    <from part="generateReturn" variable="generateResponse"/>
+                                    <to part="searchWords" query="/searchWords/string[bpws:getVariableData('counter1')]" variable="postReplaceRequest"/>
+                                 </copy>
+                                 <copy>
+                                    <from part="generateReturn" variable="generateResponse"/>
+                                    <to part="replacementWords" query="/replacementWords/string[bpws:getVariableData('counter1')]" variable="preReplaceRequest"/>
+                                 </copy>
+                                 <copy>
+                                    <from part="searchReturn" query="/searchReturn/Translation[1]/targetWords/string[1]" variable="searchResponse"/>
+                                    <to part="replacementWords" query="/replacementWords/string[bpws:getVariableData('counter1')]" variable="postReplaceRequest"/>
+                                 </copy>
+                              </assign>
+                           </sequence>
+                        </case>
+                        <otherwise>
+                           <sequence>
+                              <assign>
+                                 <copy>
+                                    <from expression="''"/>
+                                    <to part="searchWords" query="/searchWords/string[bpws:getVariableData('counter1')]" variable="postReplaceRequest"/>
+                                 </copy>
+                                 <copy>
+                                    <from expression="''"/>
+                                    <to part="replacementWords" query="/replacementWords/string[bpws:getVariableData('counter1')]" variable="postReplaceRequest"/>
+                                 </copy>
+                                 <copy>
+                                    <from expression="''"/>
+                                    <to part="searchWords" query="/searchWords/string[bpws:getVariableData('counter1')]" variable="preReplaceRequest"/>
+                                 </copy>
+                                 <copy>
+                                    <from expression="''"/>
+                                    <to part="replacementWords" query="/replacementWords/string[bpws:getVariableData('counter1')]" variable="preReplaceRequest"/>
+                                 </copy>
+                              </assign>
+                           </sequence>
+                        </otherwise>
+                     </switch>
+                     <assign>
+                        <copy>
+                           <from expression="bpws:getVariableData('counter1')+1"/>
+                           <to variable="counter1"/>
+                        </copy>
+                     </assign>
+                  </sequence>
+               </while>
+               <assign>
+                  <copy>
+                     <from part="full2HalfSizeReturn" variable="full2HalfSizeResponse"/>
+                     <to part="source" variable="mTranslateRequest"/>
+                  </copy>
+               </assign>
+               <switch>
+                  <case condition="bpws:getVariableData('preReplaceRequest', 'searchWords', 'count(/searchWords/string)') &gt; 0">
+                     <sequence>
+                        <assign>
+                           <copy>
+                              <from part="sourceLang" variable="translateRequest"/>
+                              <to part="language" variable="preReplaceRequest"/>
+                           </copy>
+                           <copy>
+                              <from part="full2HalfSizeReturn" variable="full2HalfSizeResponse"/>
+                              <to part="text" variable="preReplaceRequest"/>
+                           </copy>
+                        </assign>
+                        <invoke inputVariable="preReplaceRequest" name="Pre_Term_Replacement" operation="replace" outputVariable="preReplaceResponse" partnerLink="ReplacementPL" portType="ns7:TermReplacementService"/>
+                        <assign>
+                           <copy>
+                              <from part="replaceReturn" variable="preReplaceResponse"/>
+                              <to part="source" variable="mTranslateRequest"/>
+                           </copy>
+                        </assign>
+                     </sequence>
+                  </case>
+               </switch>
+               <sequence>
+                  <assign>
+                     <copy>
+                        <from part="sourceLang" variable="translateRequest"/>
+                        <to part="sourceLang" variable="mTranslateRequest"/>
+                     </copy>
+                     <copy>
+                        <from part="targetLang" variable="translateRequest"/>
+                        <to part="targetLang" variable="mTranslateRequest"/>
+                     </copy>
+                  </assign>
+                  <invoke inputVariable="mTranslateRequest" name="MultilingualTranslation" operation="translate" outputVariable="mTranslateResponse" partnerLink="MTranslatePL" portType="ns5:Translation"/>
+                  <assign>
+                     <copy>
+                        <from part="translateReturn" variable="mTranslateResponse"/>
+                        <to part="text" variable="postReplaceRequest"/>
+                     </copy>
+                     <copy>
+                        <from part="targetLang" variable="translateRequest"/>
+                        <to part="language" variable="postReplaceRequest"/>
+                     </copy>
+                     <copy>
+                        <from part="translateReturn" variable="mTranslateResponse"/>
+                        <to part="translateReturn" variable="translateResponse"/>
+                     </copy>
+                     <copy>
+                        <from>
+                           <morpheme xmlns:aensTYPE="http://trans.nict.go.jp/collabo/services/TermReplacementService" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="aensTYPE:ArrayOf_tns1_Morpheme"/>
+                        </from>
+                        <to part="morpheme" variable="postReplaceRequest"/>
+                     </copy>
+                  </assign>
+               </sequence>
+               <switch>
+                  <case condition="bpws:getVariableData('preReplaceRequest', 'searchWords', 'count(/searchWords/string)')&gt;0">
+                     <sequence>
+                        <invoke inputVariable="postReplaceRequest" name="Post_Term_Replacement" operation="replace" outputVariable="postReplaceResponse" partnerLink="ReplacementPL" portType="ns7:TermReplacementService"/>
+                        <assign>
+                           <copy>
+                              <from part="replaceReturn" variable="postReplaceResponse"/>
+                              <to part="translateReturn" variable="translateResponse"/>
+                           </copy>
+                        </assign>
+                     </sequence>
+                  </case>
+               </switch>
+            </sequence>
+         </otherwise>
+      </switch>
+      <reply operation="translate" partnerLink="TranslatePL" portType="ns1:Translate" variable="translateResponse"/>
+   </sequence>
+</process>

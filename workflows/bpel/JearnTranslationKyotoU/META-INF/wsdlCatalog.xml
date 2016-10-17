@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdlCatalog>
+
+  <wsdlEntry
+	location="project:JearnTranslationKyotoU/wsdl/MultilingualMorphologicalAnalysis.wsdl"
+	classpath="wsdl/MultilingualMorphologicalAnalysis.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:JearnTranslationKyotoU/wsdl/MultilingualTranslationKyotoUJServer.wsdl"
+	classpath="wsdl/MultilingualTranslationKyotoUJServer.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:JearnTranslationKyotoU/wsdl/JearnDictionaryServiceService.wsdl"
+	classpath="wsdl/JearnDictionaryServiceService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:JearnTranslationKyotoU/wsdl/StringOperationServiceService.wsdl"
+	classpath="wsdl/StringOperationServiceService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:JearnTranslationKyotoU/wsdl/unknown.wsdl"
+	classpath="wsdl/unknown.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:JearnTranslationKyotoU/wsdl/CodeGenerationServiceService.wsdl"
+	classpath="wsdl/CodeGenerationServiceService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:JearnTranslationKyotoU/wsdl/TermReplacementServiceService.wsdl"
+	classpath="wsdl/TermReplacementServiceService.wsdl"
+  />
+
+</wsdlCatalog>

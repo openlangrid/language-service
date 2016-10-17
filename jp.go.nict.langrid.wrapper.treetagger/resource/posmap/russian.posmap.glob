@@ -1,0 +1,20 @@
+# russian PartOfSpeech map
+S=noun.common
+A=adjective
+ADV=adverb
+V=verb
+PR=other
+CONJ=other
+S-PRO=noun.common
+A-PRO=adjective
+ADV-PRO=adverb
+PART=other
+NUM=other
+PRAEDIC=other
+PARENTH=other
+A-NUM=other
+INTJ=other
+INIT=other
+PRAEDIC-PRO=other
+PUNCT=other
+SENTother

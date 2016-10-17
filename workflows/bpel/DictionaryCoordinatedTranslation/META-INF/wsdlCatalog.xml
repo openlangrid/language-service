@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdlCatalog>
+
+  <wsdlEntry
+	location="project:DictionaryCoordinatedTranslation/wsdl/TemporalBilingualDictionaryWithLongestMatchSearchService.wsdl"
+	classpath="wsdl/TemporalBilingualDictionaryWithLongestMatchSearchService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:DictionaryCoordinatedTranslation/wsdl/AbstractBilingualDictionaryWithLongestMatchSearchService.wsdl"
+	classpath="wsdl/AbstractBilingualDictionaryWithLongestMatchSearchService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:DictionaryCoordinatedTranslation/wsdl/StringOperationServiceService.wsdl"
+	classpath="wsdl/StringOperationServiceService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:DictionaryCoordinatedTranslation/wsdl/TermReplacementServiceService.wsdl"
+	classpath="wsdl/TermReplacementServiceService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:DictionaryCoordinatedTranslation/wsdl/unknown.wsdl"
+	classpath="wsdl/unknown.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:DictionaryCoordinatedTranslation/wsdl/ConstructSourceAndMorphemesAndCodesService.wsdl"
+	classpath="wsdl/ConstructSourceAndMorphemesAndCodesService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:DictionaryCoordinatedTranslation/wsdl/AbstractMorphologicalAnalysis.wsdl"
+	classpath="wsdl/AbstractMorphologicalAnalysis.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:DictionaryCoordinatedTranslation/wsdl/AbstractTranslation.wsdl"
+	classpath="wsdl/AbstractTranslation.wsdl"
+  />
+
+</wsdlCatalog>

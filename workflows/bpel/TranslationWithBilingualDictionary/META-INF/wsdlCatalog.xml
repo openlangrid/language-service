@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdlCatalog>
+
+  <wsdlEntry
+	location="project:TranslationWithBilingualDictionary/wsdl/TemporalBilingualDictionaryWithLongestMatchSearchService.wsdl"
+	classpath="wsdl/TemporalBilingualDictionaryWithLongestMatchSearchService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:TranslationWithBilingualDictionary/wsdl/GetLongestMatchingTermService.wsdl"
+	classpath="wsdl/GetLongestMatchingTermService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:TranslationWithBilingualDictionary/wsdl/unknown.wsdl"
+	classpath="wsdl/unknown.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:TranslationWithBilingualDictionary/wsdl/StringOperationServiceService.wsdl"
+	classpath="wsdl/StringOperationServiceService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:TranslationWithBilingualDictionary/wsdl/TermReplacementServiceService.wsdl"
+	classpath="wsdl/TermReplacementServiceService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:TranslationWithBilingualDictionary/wsdl/ConstructSourceAndMorphemesAndCodesService.wsdl"
+	classpath="wsdl/ConstructSourceAndMorphemesAndCodesService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:TranslationWithBilingualDictionary/wsdl/AbstractMorphologicalAnalysis.wsdl"
+	classpath="wsdl/AbstractMorphologicalAnalysis.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:TranslationWithBilingualDictionary/wsdl/AbstractBilingualDictionary.wsdl"
+	classpath="wsdl/AbstractBilingualDictionary.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:TranslationWithBilingualDictionary/wsdl/AbstractTranslation.wsdl"
+	classpath="wsdl/AbstractTranslation.wsdl"
+  />
+
+</wsdlCatalog>

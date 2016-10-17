@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+BPEL Process Definition
+Edited using ActiveBPEL(r) Designer Version 4.1.0 (http://www.active-endpoints.com)
+-->
+<bpws:process xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:ext="http://www.activebpel.org/2006/09/bpel/extension/activity" xmlns:ns="http://schemas.xmlsoap.org/soap/encoding/" xmlns:ns1="http://localhost:8080/wrapper-mock-1.2.N/services/BilingualDictionaryWithLongestMatchCrossSearch" xmlns:ns2="http://localhost:8080/wrapper-mock-1.2.N/services/AbstractBilingualDictionaryWithLongestMatchSearch" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="BilingualDictionaryWithLongestMatchCrossSearch" suppressJoinFailure="yes" targetNamespace="http://localhost:8080/wrapper-mock-1.2.N/services/BilingualDictionaryWithLongestMatchCrossSearch">
+   <bpws:partnerLinks>
+      <bpws:partnerLink name="BilingualDictionaryWithLongestMatchCrossSearchPL1" partnerLinkType="ns1:BilingualDictionaryWithLongestMatchPLT" partnerRole="service"/>
+      <bpws:partnerLink name="BilingualDictionaryWithLongestMatchCrossSearchPL2" partnerLinkType="ns1:BilingualDictionaryWithLongestMatchPLT" partnerRole="service"/>
+      <bpws:partnerLink name="BilingualDictionaryWithLongestMatchCrossSearchPL3" partnerLinkType="ns1:BilingualDictionaryWithLongestMatchPLT" partnerRole="service"/>
+      <bpws:partnerLink name="BilingualDictionaryWithLongestMatchCrossSearchPL4" partnerLinkType="ns1:BilingualDictionaryWithLongestMatchPLT" partnerRole="service"/>
+      <bpws:partnerLink name="BilingualDictionaryWithLongestMatchCrossSearchPL5" partnerLinkType="ns1:BilingualDictionaryWithLongestMatchPLT" partnerRole="service"/>
+      <bpws:partnerLink myRole="self" name="BilingualDictionaryWithLongestMatchCrossSearchPL" partnerLinkType="ns1:BilingualDictionaryWithLongestMatchCrossSearchPLT"/>
+   </bpws:partnerLinks>
+   <bpws:variables>
+      <bpws:variable messageType="ns1:searchLongestMatchingTermsRequest" name="searchLongestMatchingTermsRequest"/>
+      <bpws:variable messageType="ns1:searchLongestMatchingTermsResponse" name="searchLongestMatchingTermsResponse"/>
+      <bpws:variable messageType="ns2:searchLongestMatchingTermsRequest" name="searchLongestMatchingTermsRequest1"/>
+      <bpws:variable messageType="ns2:searchLongestMatchingTermsResponse" name="searchLongestMatchingTermsResponse1"/>
+      <bpws:variable messageType="ns2:searchLongestMatchingTermsRequest" name="searchLongestMatchingTermsRequest2"/>
+      <bpws:variable messageType="ns2:searchLongestMatchingTermsResponse" name="searchLongestMatchingTermsResponse2"/>
+      <bpws:variable messageType="ns2:searchLongestMatchingTermsRequest" name="searchLongestMatchingTermsRequest3"/>
+      <bpws:variable messageType="ns2:searchLongestMatchingTermsResponse" name="searchLongestMatchingTermsResponse3"/>
+      <bpws:variable messageType="ns2:searchLongestMatchingTermsRequest" name="searchLongestMatchingTermsRequest4"/>
+      <bpws:variable messageType="ns2:searchLongestMatchingTermsResponse" name="searchLongestMatchingTermsResponse4"/>
+      <bpws:variable messageType="ns2:searchLongestMatchingTermsRequest" name="searchLongestMatchingTermsRequest5"/>
+      <bpws:variable messageType="ns2:searchLongestMatchingTermsResponse" name="searchLongestMatchingTermsResponse5"/>
+      <bpws:variable name="search1SuccessfullyCompleted" type="xsd:boolean"/>
+      <bpws:variable name="search2SuccessfullyCompleted" type="xsd:boolean"/>
+      <bpws:variable name="search3SuccessfullyCompleted" type="xsd:boolean"/>
+      <bpws:variable name="search4SuccessfullyCompleted" type="xsd:boolean"/>
+      <bpws:variable name="search5SuccessfullyCompleted" type="xsd:boolean"/>
+      <bpws:variable name="counter" type="xsd:int"/>
+   </bpws:variables>
+   <bpws:sequence>
+      <bpws:receive createInstance="yes" operation="searchLongestMatchingTerms" partnerLink="BilingualDictionaryWithLongestMatchCrossSearchPL" portType="ns1:BilingualDictionaryWithLongestMatchSearch" variable="searchLongestMatchingTermsRequest"/>
+      <bpws:assign>
+         <bpws:copy>
+            <bpws:from part="headLang" variable="searchLongestMatchingTermsRequest"/>
+            <bpws:to part="headLang" variable="searchLongestMatchingTermsRequest1"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="targetLang" variable="searchLongestMatchingTermsRequest"/>
+            <bpws:to part="targetLang" variable="searchLongestMatchingTermsRequest1"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="morphemes" variable="searchLongestMatchingTermsRequest"/>
+            <bpws:to part="morphemes" variable="searchLongestMatchingTermsRequest1"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="headLang" variable="searchLongestMatchingTermsRequest"/>
+            <bpws:to part="headLang" variable="searchLongestMatchingTermsRequest2"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="targetLang" variable="searchLongestMatchingTermsRequest"/>
+            <bpws:to part="targetLang" variable="searchLongestMatchingTermsRequest2"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="morphemes" variable="searchLongestMatchingTermsRequest"/>
+            <bpws:to part="morphemes" variable="searchLongestMatchingTermsRequest2"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="headLang" variable="searchLongestMatchingTermsRequest"/>
+            <bpws:to part="headLang" variable="searchLongestMatchingTermsRequest3"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="targetLang" variable="searchLongestMatchingTermsRequest"/>
+            <bpws:to part="targetLang" variable="searchLongestMatchingTermsRequest3"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="morphemes" variable="searchLongestMatchingTermsRequest"/>
+            <bpws:to part="morphemes" variable="searchLongestMatchingTermsRequest3"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="headLang" variable="searchLongestMatchingTermsRequest"/>
+            <bpws:to part="headLang" variable="searchLongestMatchingTermsRequest4"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="targetLang" variable="searchLongestMatchingTermsRequest"/>
+            <bpws:to part="targetLang" variable="searchLongestMatchingTermsRequest4"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="morphemes" variable="searchLongestMatchingTermsRequest"/>
+            <bpws:to part="morphemes" variable="searchLongestMatchingTermsRequest4"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="headLang" variable="searchLongestMatchingTermsRequest"/>
+            <bpws:to part="headLang" variable="searchLongestMatchingTermsRequest5"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="targetLang" variable="searchLongestMatchingTermsRequest"/>
+            <bpws:to part="targetLang" variable="searchLongestMatchingTermsRequest5"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="morphemes" variable="searchLongestMatchingTermsRequest"/>
+            <bpws:to part="morphemes" variable="searchLongestMatchingTermsRequest5"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from expression="true()"/>
+            <bpws:to variable="search1SuccessfullyCompleted"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from expression="true()"/>
+            <bpws:to variable="search2SuccessfullyCompleted"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from expression="true()"/>
+            <bpws:to variable="search3SuccessfullyCompleted"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from expression="true()"/>
+            <bpws:to variable="search4SuccessfullyCompleted"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from expression="true()"/>
+            <bpws:to variable="search5SuccessfullyCompleted"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from>
+               <searchLongestMatchingTermsReturn xmlns:aensTYPE="http://localhost:8080/wrapper-mock-1.2.N/services/AbstractBilingualDictionaryWithLongestMatchSearch" xmlns:ns2="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:ext="http://www.activebpel.org/2006/09/bpel/extension/activity" xmlns:ns="http://schemas.xmlsoap.org/soap/encoding/" xmlns:ns1="http://localhost:8080/wrapper-mock-1.2.N/services/BilingualDictionaryWithLongestMatchCrossSearch" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="aensTYPE:ArrayOf_tns1_TranslationWithPosition"/>
+            </bpws:from>
+            <bpws:to part="searchLongestMatchingTermsReturn" variable="searchLongestMatchingTermsResponse"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from expression="0"/>
+            <bpws:to variable="counter"/>
+         </bpws:copy>
+      </bpws:assign>
+      <bpws:flow>
+         <bpws:invoke inputVariable="searchLongestMatchingTermsRequest1" operation="searchLongestMatchingTerms" outputVariable="searchLongestMatchingTermsResponse1" partnerLink="BilingualDictionaryWithLongestMatchCrossSearchPL1" portType="ns2:BilingualDictionaryWithLongestMatchSearch">
+            <bpws:catchAll>
+               <bpws:assign>
+                  <bpws:copy>
+                     <bpws:from expression="false()"/>
+                     <bpws:to variable="search1SuccessfullyCompleted"/>
+                  </bpws:copy>
+               </bpws:assign>
+            </bpws:catchAll>
+         </bpws:invoke>
+         <bpws:invoke inputVariable="searchLongestMatchingTermsRequest2" operation="searchLongestMatchingTerms" outputVariable="searchLongestMatchingTermsResponse2" partnerLink="BilingualDictionaryWithLongestMatchCrossSearchPL2" portType="ns2:BilingualDictionaryWithLongestMatchSearch">
+            <bpws:catchAll>
+               <bpws:assign>
+                  <bpws:copy>
+                     <bpws:from expression="false()"/>
+                     <bpws:to variable="search2SuccessfullyCompleted"/>
+                  </bpws:copy>
+               </bpws:assign>
+            </bpws:catchAll>
+         </bpws:invoke>
+         <bpws:invoke inputVariable="searchLongestMatchingTermsRequest3" operation="searchLongestMatchingTerms" outputVariable="searchLongestMatchingTermsResponse3" partnerLink="BilingualDictionaryWithLongestMatchCrossSearchPL3" portType="ns2:BilingualDictionaryWithLongestMatchSearch">
+            <bpws:catchAll>
+               <bpws:assign>
+                  <bpws:copy>
+                     <bpws:from expression="false()"/>
+                     <bpws:to variable="search3SuccessfullyCompleted"/>
+                  </bpws:copy>
+               </bpws:assign>
+            </bpws:catchAll>
+         </bpws:invoke>
+         <bpws:invoke inputVariable="searchLongestMatchingTermsRequest4" operation="searchLongestMatchingTerms" outputVariable="searchLongestMatchingTermsResponse4" partnerLink="BilingualDictionaryWithLongestMatchCrossSearchPL4" portType="ns2:BilingualDictionaryWithLongestMatchSearch">
+            <bpws:catchAll>
+               <bpws:assign>
+                  <bpws:copy>
+                     <bpws:from expression="false()"/>
+                     <bpws:to variable="search4SuccessfullyCompleted"/>
+                  </bpws:copy>
+               </bpws:assign>
+            </bpws:catchAll>
+         </bpws:invoke>
+         <bpws:invoke inputVariable="searchLongestMatchingTermsRequest5" operation="searchLongestMatchingTerms" outputVariable="searchLongestMatchingTermsResponse5" partnerLink="BilingualDictionaryWithLongestMatchCrossSearchPL5" portType="ns2:BilingualDictionaryWithLongestMatchSearch">
+            <bpws:catchAll>
+               <bpws:assign>
+                  <bpws:copy>
+                     <bpws:from expression="false()"/>
+                     <bpws:to variable="search5SuccessfullyCompleted"/>
+                  </bpws:copy>
+               </bpws:assign>
+            </bpws:catchAll>
+         </bpws:invoke>
+      </bpws:flow>
+      <bpws:switch>
+         <bpws:case condition="bpws:getVariableData('search1SuccessfullyCompleted') and bpws:getVariableData('searchLongestMatchingTermsResponse1', 'searchLongestMatchingTermsReturn', 'boolean(/searchLongestMatchingTermsReturn/TranslationWithPosition)')">
+            <bpws:sequence>
+               <ext:forEach counterName="innerCounter" parallel="no">
+                  <ext:startCounterValue>1</ext:startCounterValue>
+                  <ext:finalCounterValue expressionLanguage="http://www.w3.org/TR/1999/REC-xpath-19991116">bpws:getVariableData('searchLongestMatchingTermsResponse1', 'searchLongestMatchingTermsReturn', 'count(/searchLongestMatchingTermsReturn/TranslationWithPosition)')</ext:finalCounterValue>
+                  <bpws:scope>
+                     <bpws:assign>
+                        <bpws:copy>
+                           <bpws:from part="searchLongestMatchingTermsReturn" query="/searchLongestMatchingTermsReturn/TranslationWithPosition[bpws:getVariableData('innerCounter')]" variable="searchLongestMatchingTermsResponse1"/>
+                           <bpws:to part="searchLongestMatchingTermsReturn" query="/searchLongestMatchingTermsReturn/TranslationWithPosition[bpws:getVariableData('counter')+bpws:getVariableData('innerCounter')]" variable="searchLongestMatchingTermsResponse"/>
+                        </bpws:copy>
+                     </bpws:assign>
+                  </bpws:scope>
+               </ext:forEach>
+               <bpws:assign>
+                  <bpws:copy>
+                     <bpws:from expression="bpws:getVariableData('counter')+bpws:getVariableData('searchLongestMatchingTermsResponse1', 'searchLongestMatchingTermsReturn', 'count(/searchLongestMatchingTermsReturn/TranslationWithPosition)')"/>
+                     <bpws:to variable="counter"/>
+                  </bpws:copy>
+               </bpws:assign>
+            </bpws:sequence>
+         </bpws:case>
+      </bpws:switch>
+      <bpws:switch>
+         <bpws:case condition="bpws:getVariableData('search2SuccessfullyCompleted') and bpws:getVariableData('searchLongestMatchingTermsResponse2', 'searchLongestMatchingTermsReturn', 'boolean(/searchLongestMatchingTermsReturn/TranslationWithPosition)')">
+            <bpws:sequence>
+               <ext:forEach counterName="innerCounter" parallel="no">
+                  <ext:startCounterValue>1</ext:startCounterValue>
+                  <ext:finalCounterValue expressionLanguage="http://www.w3.org/TR/1999/REC-xpath-19991116">bpws:getVariableData('searchLongestMatchingTermsResponse2', 'searchLongestMatchingTermsReturn', 'count(/searchLongestMatchingTermsReturn/TranslationWithPosition)')</ext:finalCounterValue>
+                  <bpws:scope>
+                     <bpws:assign>
+                        <bpws:copy>
+                           <bpws:from part="searchLongestMatchingTermsReturn" query="/searchLongestMatchingTermsReturn/TranslationWithPosition[bpws:getVariableData('innerCounter')]" variable="searchLongestMatchingTermsResponse2"/>
+                           <bpws:to part="searchLongestMatchingTermsReturn" query="/searchLongestMatchingTermsReturn/TranslationWithPosition[bpws:getVariableData('counter')+bpws:getVariableData('innerCounter')]" variable="searchLongestMatchingTermsResponse"/>
+                        </bpws:copy>
+                     </bpws:assign>
+                  </bpws:scope>
+               </ext:forEach>
+               <bpws:assign>
+                  <bpws:copy>
+                     <bpws:from expression="bpws:getVariableData('counter')+bpws:getVariableData('searchLongestMatchingTermsResponse2', 'searchLongestMatchingTermsReturn', 'count(/searchLongestMatchingTermsReturn/TranslationWithPosition)')"/>
+                     <bpws:to variable="counter"/>
+                  </bpws:copy>
+               </bpws:assign>
+            </bpws:sequence>
+         </bpws:case>
+      </bpws:switch>
+      <bpws:switch>
+         <bpws:case condition="bpws:getVariableData('search3SuccessfullyCompleted') and bpws:getVariableData('searchLongestMatchingTermsResponse3', 'searchLongestMatchingTermsReturn', 'boolean(/searchLongestMatchingTermsReturn/TranslationWithPosition)')">
+            <bpws:sequence>
+               <ext:forEach counterName="innerCounter" parallel="no">
+                  <ext:startCounterValue>1</ext:startCounterValue>
+                  <ext:finalCounterValue expressionLanguage="http://www.w3.org/TR/1999/REC-xpath-19991116">bpws:getVariableData('searchLongestMatchingTermsResponse3', 'searchLongestMatchingTermsReturn', 'count(/searchLongestMatchingTermsReturn/TranslationWithPosition)')</ext:finalCounterValue>
+                  <bpws:scope>
+                     <bpws:assign>
+                        <bpws:copy>
+                           <bpws:from part="searchLongestMatchingTermsReturn" query="/searchLongestMatchingTermsReturn/TranslationWithPosition[bpws:getVariableData('innerCounter')]" variable="searchLongestMatchingTermsResponse3"/>
+                           <bpws:to part="searchLongestMatchingTermsReturn" query="/searchLongestMatchingTermsReturn/TranslationWithPosition[bpws:getVariableData('counter')+bpws:getVariableData('innerCounter')]" variable="searchLongestMatchingTermsResponse"/>
+                        </bpws:copy>
+                     </bpws:assign>
+                  </bpws:scope>
+               </ext:forEach>
+               <bpws:assign>
+                  <bpws:copy>
+                     <bpws:from expression="bpws:getVariableData('counter')+bpws:getVariableData('searchLongestMatchingTermsResponse3', 'searchLongestMatchingTermsReturn', 'count(/searchLongestMatchingTermsReturn/TranslationWithPosition)')"/>
+                     <bpws:to variable="counter"/>
+                  </bpws:copy>
+               </bpws:assign>
+            </bpws:sequence>
+         </bpws:case>
+      </bpws:switch>
+      <bpws:switch>
+         <bpws:case condition="bpws:getVariableData('search4SuccessfullyCompleted') and bpws:getVariableData('searchLongestMatchingTermsResponse4', 'searchLongestMatchingTermsReturn', 'boolean(/searchLongestMatchingTermsReturn/TranslationWithPosition)')">
+            <bpws:sequence>
+               <ext:forEach counterName="innerCounter" parallel="no">
+                  <ext:startCounterValue>1</ext:startCounterValue>
+                  <ext:finalCounterValue expressionLanguage="http://www.w3.org/TR/1999/REC-xpath-19991116">bpws:getVariableData('searchLongestMatchingTermsResponse4', 'searchLongestMatchingTermsReturn', 'count(/searchLongestMatchingTermsReturn/TranslationWithPosition)')</ext:finalCounterValue>
+                  <bpws:scope>
+                     <bpws:assign>
+                        <bpws:copy>
+                           <bpws:from part="searchLongestMatchingTermsReturn" query="/searchLongestMatchingTermsReturn/TranslationWithPosition[bpws:getVariableData('innerCounter')]" variable="searchLongestMatchingTermsResponse4"/>
+                           <bpws:to part="searchLongestMatchingTermsReturn" query="/searchLongestMatchingTermsReturn/TranslationWithPosition[bpws:getVariableData('counter')+bpws:getVariableData('innerCounter')]" variable="searchLongestMatchingTermsResponse"/>
+                        </bpws:copy>
+                     </bpws:assign>
+                  </bpws:scope>
+               </ext:forEach>
+               <bpws:assign>
+                  <bpws:copy>
+                     <bpws:from expression="bpws:getVariableData('counter')+bpws:getVariableData('searchLongestMatchingTermsResponse4', 'searchLongestMatchingTermsReturn', 'count(/searchLongestMatchingTermsReturn/TranslationWithPosition)')"/>
+                     <bpws:to variable="counter"/>
+                  </bpws:copy>
+               </bpws:assign>
+            </bpws:sequence>
+         </bpws:case>
+      </bpws:switch>
+      <bpws:switch>
+         <bpws:case condition="bpws:getVariableData('search5SuccessfullyCompleted') and bpws:getVariableData('searchLongestMatchingTermsResponse5', 'searchLongestMatchingTermsReturn', 'boolean(/searchLongestMatchingTermsReturn/TranslationWithPosition)')">
+            <bpws:sequence>
+               <ext:forEach counterName="innerCounter" parallel="no">
+                  <ext:startCounterValue>1</ext:startCounterValue>
+                  <ext:finalCounterValue expressionLanguage="http://www.w3.org/TR/1999/REC-xpath-19991116">bpws:getVariableData('searchLongestMatchingTermsResponse5', 'searchLongestMatchingTermsReturn', 'count(/searchLongestMatchingTermsReturn/TranslationWithPosition)')</ext:finalCounterValue>
+                  <bpws:scope>
+                     <bpws:assign>
+                        <bpws:copy>
+                           <bpws:from part="searchLongestMatchingTermsReturn" query="/searchLongestMatchingTermsReturn/TranslationWithPosition[bpws:getVariableData('innerCounter')]" variable="searchLongestMatchingTermsResponse5"/>
+                           <bpws:to part="searchLongestMatchingTermsReturn" query="/searchLongestMatchingTermsReturn/TranslationWithPosition[bpws:getVariableData('counter')+bpws:getVariableData('innerCounter')]" variable="searchLongestMatchingTermsResponse"/>
+                        </bpws:copy>
+                     </bpws:assign>
+                  </bpws:scope>
+               </ext:forEach>
+               <bpws:assign>
+                  <bpws:copy>
+                     <bpws:from expression="bpws:getVariableData('counter')+bpws:getVariableData('searchLongestMatchingTermsResponse5', 'searchLongestMatchingTermsReturn', 'count(/searchLongestMatchingTermsReturn/TranslationWithPosition)')"/>
+                     <bpws:to variable="counter"/>
+                  </bpws:copy>
+               </bpws:assign>
+            </bpws:sequence>
+         </bpws:case>
+      </bpws:switch>
+      <bpws:reply operation="searchLongestMatchingTerms"
+		partnerLink="BilingualDictionaryWithLongestMatchCrossSearchPL"
+		portType="ns1:BilingualDictionaryWithLongestMatchSearch"
+		variable="searchLongestMatchingTermsResponse"/>
+   </bpws:sequence>
+</bpws:process>

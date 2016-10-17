@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpws:process xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:impl="http://localhost:8080/wrapper-mock-1.2/services/AbstractBilingualDictionary" xmlns:impl1="http://localhost:8080/wrapper-1.2/services/EBMT" xmlns:ns1="http://langrid.nict.go.jp/langrid-1.2/services/EBMTPreprocessDictionary" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="EBMTPreprocessDictionary" suppressJoinFailure="yes" targetNamespace="http://langrid.nict.go.jp/langrid-1.2/services/EBMTPreprocessDictionary">
+   <bpws:partnerLinks>
+      <bpws:partnerLink myRole="preprocessor" name="PreprocessDictionaryPL" partnerLinkType="ns1:PreprocessPLT"/>
+      <bpws:partnerLink name="PreprocessTranslationPL" partnerLinkType="ns1:PreprocessDictionaryPLT" partnerRole="dicpreprocess"/>
+      <bpws:partnerLink name="SearchPL" partnerLinkType="ns1:SearchPLT" partnerRole="dicservice"/>
+   </bpws:partnerLinks>
+   <bpws:variables>
+      <bpws:variable messageType="ns1:preprocessRequest" name="preprocessRequest"/>
+      <bpws:variable messageType="ns1:preprocessResponse" name="preprocessResponse"/>
+      <bpws:variable messageType="impl:searchRequest" name="searchRequest"/>
+      <bpws:variable messageType="impl:searchResponse" name="searchResponse"/>
+      <bpws:variable messageType="impl1:preprocessDictionaryRequest" name="preprocessTranslationRequest"/>
+      <bpws:variable messageType="impl1:preprocessDictionaryResponse" name="preprocessTranslationResponse"/>
+   </bpws:variables>
+   <bpws:sequence>
+      <bpws:receive createInstance="yes" operation="preprocess" partnerLink="PreprocessDictionaryPL" portType="ns1:EBMTPreprocessDictionary" variable="preprocessRequest"/>
+      <bpws:assign>
+         <bpws:copy>
+            <bpws:from part="headLang" variable="preprocessRequest"/>
+            <bpws:to part="headLang" variable="searchRequest"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="targetLang" variable="preprocessRequest"/>
+            <bpws:to part="targetLang" variable="searchRequest"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="headWord" variable="preprocessRequest"/>
+            <bpws:to part="headWord" variable="searchRequest"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="matchingMethod" variable="preprocessRequest"/>
+            <bpws:to part="matchingMethod" variable="searchRequest"/>
+         </bpws:copy>
+      </bpws:assign>
+      <bpws:invoke inputVariable="searchRequest" operation="search" outputVariable="searchResponse" partnerLink="SearchPL" portType="impl:BilingualDictionary"/>
+      <bpws:assign>
+         <bpws:copy>
+            <bpws:from part="headLang" variable="preprocessRequest"/>
+            <bpws:to part="sourceLang" variable="preprocessTranslationRequest"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="targetLang" variable="preprocessRequest"/>
+            <bpws:to part="targetLang" variable="preprocessTranslationRequest"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="searchReturn" variable="searchResponse"/>
+            <bpws:to part="contents" variable="preprocessTranslationRequest"/>
+         </bpws:copy>
+      </bpws:assign>
+      <bpws:invoke inputVariable="preprocessTranslationRequest" name="Preprocess" operation="preprocessDictionary" outputVariable="preprocessTranslationResponse" partnerLink="PreprocessTranslationPL" portType="impl1:EBMT"/>
+      <bpws:assign>
+         <bpws:copy>
+            <bpws:from part="preprocessDictionaryReturn" variable="preprocessTranslationResponse"/>
+            <bpws:to part="token" variable="preprocessResponse"/>
+         </bpws:copy>
+      </bpws:assign>
+      <bpws:reply operation="preprocess" partnerLink="PreprocessDictionaryPL" portType="ns1:EBMTPreprocessDictionary" variable="preprocessResponse"/>
+   </bpws:sequence>
+</bpws:process>

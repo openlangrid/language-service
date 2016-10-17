@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdlCatalog>
+
+  <wsdlEntry
+	location="project:SpecializedTranslation2/wsdl/unknown.wsdl"
+	classpath="wsdl/unknown.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:SpecializedTranslation2/wsdl/TermSearchServiceService.wsdl"
+	classpath="wsdl/TermSearchServiceService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:SpecializedTranslation2/wsdl/StringOperationServiceService.wsdl"
+	classpath="wsdl/StringOperationServiceService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:SpecializedTranslation2/wsdl/AbstractExtractableBilingualDictionary.wsdl"
+	classpath="wsdl/AbstractExtractableBilingualDictionary.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:SpecializedTranslation2/wsdl/CodeGenerationServiceService.wsdl"
+	classpath="wsdl/CodeGenerationServiceService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:SpecializedTranslation2/wsdl/TermReplacementServiceService.wsdl"
+	classpath="wsdl/TermReplacementServiceService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:SpecializedTranslation2/wsdl/AbstractMorphologicalAnalysis.wsdl"
+	classpath="wsdl/AbstractMorphologicalAnalysis.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:SpecializedTranslation2/wsdl/AbstractTranslation.wsdl"
+	classpath="wsdl/AbstractTranslation.wsdl"
+  />
+
+</wsdlCatalog>

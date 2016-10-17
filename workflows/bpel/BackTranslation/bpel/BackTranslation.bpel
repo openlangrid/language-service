@@ -1,0 +1,69 @@
+<!--
+BPEL Process Definition
+Edited using ActiveBPEL(r) Designer Version 4.1.0 (http://www.active-endpoints.com)
+--> 
+<bpws:process xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+ xmlns:ns1="http://langrid.nict.go.jp/langrid/services/BackTranslation"
+  xmlns:ns2="http://localhost:8080/wrapper-mock-1.2/services/AbstractTranslation"
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    name="BackTranslation"
+     suppressJoinFailure="yes"
+      targetNamespace="http://langrid.nict.go.jp/langrid/services/BackTranslation"> 
+   <bpws:partnerLinks> 
+      <bpws:partnerLink myRole="backTranslator" name="BackTranslationPL" partnerLinkType="ns1:BackTranslationPLT"/> 
+      <bpws:partnerLink name="ForwardTranslationPL" partnerLinkType="ns1:TranslationPLT" partnerRole="translator"/> 
+      <bpws:partnerLink name="BackwardTranslationPL" partnerLinkType="ns1:TranslationPLT" partnerRole="translator"/> 
+   </bpws:partnerLinks> 
+   <bpws:variables> 
+      <bpws:variable messageType="ns1:backTranslateRequest" name="backTranslateRequest"/> 
+      <bpws:variable messageType="ns1:backTranslateResponse" name="backTranslateResponse"/> 
+      <bpws:variable messageType="ns2:translateRequest" name="translateRequest"/> 
+      <bpws:variable messageType="ns2:translateResponse" name="translateResponse"/> 
+      <bpws:variable messageType="ns2:translateRequest" name="translateRequest1"/> 
+      <bpws:variable messageType="ns2:translateResponse" name="translateResponse1"/> 
+   </bpws:variables> 
+   <bpws:sequence> 
+      <bpws:receive createInstance="yes" operation="backTranslate" partnerLink="BackTranslationPL" portType="ns1:BackTranslation" variable="backTranslateRequest"/> 
+      <bpws:assign> 
+         <bpws:copy> 
+            <bpws:from part="sourceLang" variable="backTranslateRequest"/> 
+            <bpws:to part="sourceLang" variable="translateRequest"/> 
+         </bpws:copy> 
+         <bpws:copy> 
+            <bpws:from part="intermediateLang" variable="backTranslateRequest"/> 
+            <bpws:to part="targetLang" variable="translateRequest"/> 
+         </bpws:copy> 
+         <bpws:copy> 
+            <bpws:from part="source" variable="backTranslateRequest"/> 
+            <bpws:to part="source" variable="translateRequest"/> 
+         </bpws:copy> 
+      </bpws:assign> 
+      <bpws:invoke inputVariable="translateRequest" name="ForwardTranslation" operation="translate" outputVariable="translateResponse" partnerLink="ForwardTranslationPL" portType="ns2:Translation"/> 
+      <bpws:assign> 
+         <bpws:copy> 
+            <bpws:from part="translateReturn" variable="translateResponse"/> 
+            <bpws:to part="source" variable="translateRequest1"/> 
+         </bpws:copy> 
+         <bpws:copy> 
+            <bpws:from part="intermediateLang" variable="backTranslateRequest"/> 
+            <bpws:to part="sourceLang" variable="translateRequest1"/> 
+         </bpws:copy> 
+         <bpws:copy> 
+            <bpws:from part="sourceLang" variable="backTranslateRequest"/> 
+            <bpws:to part="targetLang" variable="translateRequest1"/> 
+         </bpws:copy> 
+      </bpws:assign> 
+      <bpws:invoke inputVariable="translateRequest1" name="BackwardTranslation" operation="translate" outputVariable="translateResponse1" partnerLink="BackwardTranslationPL" portType="ns2:Translation"/> 
+      <bpws:assign> 
+         <bpws:copy> 
+            <bpws:from part="translateReturn" variable="translateResponse"/> 
+            <bpws:to part="backTranslateReturn" query="/backTranslateReturn/intermediate" variable="backTranslateResponse"/> 
+         </bpws:copy> 
+         <bpws:copy> 
+            <bpws:from part="translateReturn" variable="translateResponse1"/> 
+            <bpws:to part="backTranslateReturn" query="/backTranslateReturn/target" variable="backTranslateResponse"/> 
+         </bpws:copy> 
+      </bpws:assign> 
+      <bpws:reply operation="backTranslate" partnerLink="BackTranslationPL" portType="ns1:BackTranslation" variable="backTranslateResponse"/> 
+   </bpws:sequence> 
+</bpws:process> 

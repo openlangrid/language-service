@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+BPEL Process Definition
+Edited using ActiveBPEL(tm) Designer Version 2.1.0 (http://www.active-endpoints.com)
+-->
+<process xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/" 
+xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/" 
+xmlns:ns1="http://langrid.nict.go.jp/langrid-1.2/services/MultilingualTranslationKyotoUJServer" 
+xmlns:ns2="http://langrid.ai.soc.i.kyoto-u.ac.jp/langrid-service_1_2/services/JServer" 
+xmlns:ns3="http://langrid.ai.soc.i.kyoto-u.ac.jp/langrid-service_1_2/services/CLWT" 
+xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+name="MultilingualTranslationKyotoUJServer" 
+suppressJoinFailure="yes" 
+targetNamespace="http://langrid.nict.go.jp/langrid-1.2/services/MultilingualTranslationKyotoUJServer">
+   <partnerLinks>
+      <partnerLink myRole="service" name="SelfPLT" partnerLinkType="ns1:SelfPLT"/>
+      <partnerLink name="JServerPLT" partnerLinkType="ns1:JServerPLT" partnerRole="translation"/>
+      <partnerLink name="CLWTPLT" partnerLinkType="ns1:CLWTPLT" partnerRole="translation"/>
+   </partnerLinks>
+   <variables>
+      <variable messageType="ns1:translateRequest" name="translateRequest"/>
+      <variable messageType="ns1:translateResponse" name="translateResponse"/>
+      <variable messageType="ns2:translateRequest" name="JServer1Request"/>
+      <variable messageType="ns2:translateResponse" name="JServer1Response"/>
+      <variable messageType="ns2:translateRequest" name="JServer2Request"/>
+      <variable messageType="ns2:translateResponse" name="JServer2Response"/>
+      <variable messageType="ns3:translateRequest" name="CLWT1Request"/>
+      <variable messageType="ns3:translateResponse" name="CLWT1Response"/>
+      <variable messageType="ns2:translateRequest" name="JServer3Request"/>
+      <variable messageType="ns2:translateResponse" name="JServer3Response"/>
+      <variable messageType="ns2:translateRequest" name="JServer4Request"/>
+      <variable messageType="ns2:translateResponse" name="JServer4Response"/>
+      <variable messageType="ns2:translateRequest" name="JServer5Request"/>
+      <variable messageType="ns2:translateResponse" name="JServer5Response"/>
+      <variable messageType="ns3:translateRequest" name="CLWT2Request"/>
+      <variable messageType="ns3:translateResponse" name="CLWT2Response"/>
+      <variable messageType="ns2:translateRequest" name="JServer6Request"/>
+      <variable messageType="ns2:translateResponse" name="JServer6Response"/>
+      <variable messageType="ns2:translateRequest" name="JServer7Request"/>
+      <variable messageType="ns2:translateResponse" name="JServer7Response"/>
+      <variable messageType="ns2:translateRequest" name="JServer8Request"/>
+      <variable messageType="ns2:translateResponse" name="JServer8Response"/>
+      <variable messageType="ns3:translateRequest" name="CLWT3Request"/>
+      <variable messageType="ns3:translateResponse" name="CLWT3Response"/>
+      <variable messageType="ns3:translateRequest" name="CLWT4Request"/>
+      <variable messageType="ns3:translateResponse" name="CLWT4Response"/>
+      <variable messageType="ns2:translateRequest" name="JServer9Request"/>
+      <variable messageType="ns2:translateResponse" name="JServer9Response"/>
+      <variable messageType="ns2:translateRequest" name="JServer10Request"/>
+      <variable messageType="ns2:translateResponse" name="JServer10Response"/>
+      <variable messageType="ns3:translateRequest" name="CLWT5Request"/>
+      <variable messageType="ns3:translateResponse" name="CLWT5Response"/>
+   </variables>
+   <sequence>
+      <receive createInstance="yes" operation="translate" partnerLink="SelfPLT" portType="ns1:MultilingualTranslationKyotoUJServer" variable="translateRequest"/>
+      <switch>
+         <case condition="bpws:getVariableData('translateRequest', 'sourceLang') = bpws:getVariableData('translateRequest', 'targetLang')">
+            <sequence>
+               <assign>
+                  <copy>
+                     <from part="source" variable="translateRequest"/>
+                     <to part="translateReturn" variable="translateResponse"/>
+                  </copy>
+               </assign>
+            </sequence>
+         </case>
+         <otherwise>
+            <switch>
+               <case condition="bpws:getVariableData('translateRequest', 'sourceLang') = &quot;ja&quot;">
+                  <sequence>
+                     <switch>
+                        <case condition="bpws:getVariableData('translateRequest', 'targetLang') = &quot;en&quot; or bpws:getVariableData('translateRequest', 'targetLang') = &quot;zh&quot; or bpws:getVariableData('translateRequest', 'targetLang') = &quot;ko&quot;">
+                           <sequence>
+                              <assign>
+                                 <copy>
+                                    <from part="sourceLang" variable="translateRequest"/>
+                                    <to part="sourceLang" variable="JServer1Request"/>
+                                 </copy>
+                                 <copy>
+                                    <from part="targetLang" variable="translateRequest"/>
+                                    <to part="targetLang" variable="JServer1Request"/>
+                                 </copy>
+                                 <copy>
+                                    <from part="source" variable="translateRequest"/>
+                                    <to part="source" variable="JServer1Request"/>
+                                 </copy>
+                              </assign>
+                              <invoke inputVariable="JServer1Request" name="JServer1" operation="translate" outputVariable="JServer1Response" partnerLink="JServerPLT" portType="ns2:Translation"/>
+                              <assign>
+                                 <copy>
+                                    <from part="translateReturn" variable="JServer1Response"/>
+                                    <to part="translateReturn" variable="translateResponse"/>
+                                 </copy>
+                              </assign>
+                           </sequence>
+                        </case>
+                        <otherwise>
+                           <sequence>
+                              <assign>
+                                 <copy>
+                                    <from part="sourceLang" variable="translateRequest"/>
+                                    <to part="sourceLang" variable="JServer2Request"/>
+                                 </copy>
+                                 <copy>
+                                    <from>en</from>
+                                    <to part="targetLang" variable="JServer2Request"/>
+                                 </copy>
+                                 <copy>
+                                    <from part="source" variable="translateRequest"/>
+                                    <to part="source" variable="JServer2Request"/>
+                                 </copy>
+                              </assign>
+                              <invoke inputVariable="JServer2Request" name="JServer2" operation="translate" outputVariable="JServer2Response" partnerLink="JServerPLT" portType="ns2:Translation"/>
+                              <assign>
+                                 <copy>
+                                    <from>en</from>
+                                    <to part="sourceLang" variable="CLWT1Request"/>
+                                 </copy>
+                                 <copy>
+                                    <from part="targetLang" variable="translateRequest"/>
+                                    <to part="targetLang" variable="CLWT1Request"/>
+                                 </copy>
+                                 <copy>
+                                    <from part="translateReturn" variable="JServer2Response"/>
+                                    <to part="source" variable="CLWT1Request"/>
+                                 </copy>
+                              </assign>
+                              <invoke inputVariable="CLWT1Request" name="CLWT1" operation="translate" outputVariable="CLWT1Response" partnerLink="CLWTPLT" portType="ns3:Translation"/>
+                              <assign>
+                                 <copy>
+                                    <from part="translateReturn" variable="CLWT1Response"/>
+                                    <to part="translateReturn" variable="translateResponse"/>
+                                 </copy>
+                              </assign>
+                           </sequence>
+                        </otherwise>
+                     </switch>
+                  </sequence>
+               </case>
+               <case condition="bpws:getVariableData('translateRequest', 'sourceLang') = &quot;en&quot;">
+                  <sequence>
+                     <switch>
+                        <case condition="bpws:getVariableData('translateRequest', 'targetLang') = &quot;ja&quot;">
+                           <sequence>
+                              <assign>
+                                 <copy>
+                                    <from part="sourceLang" variable="translateRequest"/>
+                                    <to part="sourceLang" variable="JServer3Request"/>
+                                 </copy>
+                                 <copy>
+                                    <from part="targetLang" variable="translateRequest"/>
+                                    <to part="targetLang" variable="JServer3Request"/>
+                                 </copy>
+                                 <copy>
+                                    <from part="source" variable="translateRequest"/>
+                                    <to part="source" variable="JServer3Request"/>
+                                 </copy>
+                              </assign>
+                              <invoke inputVariable="JServer3Request" name="JServer3" operation="translate" outputVariable="JServer3Response" partnerLink="JServerPLT" portType="ns2:Translation"/>
+                              <assign>
+                                 <copy>
+                                    <from part="translateReturn" variable="JServer3Response"/>
+                                    <to part="translateReturn" variable="translateResponse"/>
+                                 </copy>
+                              </assign>
+                           </sequence>
+                        </case>
+                        <case condition="bpws:getVariableData('translateRequest', 'targetLang') = &quot;zh&quot; or bpws:getVariableData('translateRequest', 'targetLang') = &quot;ko&quot;">
+                           <sequence>
+                              <assign>
+                                 <copy>
+                                    <from part="sourceLang" variable="translateRequest"/>
+                                    <to part="sourceLang" variable="JServer4Request"/>
+                                 </copy>
+                                 <copy>
+                                    <from>ja</from>
+                                    <to part="targetLang" variable="JServer4Request"/>
+                                 </copy>
+                                 <copy>
+                                    <from part="source" variable="translateRequest"/>
+                                    <to part="source" variable="JServer4Request"/>
+                                 </copy>
+                              </assign>
+                              <invoke inputVariable="JServer4Request" name="JServer4" operation="translate" outputVariable="JServer4Response" partnerLink="JServerPLT" portType="ns2:Translation"/>
+                              <assign>
+                                 <copy>
+                                    <from part="translateReturn" variable="JServer4Response"/>
+                                    <to part="source" variable="JServer5Request"/>
+                                 </copy>
+                                 <copy>
+                                    <from>ja</from>
+                                    <to part="sourceLang" variable="JServer5Request"/>
+                                 </copy>
+                                 <copy>
+                                    <from part="targetLang" variable="translateRequest"/>
+                                    <to part="targetLang" variable="JServer5Request"/>
+                                 </copy>
+                              </assign>
+                              <invoke inputVariable="JServer5Request" name="JServer5" operation="translate" outputVariable="JServer5Response" partnerLink="JServerPLT" portType="ns2:Translation"/>
+                              <assign>
+                                 <copy>
+                                    <from part="translateReturn" variable="JServer5Response"/>
+                                    <to part="translateReturn" variable="translateResponse"/>
+                                 </copy>
+                              </assign>
+                           </sequence>
+                        </case>
+                        <otherwise>
+                           <sequence>
+                              <assign>
+                                 <copy>
+                                    <from part="sourceLang" variable="translateRequest"/>
+                                    <to part="sourceLang" variable="CLWT2Request"/>
+                                 </copy>
+                                 <copy>
+                                    <from part="targetLang" variable="translateRequest"/>
+                                    <to part="targetLang" variable="CLWT2Request"/>
+                                 </copy>
+                                 <copy>
+                                    <from part="source" variable="translateRequest"/>
+                                    <to part="source" variable="CLWT2Request"/>
+                                 </copy>
+                              </assign>
+                              <invoke inputVariable="CLWT2Request" name="CLWT2" operation="translate" outputVariable="CLWT2Response" partnerLink="CLWTPLT" portType="ns3:Translation"/>
+                              <assign>
+                                 <copy>
+                                    <from part="translateReturn" variable="CLWT2Response"/>
+                                    <to part="translateReturn" variable="translateResponse"/>
+                                 </copy>
+                              </assign>
+                           </sequence>
+                        </otherwise>
+                     </switch>
+                  </sequence>
+               </case>
+               <case condition="bpws:getVariableData('translateRequest', 'sourceLang') = &quot;zh&quot; or bpws:getVariableData('translateRequest', 'sourceLang') = &quot;ko&quot;">
+                  <sequence>
+                     <assign>
+                        <copy>
+                           <from part="sourceLang" variable="translateRequest"/>
+                           <to part="sourceLang" variable="JServer6Request"/>
+                        </copy>
+                        <copy>
+                           <from>ja</from>
+                           <to part="targetLang" variable="JServer6Request"/>
+                        </copy>
+                        <copy>
+                           <from part="source" variable="translateRequest"/>
+                           <to part="source" variable="JServer6Request"/>
+                        </copy>
+                     </assign>
+                     <invoke inputVariable="JServer6Request" name="JServer6" operation="translate" outputVariable="JServer6Response" partnerLink="JServerPLT" portType="ns2:Translation"/>
+                     <switch>
+                        <case condition="bpws:getVariableData('translateRequest', 'targetLang') = &quot;ja&quot;">
+                           <sequence>
+                              <assign>
+                                 <copy>
+                                    <from part="translateReturn" variable="JServer6Response"/>
+                                    <to part="translateReturn" variable="translateResponse"/>
+                                 </copy>
+                              </assign>
+                           </sequence>
+                        </case>
+                        <case condition="bpws:getVariableData('translateRequest', 'targetLang') = &quot;en&quot; or bpws:getVariableData('translateRequest', 'targetLang') = &quot;zh&quot; or bpws:getVariableData('translateRequest', 'targetLang') = &quot;ko&quot;">
+                           <sequence>
+                              <assign>
+                                 <copy>
+                                    <from>ja</from>
+                                    <to part="sourceLang" variable="JServer7Request"/>
+                                 </copy>
+                                 <copy>
+                                    <from part="targetLang" variable="translateRequest"/>
+                                    <to part="targetLang" variable="JServer7Request"/>
+                                 </copy>
+                                 <copy>
+                                    <from part="translateReturn" variable="JServer6Response"/>
+                                    <to part="source" variable="JServer7Request"/>
+                                 </copy>
+                              </assign>
+                              <invoke inputVariable="JServer7Request" name="JServer7" operation="translate" outputVariable="JServer7Response" partnerLink="JServerPLT" portType="ns2:Translation"/>
+                              <assign>
+                                 <copy>
+                                    <from part="translateReturn" variable="JServer7Response"/>
+                                    <to part="translateReturn" variable="translateResponse"/>
+                                 </copy>
+                              </assign>
+                           </sequence>
+                        </case>
+                        <otherwise>
+                           <sequence>
+                              <assign>
+                                 <copy>
+                                    <from>ja</from>
+                                    <to part="sourceLang" variable="JServer8Request"/>
+                                 </copy>
+                                 <copy>
+                                    <from>en</from>
+                                    <to part="targetLang" variable="JServer8Request"/>
+                                 </copy>
+                                 <copy>
+                                    <from part="translateReturn" variable="JServer6Response"/>
+                                    <to part="source" variable="JServer8Request"/>
+                                 </copy>
+                              </assign>
+                              <invoke inputVariable="JServer8Request" name="JServer8" operation="translate" outputVariable="JServer8Response" partnerLink="JServerPLT" portType="ns2:Translation"/>
+                              <assign>
+                                 <copy>
+                                    <from part="translateReturn" variable="JServer8Response"/>
+                                    <to part="source" variable="CLWT3Request"/>
+                                 </copy>
+                                 <copy>
+                                    <from>en</from>
+                                    <to part="sourceLang" variable="CLWT3Request"/>
+                                 </copy>
+                                 <copy>
+                                    <from part="targetLang" variable="translateRequest"/>
+                                    <to part="targetLang" variable="CLWT3Request"/>
+                                 </copy>
+                              </assign>
+                              <invoke inputVariable="CLWT3Request" name="CLWT3" operation="translate" outputVariable="CLWT3Response" partnerLink="CLWTPLT" portType="ns3:Translation"/>
+                              <assign>
+                                 <copy>
+                                    <from part="translateReturn" variable="CLWT3Response"/>
+                                    <to part="translateReturn" variable="translateResponse"/>
+                                 </copy>
+                              </assign>
+                           </sequence>
+                        </otherwise>
+                     </switch>
+                  </sequence>
+               </case>
+               <otherwise>
+                  <sequence>
+                     <assign>
+                        <copy>
+                           <from part="sourceLang" variable="translateRequest"/>
+                           <to part="sourceLang" variable="CLWT4Request"/>
+                        </copy>
+                        <copy>
+                           <from>en</from>
+                           <to part="targetLang" variable="CLWT4Request"/>
+                        </copy>
+                        <copy>
+                           <from part="source" variable="translateRequest"/>
+                           <to part="source" variable="CLWT4Request"/>
+                        </copy>
+                     </assign>
+                     <invoke inputVariable="CLWT4Request" name="CLWT4" operation="translate" outputVariable="CLWT4Response" partnerLink="CLWTPLT" portType="ns3:Translation"/>
+                     <switch>
+                        <case condition="bpws:getVariableData('translateRequest', 'targetLang') = &quot;en&quot;">
+                           <sequence>
+                              <assign>
+                                 <copy>
+                                    <from part="translateReturn" variable="CLWT4Response"/>
+                                    <to part="translateReturn" variable="translateResponse"/>
+                                 </copy>
+                              </assign>
+                           </sequence>
+                        </case>
+                        <case condition="bpws:getVariableData('translateRequest', 'targetLang') = &quot;ja&quot; or bpws:getVariableData('translateRequest', 'targetLang') = &quot;zh&quot; or bpws:getVariableData('translateRequest', 'targetLang') = &quot;ko&quot;">
+                           <sequence>
+                              <assign>
+                                 <copy>
+                                    <from>en</from>
+                                    <to part="sourceLang" variable="JServer9Request"/>
+                                 </copy>
+                                 <copy>
+                                    <from>ja</from>
+                                    <to part="targetLang" variable="JServer9Request"/>
+                                 </copy>
+                                 <copy>
+                                    <from part="translateReturn" variable="CLWT4Response"/>
+                                    <to part="source" variable="JServer9Request"/>
+                                 </copy>
+                              </assign>
+                              <invoke inputVariable="JServer9Request" name="JServer9" operation="translate" outputVariable="JServer9Response" partnerLink="JServerPLT" portType="ns2:Translation"/>
+                              <switch>
+                                 <case condition="bpws:getVariableData('translateRequest', 'targetLang') = &quot;ja&quot;">
+                                    <sequence>
+                                       <assign>
+                                          <copy>
+                                             <from part="translateReturn" variable="JServer9Response"/>
+                                             <to part="translateReturn" variable="translateResponse"/>
+                                          </copy>
+                                       </assign>
+                                    </sequence>
+                                 </case>
+                                 <otherwise>
+                                    <sequence>
+                                       <assign>
+                                          <copy>
+                                             <from>ja</from>
+                                             <to part="sourceLang" variable="JServer10Request"/>
+                                          </copy>
+                                          <copy>
+                                             <from part="targetLang" variable="translateRequest"/>
+                                             <to part="targetLang" variable="JServer10Request"/>
+                                          </copy>
+                                          <copy>
+                                             <from part="translateReturn" variable="JServer9Response"/>
+                                             <to part="source" variable="JServer10Request"/>
+                                          </copy>
+                                       </assign>
+                                       <invoke inputVariable="JServer10Request" name="JServer10" operation="translate" outputVariable="JServer10Response" partnerLink="JServerPLT" portType="ns2:Translation"/>
+                                       <assign>
+                                          <copy>
+                                             <from part="translateReturn" variable="JServer10Response"/>
+                                             <to part="translateReturn" variable="translateResponse"/>
+                                          </copy>
+                                       </assign>
+                                    </sequence>
+                                 </otherwise>
+                              </switch>
+                           </sequence>
+                        </case>
+                        <otherwise>
+                           <sequence>
+                              <assign>
+                                 <copy>
+                                    <from>en</from>
+                                    <to part="sourceLang" variable="CLWT5Request"/>
+                                 </copy>
+                                 <copy>
+                                    <from part="targetLang" variable="translateRequest"/>
+                                    <to part="targetLang" variable="CLWT5Request"/>
+                                 </copy>
+                                 <copy>
+                                    <from part="translateReturn" variable="CLWT4Response"/>
+                                    <to part="source" variable="CLWT5Request"/>
+                                 </copy>
+                              </assign>
+                              <invoke inputVariable="CLWT5Request" name="CLWT5" operation="translate" outputVariable="CLWT5Response" partnerLink="CLWTPLT" portType="ns3:Translation"/>
+                              <assign>
+                                 <copy>
+                                    <from part="translateReturn" variable="CLWT5Response"/>
+                                    <to part="translateReturn" variable="translateResponse"/>
+                                 </copy>
+                              </assign>
+                           </sequence>
+                        </otherwise>
+                     </switch>
+                  </sequence>
+               </otherwise>
+            </switch>
+         </otherwise>
+      </switch>
+      <reply operation="translate" partnerLink="SelfPLT" portType="ns1:MultilingualTranslationKyotoUJServer" variable="translateResponse"/>
+   </sequence>
+</process>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+targetNamespace="http://langrid.nict.go.jp/langrid/services/UserDictionaryBacktranslationLocalDbNaturalDisastersService"
+xmlns:tns="http://langrid.nict.go.jp/langrid/services/UserDictionaryBacktranslationLocalDbNaturalDisastersService"
+xmlns:tr="http://langrid.nict.go.jp/langrid/services/UserDictionaryTranslationLocalDbNaturalDisastersService"
+xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"> 
+  <wsdl:types>
+    <schema targetNamespace="http://langrid.nict.go.jp/langrid/services/UserDictionaryBacktranslationLocalDbNaturalDisastersService" xmlns="http://www.w3.org/2001/XMLSchema">
+      <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+      <complexType name="ArrayOf_tns2_Translation">
+        <complexContent>
+          <restriction base="soapenc:Array">
+            <attribute ref="soapenc:arrayType" wsdl:arrayType="tns:Translation[]"/>
+          </restriction>
+        </complexContent>
+      </complexType>
+    </schema>
+    <schema targetNamespace="http://langrid.nict.go.jp/langrid/services/UserDictionaryBacktranslationLocalDbNaturalDisastersService" xmlns="http://www.w3.org/2001/XMLSchema">
+      <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+      <complexType name="ArrayOf_xsd_string">
+        <complexContent>
+          <restriction base="soapenc:Array">
+            <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string[]"/>
+          </restriction>
+        </complexContent>
+      </complexType>
+      <complexType name="Translation">
+        <sequence>
+          <element name="headWord" nillable="true" type="xsd:string"/>
+          <element name="targetWords" nillable="true" type="tns:ArrayOf_xsd_string"/>
+        </sequence>
+      </complexType>
+    </schema>
+    <schema targetNamespace="http://langrid.nict.go.jp/langrid/services/UserDictionaryBacktranslationLocalDbNaturalDisastersService" xmlns="http://www.w3.org/2001/XMLSchema">
+  <complexType name="BackTranslationResult">
+   <sequence>
+     <element name="intermediate" nillable="true" type="xsd:string"/>
+     <element name="target" nillable="true" type="xsd:string"/>
+   </sequence>
+  </complexType>
+ </schema>
+  </wsdl:types>
+  <wsdl:message name="BacktransRequest">
+    <wsdl:part name="sourceLang" type="xsd:string"/>
+    <wsdl:part name="intermediateLang" type="xsd:string"/>
+    <wsdl:part name="source" type="xsd:string"/>
+    <wsdl:part name="userDict" type="tns:ArrayOf_tns2_Translation"/>
+  </wsdl:message>
+  <wsdl:message name="BacktransResponse">
+    <wsdl:part name="BacktransReturn" type="tns:BackTranslationResult"/>
+  </wsdl:message>
+
+  <wsdl:portType name="Backtranslation">
+    <wsdl:operation name="backTranslate">
+      <wsdl:input message="tns:BacktransRequest"/>
+      <wsdl:output message="tns:BacktransResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+
+<plnk:partnerLinkType name="BacktransPLT">
+   <plnk:role name="backtranslator">
+      <plnk:portType name="tns:Backtranslation"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+
+<plnk:partnerLinkType name="TranslatePLT">
+   <plnk:role name="translator">
+      <plnk:portType name="tr:Translation"/>
+   </plnk:role>
+</plnk:partnerLinkType>
+</wsdl:definitions>

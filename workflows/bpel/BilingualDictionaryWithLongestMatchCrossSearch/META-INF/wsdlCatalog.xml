@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdlCatalog>
+
+  <wsdlEntry
+	location="project:BilingualDictionaryWithLongestMatchCrossSearch/wsdl/AbstractBilingualDictionaryWithLongestMatchSearchService.wsdl"
+	classpath="wsdl/AbstractBilingualDictionaryWithLongestMatchSearchService.wsdl"
+  />
+
+  <wsdlEntry
+	location="project:BilingualDictionaryWithLongestMatchCrossSearch/wsdl/unknown.wsdl"
+	classpath="wsdl/unknown.wsdl"
+  />
+
+</wsdlCatalog>

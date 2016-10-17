@@ -1,0 +1,14 @@
+# italian PartOfSpeech map
+AB*=other
+ADJ*=adjective
+ADV*=adverb
+C*=other
+D*=other
+I*=other
+NO*=noun.common
+NP*=noun.proper
+PRO*=noun.pronoun
+NU*=other
+P*=other
+S*=other
+V*=verb

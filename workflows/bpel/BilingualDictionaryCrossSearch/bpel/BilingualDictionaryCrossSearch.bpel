@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+BPEL Process Definition
+Edited using ActiveBPEL(r) Designer Version 4.1.0 (http://www.active-endpoints.com)
+-->
+<bpws:process xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:ns="http://schemas.xmlsoap.org/soap/encoding/" xmlns:ns1="http://localhost:8080/wrapper-mock-1.2/services/BilingualDictionaryCrossSearch" xmlns:ns2="http://localhost:8080/wrapper-mock-1.2/services/AbstractBilingualDictionary" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ext="http://www.activebpel.org/2006/09/bpel/extension/activity" name="BilingualDictionaryCrossSearch" suppressJoinFailure="yes" targetNamespace="http://localhost:8080/wrapper-mock-1.2.N/services/BilingualDictionaryCrossSearch">
+   <bpws:partnerLinks>
+      <bpws:partnerLink myRole="self" name="BilingualDictionaryCrossSearchPL" partnerLinkType="ns1:BilingualDictionaryCrossSearchPLT"/>
+      <bpws:partnerLink name="BilingualDictionaryPL1" partnerLinkType="ns1:BilingualDictionaryPLT" partnerRole="dictionary"/>
+      <bpws:partnerLink name="BilingualDictionaryPL2" partnerLinkType="ns1:BilingualDictionaryPLT" partnerRole="dictionary"/>
+      <bpws:partnerLink name="BilingualDictionaryPL3" partnerLinkType="ns1:BilingualDictionaryPLT" partnerRole="dictionary"/>
+      <bpws:partnerLink name="BilingualDictionaryPL4" partnerLinkType="ns1:BilingualDictionaryPLT" partnerRole="dictionary"/>
+      <bpws:partnerLink name="BilingualDictionaryPL5" partnerLinkType="ns1:BilingualDictionaryPLT" partnerRole="dictionary"/>
+   </bpws:partnerLinks>
+   <bpws:variables>
+      <bpws:variable messageType="ns1:searchRequest" name="searchRequest"/>
+      <bpws:variable messageType="ns1:searchResponse" name="searchResponse"/>
+      <bpws:variable messageType="ns2:searchRequest" name="searchRequest1"/>
+      <bpws:variable messageType="ns2:searchResponse" name="searchResponse1"/>
+      <bpws:variable messageType="ns2:searchRequest" name="searchRequest2"/>
+      <bpws:variable messageType="ns2:searchResponse" name="searchResponse2"/>
+      <bpws:variable messageType="ns2:searchRequest" name="searchRequest3"/>
+      <bpws:variable messageType="ns2:searchResponse" name="searchResponse3"/>
+      <bpws:variable messageType="ns2:searchRequest" name="searchRequest4"/>
+      <bpws:variable messageType="ns2:searchResponse" name="searchResponse4"/>
+      <bpws:variable messageType="ns2:searchRequest" name="searchRequest5"/>
+      <bpws:variable messageType="ns2:searchResponse" name="searchResponse5"/>
+      <bpws:variable name="search1SuccessfullyCompleted" type="xsd:boolean"/>
+      <bpws:variable name="search2SuccessfullyCompleted" type="xsd:boolean"/>
+      <bpws:variable name="search3SuccessfullyCompleted" type="xsd:boolean"/>
+      <bpws:variable name="search4SuccessfullyCompleted" type="xsd:boolean"/>
+      <bpws:variable name="search5SuccessfullyCompleted" type="xsd:boolean"/>
+      <bpws:variable name="counter" type="xsd:integer"/>
+   </bpws:variables>
+   <bpws:sequence>
+      <bpws:receive createInstance="yes" operation="search" partnerLink="BilingualDictionaryCrossSearchPL" portType="ns1:BilingualDictionary" variable="searchRequest"/>
+      <bpws:assign>
+         <bpws:copy>
+            <bpws:from part="headLang" variable="searchRequest"/>
+            <bpws:to part="headLang" variable="searchRequest1"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="targetLang" variable="searchRequest"/>
+            <bpws:to part="targetLang" variable="searchRequest1"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="headWord" variable="searchRequest"/>
+            <bpws:to part="headWord" variable="searchRequest1"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="matchingMethod" variable="searchRequest"/>
+            <bpws:to part="matchingMethod" variable="searchRequest1"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="headLang" variable="searchRequest"/>
+            <bpws:to part="headLang" variable="searchRequest2"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="targetLang" variable="searchRequest"/>
+            <bpws:to part="targetLang" variable="searchRequest2"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="headWord" variable="searchRequest"/>
+            <bpws:to part="headWord" variable="searchRequest2"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="matchingMethod" variable="searchRequest"/>
+            <bpws:to part="matchingMethod" variable="searchRequest2"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="headLang" variable="searchRequest"/>
+            <bpws:to part="headLang" variable="searchRequest3"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="targetLang" variable="searchRequest"/>
+            <bpws:to part="targetLang" variable="searchRequest3"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="headWord" variable="searchRequest"/>
+            <bpws:to part="headWord" variable="searchRequest3"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="matchingMethod" variable="searchRequest"/>
+            <bpws:to part="matchingMethod" variable="searchRequest3"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="headLang" variable="searchRequest"/>
+            <bpws:to part="headLang" variable="searchRequest4"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="targetLang" variable="searchRequest"/>
+            <bpws:to part="targetLang" variable="searchRequest4"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="headWord" variable="searchRequest"/>
+            <bpws:to part="headWord" variable="searchRequest4"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="matchingMethod" variable="searchRequest"/>
+            <bpws:to part="matchingMethod" variable="searchRequest4"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="headLang" variable="searchRequest"/>
+            <bpws:to part="headLang" variable="searchRequest5"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="targetLang" variable="searchRequest"/>
+            <bpws:to part="targetLang" variable="searchRequest5"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="headWord" variable="searchRequest"/>
+            <bpws:to part="headWord" variable="searchRequest5"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from part="matchingMethod" variable="searchRequest"/>
+            <bpws:to part="matchingMethod" variable="searchRequest5"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from expression="true()"/>
+            <bpws:to variable="search1SuccessfullyCompleted"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from expression="true()"/>
+            <bpws:to variable="search2SuccessfullyCompleted"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from expression="true()"/>
+            <bpws:to variable="search3SuccessfullyCompleted"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from expression="true()"/>
+            <bpws:to variable="search4SuccessfullyCompleted"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from expression="true()"/>
+            <bpws:to variable="search5SuccessfullyCompleted"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from>
+               <searchReturn xmlns:aensTYPE="http://localhost:8080/wrapper-mock-1.2/services/AbstractBilingualDictionary" xmlns:ns2="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="aensTYPE:ArrayOf_tns1_Translation"/>
+            </bpws:from>
+            <bpws:to part="searchReturn" variable="searchResponse"/>
+         </bpws:copy>
+         <bpws:copy>
+            <bpws:from expression="0"/>
+            <bpws:to variable="counter"/>
+         </bpws:copy>
+      </bpws:assign>
+      <bpws:flow>
+         <bpws:invoke inputVariable="searchRequest1" operation="search" outputVariable="searchResponse1" partnerLink="BilingualDictionaryPL1" portType="ns2:BilingualDictionary">
+            <bpws:catchAll>
+               <bpws:assign>
+                  <bpws:copy>
+                     <bpws:from expression="false()"/>
+                     <bpws:to variable="search1SuccessfullyCompleted"/>
+                  </bpws:copy>
+               </bpws:assign>
+            </bpws:catchAll>
+         </bpws:invoke>
+         <bpws:invoke inputVariable="searchRequest2" operation="search" outputVariable="searchResponse2" partnerLink="BilingualDictionaryPL2" portType="ns2:BilingualDictionary">
+            <bpws:catchAll>
+               <bpws:assign>
+                  <bpws:copy>
+                     <bpws:from expression="false()"/>
+                     <bpws:to variable="search2SuccessfullyCompleted"/>
+                  </bpws:copy>
+               </bpws:assign>
+            </bpws:catchAll>
+         </bpws:invoke>
+         <bpws:invoke inputVariable="searchRequest3" operation="search" outputVariable="searchResponse3" partnerLink="BilingualDictionaryPL3" portType="ns2:BilingualDictionary">
+            <bpws:catchAll>
+               <bpws:assign>
+                  <bpws:copy>
+                     <bpws:from expression="false()"/>
+                     <bpws:to variable="search3SuccessfullyCompleted"/>
+                  </bpws:copy>
+               </bpws:assign>
+            </bpws:catchAll>
+         </bpws:invoke>
+         <bpws:invoke inputVariable="searchRequest4" operation="search" outputVariable="searchResponse4" partnerLink="BilingualDictionaryPL4" portType="ns2:BilingualDictionary">
+            <bpws:catchAll>
+               <bpws:assign>
+                  <bpws:copy>
+                     <bpws:from expression="false()"/>
+                     <bpws:to variable="search4SuccessfullyCompleted"/>
+                  </bpws:copy>
+               </bpws:assign>
+            </bpws:catchAll>
+         </bpws:invoke>
+         <bpws:invoke inputVariable="searchRequest5" operation="search" outputVariable="searchResponse5" partnerLink="BilingualDictionaryPL5" portType="ns2:BilingualDictionary">
+            <bpws:catchAll>
+               <bpws:assign>
+                  <bpws:copy>
+                     <bpws:from expression="false()"/>
+                     <bpws:to variable="search5SuccessfullyCompleted"/>
+                  </bpws:copy>
+               </bpws:assign>
+            </bpws:catchAll>
+         </bpws:invoke>
+      </bpws:flow>
+      <bpws:switch>
+         <bpws:case condition="bpws:getVariableData('search1SuccessfullyCompleted') and bpws:getVariableData('searchResponse1', 'searchReturn', 'boolean(/searchReturn/Translation)')">
+            <bpws:sequence>
+               <ext:forEach counterName="innerCounter" parallel="no">
+                  <ext:startCounterValue>1</ext:startCounterValue>
+                  <ext:finalCounterValue expressionLanguage="http://www.w3.org/TR/1999/REC-xpath-19991116">bpws:getVariableData('searchResponse1', 'searchReturn', 'count(/searchReturn/Translation)')</ext:finalCounterValue>
+                  <bpws:scope>
+                     <bpws:assign>
+                        <bpws:copy>
+                           <bpws:from part="searchReturn" query="/searchReturn/Translation[bpws:getVariableData('innerCounter')]" variable="searchResponse1"/>
+                           <bpws:to part="searchReturn" query="/searchReturn/Translation[bpws:getVariableData('counter')+bpws:getVariableData('innerCounter')]" variable="searchResponse"/>
+                        </bpws:copy>
+                     </bpws:assign>
+                  </bpws:scope>
+               </ext:forEach>
+               <bpws:assign>
+                 <bpws:copy>
+                    <bpws:from expression="bpws:getVariableData('counter')+bpws:getVariableData('searchResponse1', 'searchReturn', 'count(/searchReturn/Translation)')"/>
+                    <bpws:to variable="counter"/>
+                 </bpws:copy>
+               </bpws:assign>
+               <bpws:catchAll/>
+            </bpws:sequence>
+         </bpws:case>
+      </bpws:switch>
+      <bpws:switch>
+         <bpws:case condition="bpws:getVariableData('search2SuccessfullyCompleted') and bpws:getVariableData('searchResponse2', 'searchReturn', 'boolean(/searchReturn/Translation)')">
+            <bpws:sequence>
+               <ext:forEach counterName="innerCounter" parallel="no">
+                  <ext:startCounterValue>1</ext:startCounterValue>
+                  <ext:finalCounterValue expressionLanguage="http://www.w3.org/TR/1999/REC-xpath-19991116">bpws:getVariableData('searchResponse2', 'searchReturn', 'count(/searchReturn/Translation)')</ext:finalCounterValue>
+                  <bpws:scope>
+                     <bpws:assign>
+                        <bpws:copy>
+                           <bpws:from part="searchReturn" query="/searchReturn/Translation[bpws:getVariableData('innerCounter')]" variable="searchResponse2"/>
+                           <bpws:to part="searchReturn" query="/searchReturn/Translation[bpws:getVariableData('counter')+bpws:getVariableData('innerCounter')]" variable="searchResponse"/>
+                        </bpws:copy>
+                     </bpws:assign>
+                  </bpws:scope>
+               </ext:forEach>
+               <bpws:assign>
+                 <bpws:copy>
+                    <bpws:from expression="bpws:getVariableData('counter')+bpws:getVariableData('searchResponse2', 'searchReturn', 'count(/searchReturn/Translation)')"/>
+                    <bpws:to variable="counter"/>
+                 </bpws:copy>
+               </bpws:assign>
+               <bpws:catchAll/>
+            </bpws:sequence>
+         </bpws:case>
+      </bpws:switch>
+      <bpws:switch>
+         <bpws:case condition="bpws:getVariableData('search3SuccessfullyCompleted') and bpws:getVariableData('searchResponse3', 'searchReturn', 'boolean(/searchReturn/Translation)')">
+            <bpws:sequence>
+               <ext:forEach counterName="innerCounter" parallel="no">
+                  <ext:startCounterValue>1</ext:startCounterValue>
+                  <ext:finalCounterValue expressionLanguage="http://www.w3.org/TR/1999/REC-xpath-19991116">bpws:getVariableData('searchResponse3', 'searchReturn', 'count(/searchReturn/Translation)')</ext:finalCounterValue>
+                  <bpws:scope>
+                     <bpws:assign>
+                        <bpws:copy>
+                           <bpws:from part="searchReturn" query="/searchReturn/Translation[bpws:getVariableData('innerCounter')]" variable="searchResponse3"/>
+                           <bpws:to part="searchReturn" query="/searchReturn/Translation[bpws:getVariableData('counter')+bpws:getVariableData('innerCounter')]" variable="searchResponse"/>
+                        </bpws:copy>
+                     </bpws:assign>
+                  </bpws:scope>
+               </ext:forEach>
+               <bpws:assign>
+                 <bpws:copy>
+                    <bpws:from expression="bpws:getVariableData('counter')+bpws:getVariableData('searchResponse3', 'searchReturn', 'count(/searchReturn/Translation)')"/>
+                    <bpws:to variable="counter"/>
+                 </bpws:copy>
+               </bpws:assign>
+               <bpws:catchAll/>
+            </bpws:sequence>
+         </bpws:case>
+      </bpws:switch>
+      <bpws:switch>
+         <bpws:case condition="bpws:getVariableData('search4SuccessfullyCompleted') and bpws:getVariableData('searchResponse4', 'searchReturn', 'boolean(/searchReturn/Translation)')">
+            <bpws:sequence>
+               <ext:forEach counterName="innerCounter" parallel="no">
+                  <ext:startCounterValue>1</ext:startCounterValue>
+                  <ext:finalCounterValue expressionLanguage="http://www.w3.org/TR/1999/REC-xpath-19991116">bpws:getVariableData('searchResponse4', 'searchReturn', 'count(/searchReturn/Translation)')</ext:finalCounterValue>
+                  <bpws:scope>
+                     <bpws:assign>
+                        <bpws:copy>
+                           <bpws:from part="searchReturn" query="/searchReturn/Translation[bpws:getVariableData('innerCounter')]" variable="searchResponse4"/>
+                           <bpws:to part="searchReturn" query="/searchReturn/Translation[bpws:getVariableData('counter')+bpws:getVariableData('innerCounter')]" variable="searchResponse"/>
+                        </bpws:copy>
+                     </bpws:assign>
+                  </bpws:scope>
+               </ext:forEach>
+               <bpws:assign>
+                 <bpws:copy>
+                    <bpws:from expression="bpws:getVariableData('counter')+bpws:getVariableData('searchResponse4', 'searchReturn', 'count(/searchReturn/Translation)')"/>
+                    <bpws:to variable="counter"/>
+                 </bpws:copy>
+               </bpws:assign>
+               <bpws:catchAll/>
+            </bpws:sequence>
+         </bpws:case>
+      </bpws:switch>
+      <bpws:switch>
+         <bpws:case condition="bpws:getVariableData('search5SuccessfullyCompleted') and bpws:getVariableData('searchResponse5', 'searchReturn', 'boolean(/searchReturn/Translation)')">
+            <bpws:sequence>
+               <ext:forEach counterName="innerCounter" parallel="no">
+                  <ext:startCounterValue>1</ext:startCounterValue>
+                  <ext:finalCounterValue expressionLanguage="http://www.w3.org/TR/1999/REC-xpath-19991116">bpws:getVariableData('searchResponse5', 'searchReturn', 'count(/searchReturn/Translation)')</ext:finalCounterValue>
+                  <bpws:scope>
+                     <bpws:assign>
+                        <bpws:copy>
+                           <bpws:from part="searchReturn" query="/searchReturn/Translation[bpws:getVariableData('innerCounter')]" variable="searchResponse5"/>
+                           <bpws:to part="searchReturn" query="/searchReturn/Translation[bpws:getVariableData('counter')+bpws:getVariableData('innerCounter')]" variable="searchResponse"/>
+                        </bpws:copy>
+                     </bpws:assign>
+                  </bpws:scope>
+               </ext:forEach>
+               <bpws:assign>
+                 <bpws:copy>
+                    <bpws:from expression="bpws:getVariableData('counter')+bpws:getVariableData('searchResponse5', 'searchReturn', 'count(/searchReturn/Translation)')"/>
+                    <bpws:to variable="counter"/>
+                 </bpws:copy>
+               </bpws:assign>
+               <bpws:catchAll/>
+            </bpws:sequence>
+         </bpws:case>
+      </bpws:switch>
+      <bpws:reply operation="search" partnerLink="BilingualDictionaryCrossSearchPL" portType="ns1:BilingualDictionary" variable="searchResponse"/>
+   </bpws:sequence>
+</bpws:process>

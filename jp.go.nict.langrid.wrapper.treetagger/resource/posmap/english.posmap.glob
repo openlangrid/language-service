@@ -1,0 +1,24 @@
+# english PartOfSpeech map
+NN*=noun.common
+NP*=noun.proper
+PP=noun.pronoun
+PP$=noun.pronoun
+V*=verb
+MD*=verb
+JJ*=adjective
+RB*=adverb
+W*=other
+T*=other
+,=other
+SYM=noun.other
+S*=other
+C*=other
+D*=other
+F*=other
+PO*=other
+RP*=other
+E*=other
+I*=other
+L*=other
+PD*=other
+U*=other
