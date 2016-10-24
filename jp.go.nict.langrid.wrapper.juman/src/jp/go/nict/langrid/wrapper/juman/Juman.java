@@ -13,6 +13,7 @@ import static jp.go.nict.langrid.service_1_2.typed.PartOfSpeech.verb;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
@@ -24,6 +25,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import jp.go.nict.langrid.commons.util.ArrayUtil;
 import jp.go.nict.langrid.language.Language;
 import jp.go.nict.langrid.service_1_2.InvalidParameterException;
 import jp.go.nict.langrid.service_1_2.ProcessFailedException;
@@ -36,7 +38,8 @@ public class Juman extends AbstractMorphologicalAnalysisService {
 	public Juman() {
 		setSupportedLanguageCollection(Arrays.asList(ja));
 		jumanPath = getInitParameterString("jumanPath", "/usr/local/bin/juman");
-		jumanEncoding = getInitParameterString("jumanEncoding", "EUC_JP");
+		jumanEncoding = getInitParameterString("jumanEncoding", "utf8");
+		jumanOpts = getInitParameterString("jumanOpts", "-B -e2").split(" ");
 	}
 
 	public void setJumanPath(String jumanPath) {
@@ -47,10 +50,14 @@ public class Juman extends AbstractMorphologicalAnalysisService {
 		this.jumanEncoding = jumanEncoding;
 	}
 
+	public void setJumanOpts(String jumanOpts){
+		this.jumanOpts = jumanOpts.split(" ");
+	}
+
 	@Override
 	protected Collection<Morpheme> doAnalyze(Language language, String text)
 			throws InvalidParameterException, ProcessFailedException {
-		ProcessFacade p = new ProcessFacade(jumanPath, "-B","-e2");
+		ProcessFacade p = new ProcessFacade(ArrayUtil.append(new String[]{jumanPath}, jumanOpts));
 		try{
 			p.start();
 			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(
@@ -58,21 +65,7 @@ public class Juman extends AbstractMorphologicalAnalysisService {
 			bw.write(text);
 			bw.close();
 
-			BufferedReader br = new BufferedReader(new InputStreamReader(
-					p.getInputStream(), jumanEncoding));
-
-			ArrayList<Morpheme> morphemes = new ArrayList<Morpheme>();
-			String str = null;
-			while((str = br.readLine()) != null){
-				if(str.startsWith("@") || str.equals("EOS")) continue;
-
-				String[] analyzedMorpheme = str.split("\\s");
-				String word = analyzedMorpheme[0];
-				String lemma = analyzedMorpheme[2];
-				PartOfSpeech partOfSpeech = determinePartOfSpeech(analyzedMorpheme[3], analyzedMorpheme[5]);
-				morphemes.add(new Morpheme(word,lemma,partOfSpeech));
-			}
-			return morphemes;
+			return convertResult(p.getInputStream(), jumanEncoding);
 		} catch (UnsupportedEncodingException e){
 			logger.log(Level.SEVERE, "Wrapper Error: Unsupported system encoding, "+jumanEncoding, e);
 			throw new ProcessFailedException(e);
@@ -90,6 +83,24 @@ public class Juman extends AbstractMorphologicalAnalysisService {
 		}
 	}
 
+	Collection<Morpheme> convertResult(InputStream is, String encoding)
+	throws IOException{
+		BufferedReader br = new BufferedReader(new InputStreamReader(is, encoding));
+
+		ArrayList<Morpheme> morphemes = new ArrayList<Morpheme>();
+		String str = null;
+		while((str = br.readLine()) != null){
+			if(str.startsWith("@") || str.equals("EOS")) continue;
+
+			String[] analyzedMorpheme = str.split("\\s");
+			String word = analyzedMorpheme[0];
+			String lemma = analyzedMorpheme[2];
+			PartOfSpeech partOfSpeech = determinePartOfSpeech(analyzedMorpheme[3], analyzedMorpheme[5]);
+			morphemes.add(new Morpheme(word,lemma,partOfSpeech));
+		}
+		return morphemes;
+	}
+	
 	private static PartOfSpeech determinePartOfSpeech(String pos, String detailedPos){
 		PartOfSpeech ret = posMap.get(pos);
 		if(ret != null) return ret;
@@ -102,6 +113,7 @@ public class Juman extends AbstractMorphologicalAnalysisService {
 
 	private String jumanPath;
 	private String jumanEncoding = "EUC-JP";
+	private String [] jumanOpts;
 	private static Map<String, PartOfSpeech> posMap = new HashMap<String, PartOfSpeech>();
 	private static Map<String, PartOfSpeech> posDetailMap = new HashMap<String, PartOfSpeech>();
 	private static Map<String, PartOfSpeech> posOtherMap = new HashMap<String, PartOfSpeech>();
