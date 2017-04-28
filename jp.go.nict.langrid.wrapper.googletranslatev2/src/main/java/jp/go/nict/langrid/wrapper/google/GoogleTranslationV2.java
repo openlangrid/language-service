@@ -21,6 +21,7 @@ package jp.go.nict.langrid.wrapper.google;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -36,6 +37,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.net.ssl.HttpsURLConnection;
+
+import org.apache.commons.lang.StringEscapeUtils;
+
+import com.opensymphony.oscache.base.Cache;
+import com.opensymphony.oscache.base.NeedsRefreshException;
 
 import jp.go.nict.langrid.commons.io.StreamUtil;
 import jp.go.nict.langrid.commons.net.URLUtil;
@@ -57,17 +63,10 @@ import jp.go.nict.langrid.service_1_2.ServiceNotFoundException;
 import jp.go.nict.langrid.service_1_2.UnsupportedLanguagePairException;
 import jp.go.nict.langrid.service_1_2.util.validator.LanguagePairValidator;
 import jp.go.nict.langrid.wrapper.ws_1_2.translation.AbstractTranslationService;
-
-import org.apache.commons.lang.StringEscapeUtils;
-
-import com.opensymphony.oscache.base.Cache;
-import com.opensymphony.oscache.base.NeedsRefreshException;
 /**
  * Google AJAX Translation API Wrapper.
  * @author Takao Nakaguchi
  * @author Masaaki Kamiya
- * @author $Author: Takao Nakaguchi $
- * @version $Revision: 28684 $
  */
 public class GoogleTranslationV2
 extends AbstractTranslationService{
@@ -75,16 +74,6 @@ extends AbstractTranslationService{
 	 * Constructor.
 	 */
 	public GoogleTranslationV2(){
-		timeoutMillis = getInitParameterInt(
-				"googleTranslation.timeoutMillis", 10000
-				);
-		maxQueryCount = getInitParameterInt(
-				"googleTranslation.maxQueryCount", 128
-				);
-		maxTotalQueryLength = getInitParameterInt(
-				"googleTranslation.maxTotalQueryLength", 5120
-				);
-		defaultApiKey = getInitParameterString(defaultGetString, "");
 	}
 
 	public void setTimeoutMillis(int timeoutMillis) {
@@ -94,13 +83,25 @@ extends AbstractTranslationService{
 	public void setMaxQueryCount(int maxQueryCount) {
 		this.maxQueryCount = maxQueryCount;
 	}
-	
+
 	public void setMaxTotalQueryLength(int maxTotalQueryLength) {
 		this.maxTotalQueryLength = maxTotalQueryLength;
 	}
 
 	public void setDefaultApiKey(String defaultApiKey) {
 		this.defaultApiKey = defaultApiKey;
+	}
+	
+	public void setDefaultModel(String defaultModel) {
+		this.defaultModel = defaultModel;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public void setTransCacheSize(int bytes){
+		GoogleTranslationV2.setTransCacheSize_(bytes);
 	}
 
 	@Override
@@ -148,7 +149,7 @@ extends AbstractTranslationService{
 			Language sourceLang, Language targetLang, String source)
 	throws InvalidParameterException, ProcessFailedException{
 		source = convertCodes(source);
-		String result = invokeTranslation(sourceLang, targetLang, source);
+		String result = invokeTranslation(sourceLang.getCode(), targetLang.getCode(), source);
 		return restoreCodes(result);
 	}
 
@@ -165,7 +166,7 @@ extends AbstractTranslationService{
 		ArrayList <String> res = new ArrayList<String>();
 		for (String[] srcs : separatedSources) {
 			if(srcs.length == 1) {
-				res.add(invokeTranslation(sourceLang, targetLang, srcs[0]));
+				res.add(invokeTranslation(sourceLang.getCode(), targetLang.getCode(), srcs[0]));
 			} else {
 				res.addAll(invokeBatchTranslation(sourceLang, targetLang, srcs));
 			}
@@ -195,17 +196,18 @@ extends AbstractTranslationService{
 
 	@SuppressWarnings("unchecked")
 	private String invokeTranslation(
-			Language sourceLang, Language targetLang, String source)
-	throws InvalidParameterException, ProcessFailedException
-	{
+			String sourceLang, String targetLang, String source)
+	throws InvalidParameterException, ProcessFailedException{
+		String transKey = getUrlOrScParam("model", defaultModel) + ":" + sourceLang + ":" + targetLang + ":" + source;
+		String c = getTransCacheEntry(transKey);
+		if(c != null) return c;
 		InputStream is = null;
 		try{
-			String apiKey = getIDCode(getServiceContext(), "apikey", defaultApiKey);
-			HttpsURLConnection con = (HttpsURLConnection) new URL(TRANSLATE_URL + "key=" + apiKey).openConnection();
+			HttpsURLConnection con = (HttpsURLConnection) getUrl().openConnection();
 			con.setDoOutput(true);
 			con.addRequestProperty("X-HTTP-Method-Override", "GET");
 			con.setReadTimeout(timeoutMillis);
-			writeParameters(con, apiKey, sourceLang, targetLang, source);
+			writeParameters(con, sourceLang, targetLang, source);
 
 			if (con.getResponseCode() != HttpsURLConnection.HTTP_BAD_REQUEST &&
 					con.getResponseCode() != HttpsURLConnection.HTTP_FORBIDDEN) {
@@ -218,8 +220,9 @@ extends AbstractTranslationService{
 					);
 			try{
 				Map<String, Object> root = JSON.decode(json);
+				System.out.println(JSON.encode(root));
 				Map<String, Object> responseData = (Map<String, Object>)root.get("data");
-				String key = sourceLang.getCode() + ":" + targetLang.getCode();
+				String key = sourceLang + ":" + targetLang;
 				if(con.getResponseCode() == 200){
 					langPairCache.putInCache(key, true);
 					List<String> results = new ArrayList<String>();
@@ -228,7 +231,9 @@ extends AbstractTranslationService{
 						results.add((String)obj.get("translatedText"));
 					}
 					String result = results.get(0);
-					return StringEscapeUtils.unescapeHtml(result.replaceAll("&#39;", "'"));
+					result = StringEscapeUtils.unescapeHtml(result.replaceAll("&#39;", "'"));
+					setTransCacheEntry(transKey, result);
+					return result;
 				} else {
 					String details = (String)(((Map<String, Object>)root.get("error")).get("message"));
 					if (details.indexOf("Bad language pair") != -1) {
@@ -268,12 +273,11 @@ extends AbstractTranslationService{
 	{
 		InputStream is = null;
 		try{
-			String apiKey = getIDCode(getServiceContext(), "key", defaultApiKey);
-			HttpsURLConnection con = (HttpsURLConnection) new URL(TRANSLATE_URL).openConnection();
+			HttpsURLConnection con = (HttpsURLConnection) getUrl().openConnection();
 			con.setDoOutput(true);
 			con.addRequestProperty("X-HTTP-Method-Override", "GET");
 			con.setReadTimeout(timeoutMillis);
-			writeParameters(con, apiKey, sourceLang, targetLang, sources);
+			writeParameters(con, sourceLang.getCode(), targetLang.getCode(), sources);
 
 			if (con.getResponseCode() != HttpsURLConnection.HTTP_BAD_REQUEST &&
 					con.getResponseCode() != HttpsURLConnection.HTTP_FORBIDDEN) {
@@ -365,6 +369,20 @@ extends AbstractTranslationService{
 		else return defaultValue;
 	}
 
+	private URL getUrl() throws MalformedURLException{
+		return new URL(url);
+	}
+
+	protected String getUrlOrScParam(String parameterName, String defaultValue){
+		String v = URLUtil.getQueryParameters(
+				getServiceContext().getRequestUrl()
+				).get(parameterName);
+		if(v != null) return v;
+		v = getServiceContext().getInitParameter(parameterName);
+		if(v != null) return v;
+		return defaultValue;
+	}
+
 	protected String getIDCode(
 			ServiceContext serviceContext, String parameterName, String defaultValue)
 	throws ProcessFailedException
@@ -378,13 +396,16 @@ extends AbstractTranslationService{
 		return getParam;
 	}
 
-	static void writeParameters(
-			URLConnection c, String apiKey, Language sourceLang, Language targetLang, String... sources)
+	private void writeParameters(URLConnection c, String sourceLang, String targetLang, String... sources)
 	throws IOException{
+		String key = getUrlOrScParam("apikey", defaultApiKey);
+		String model = getUrlOrScParam("model", defaultModel);
 		StringBuilder b = new StringBuilder();
-		b.append("key=").append(apiKey)
-			.append("&source=").append(sourceLang.getCode())
-			.append("&target=").append(targetLang.getCode());
+		b.append("key=").append(key)
+			.append("&source=").append(sourceLang)
+			.append("&target=").append(targetLang)
+			.append("&model=").append(model)
+			;
 		for(String s : sources){
 			b.append("&q=").append(URLEncoder.encode(s, "UTF-8"));
 		}
@@ -395,13 +416,41 @@ extends AbstractTranslationService{
 		c.getOutputStream().write(b.toString().getBytes("UTF-8"));
 	}
 
+	static synchronized String getTransCacheEntry(String key){
+		try {
+			String r = (String)transCache.getFromCache(key, transCacheTtl);
+			return r;
+		} catch(NeedsRefreshException e){
+			transCache.cancelUpdate(key);
+		}
+		return null;
+	}
+
+	static synchronized void setTransCacheEntry(String key, String value){
+		transCache.putInCache(key, value);
+	}
+
+	private static synchronized void setTransCacheSize_(int size){
+		transCacheSize = size;
+		transCache = new Cache(
+				true, false, false, true, null, size);
+	}
+
+	static synchronized void clearTransCache(){
+		transCache = null;
+		setTransCacheSize_(transCacheSize);
+	}
+
+	private String url = "https://www.googleapis.com/language/translate/v2";
 	private String defaultApiKey = "";
-	private static String defaultGetString = "apikey";
-	private int timeoutMillis;
-	private int maxQueryCount;
-	private int maxTotalQueryLength;
-	private static final String TRANSLATE_URL =
-		"https://www.googleapis.com/language/translate/v2?";
+	private String defaultModel = "base";
+	private int timeoutMillis = 10000;
+	private int maxQueryCount = 128;
+	private int maxTotalQueryLength = 5120;
+	private static int transCacheSize = 1000000;
+	private static int transCacheTtl = 60 * 60 * 1000;
+	private static Cache transCache = new Cache(
+			true, false, false, true, null, 1000000);
 	private static Cache langPairCache = new Cache(
 			true, false, false, true, null, 10000);
 	private static Map<String, String> languageCodeConversionMap = new HashMap<String, String>();
@@ -412,5 +461,6 @@ extends AbstractTranslationService{
 	static {
 		languageCodeConversionMap.put("iw", "he");
 		languageCodeConversionMap.put("pt", "pt-PT");
+		clearTransCache();
 	}
 }
