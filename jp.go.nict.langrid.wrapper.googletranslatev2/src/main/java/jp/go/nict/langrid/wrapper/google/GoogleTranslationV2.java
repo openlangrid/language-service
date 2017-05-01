@@ -198,7 +198,7 @@ extends AbstractTranslationService{
 	private String invokeTranslation(
 			String sourceLang, String targetLang, String source)
 	throws InvalidParameterException, ProcessFailedException{
-		String transKey = getUrlOrScParam("model", defaultModel) + ":" + sourceLang + ":" + targetLang + ":" + source;
+		String transKey = createTransCacheKey(sourceLang, targetLang, source);
 		String c = getTransCacheEntry(transKey);
 		if(c != null) return c;
 		InputStream is = null;
@@ -396,6 +396,12 @@ extends AbstractTranslationService{
 		return getParam;
 	}
 
+	private String createTransCacheKey(String sourceLang, String targetLang, String source){
+		return getUrlOrScParam("apikey", defaultApiKey) +
+				":" + getUrlOrScParam("model", defaultModel) + 
+				":" + sourceLang + ":" + targetLang + ":" + source;
+	}
+
 	private void writeParameters(URLConnection c, String sourceLang, String targetLang, String... sources)
 	throws IOException{
 		String key = getUrlOrScParam("apikey", defaultApiKey);
@@ -447,10 +453,10 @@ extends AbstractTranslationService{
 	private int timeoutMillis = 10000;
 	private int maxQueryCount = 128;
 	private int maxTotalQueryLength = 5120;
-	private static int transCacheSize = 1000000;
+	private static int transCacheSize = 10_000_000;
 	private static int transCacheTtl = 60 * 60 * 1000;
 	private static Cache transCache = new Cache(
-			true, false, false, true, null, 1000000);
+			true, false, false, true, null, transCacheSize);
 	private static Cache langPairCache = new Cache(
 			true, false, false, true, null, 10000);
 	private static Map<String, String> languageCodeConversionMap = new HashMap<String, String>();
