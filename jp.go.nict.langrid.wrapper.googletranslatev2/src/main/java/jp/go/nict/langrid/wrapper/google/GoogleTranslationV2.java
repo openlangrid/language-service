@@ -198,7 +198,9 @@ extends AbstractTranslationService{
 	private String invokeTranslation(
 			String sourceLang, String targetLang, String source)
 	throws InvalidParameterException, ProcessFailedException{
-		String transKey = createTransCacheKey(sourceLang, targetLang, source);
+		String apiKey = getUrlOrScParam("apikey", defaultApiKey);
+		String model = getUrlOrScParam("model", defaultModel);
+		String transKey = createTransCacheKey(apiKey, model, sourceLang, targetLang, source);
 		String c = getTransCacheEntry(transKey);
 		if(c != null) return c;
 		InputStream is = null;
@@ -207,7 +209,7 @@ extends AbstractTranslationService{
 			con.setDoOutput(true);
 			con.addRequestProperty("X-HTTP-Method-Override", "GET");
 			con.setReadTimeout(timeoutMillis);
-			writeParameters(con, sourceLang, targetLang, source);
+			writeParameters(con, apiKey, model, sourceLang, targetLang, source);
 
 			if (con.getResponseCode() != HttpsURLConnection.HTTP_BAD_REQUEST &&
 					con.getResponseCode() != HttpsURLConnection.HTTP_FORBIDDEN) {
@@ -222,9 +224,9 @@ extends AbstractTranslationService{
 				Map<String, Object> root = JSON.decode(json);
 				System.out.println(JSON.encode(root));
 				Map<String, Object> responseData = (Map<String, Object>)root.get("data");
-				String key = sourceLang + ":" + targetLang;
+				String langKey = sourceLang + ":" + targetLang;
 				if(con.getResponseCode() == 200){
-					langPairCache.putInCache(key, true);
+					langPairCache.putInCache(langKey, true);
 					List<String> results = new ArrayList<String>();
 					List<Map<String, Object>> list = (List<Map<String, Object>>)responseData.get("translations");
 					for (Map<String, Object> obj : list) {
@@ -237,7 +239,7 @@ extends AbstractTranslationService{
 				} else {
 					String details = (String)(((Map<String, Object>)root.get("error")).get("message"));
 					if (details.indexOf("Bad language pair") != -1) {
-						langPairCache.putInCache(key, false);
+						langPairCache.putInCache(langKey, false);
 						languagePairValidator.get().getUniqueLanguagePair(
 								Collections.EMPTY_LIST)
 								;
@@ -271,13 +273,15 @@ extends AbstractTranslationService{
 			Language sourceLang, Language targetLang, String[] sources)
 	throws InvalidParameterException, ProcessFailedException
 	{
+		String apiKey = getUrlOrScParam("apikey", defaultApiKey);
+		String model = getUrlOrScParam("model", defaultModel);
 		InputStream is = null;
 		try{
 			HttpsURLConnection con = (HttpsURLConnection) getUrl().openConnection();
 			con.setDoOutput(true);
 			con.addRequestProperty("X-HTTP-Method-Override", "GET");
 			con.setReadTimeout(timeoutMillis);
-			writeParameters(con, sourceLang.getCode(), targetLang.getCode(), sources);
+			writeParameters(con, model, apiKey, sourceLang.getCode(), targetLang.getCode(), sources);
 
 			if (con.getResponseCode() != HttpsURLConnection.HTTP_BAD_REQUEST &&
 					con.getResponseCode() != HttpsURLConnection.HTTP_FORBIDDEN) {
@@ -293,10 +297,10 @@ extends AbstractTranslationService{
 				List<Map<String, Object>> array = (List<Map<String, Object>>)
 					(((Map<String, Object>)root.get("data")).get("translations"));
 				int status = con.getResponseCode();
-				String key = sourceLang.getCode() + ":" + targetLang.getCode();
+				String langKey = sourceLang.getCode() + ":" + targetLang.getCode();
 
 				if (status == 200) {
-					langPairCache.putInCache(key, true);
+					langPairCache.putInCache(langKey, true);
 					ArrayList<String> resultArray = new ArrayList<String>();
 					for (Map<String, Object> obj : array) {
 						String result = (String)obj.get("translatedText");
@@ -306,7 +310,7 @@ extends AbstractTranslationService{
 				} else{
 					String details = (String)(((Map<String, Object>)root.get("error")).get("message"));
 					if (details.indexOf("Bad language pair") != -1) {
-						langPairCache.putInCache(key, false);
+						langPairCache.putInCache(langKey, false);
 						languagePairValidator.get().getUniqueLanguagePair(
 								Collections.EMPTY_LIST)
 								;
@@ -396,18 +400,16 @@ extends AbstractTranslationService{
 		return getParam;
 	}
 
-	private String createTransCacheKey(String sourceLang, String targetLang, String source){
-		return getUrlOrScParam("apikey", defaultApiKey) +
-				":" + getUrlOrScParam("model", defaultModel) + 
+	private String createTransCacheKey(String sourceLang, String targetLang, String source, String apiKey, String model){
+		return getUrlOrScParam("apikey", apiKey) +
+				":" + getUrlOrScParam("model", model) + 
 				":" + sourceLang + ":" + targetLang + ":" + source;
 	}
 
-	private void writeParameters(URLConnection c, String sourceLang, String targetLang, String... sources)
+	private void writeParameters(URLConnection c, String apiKey, String model, String sourceLang, String targetLang, String... sources)
 	throws IOException{
-		String key = getUrlOrScParam("apikey", defaultApiKey);
-		String model = getUrlOrScParam("model", defaultModel);
 		StringBuilder b = new StringBuilder();
-		b.append("key=").append(key)
+		b.append("key=").append(apiKey)
 			.append("&source=").append(sourceLang)
 			.append("&target=").append(targetLang)
 			.append("&model=").append(model)
