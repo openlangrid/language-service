@@ -186,6 +186,7 @@ extends AbstractBilingualDictionaryWithLongestMatchSearchService
 	protected Collection<TranslationWithPosition> doSearchLongestMatchingTerms(
 			Language headLang, Language targetLang, Morpheme[] morphemes)
 			throws InvalidParameterException, ProcessFailedException {
+		checkConnectionValid();
 		if(useQCAlgorithm){
 			DictionaryDataBase ddb = new DictionaryDataBase(
 					tableName, manager
@@ -226,8 +227,16 @@ extends AbstractBilingualDictionaryWithLongestMatchSearchService
 
 	private void checkConnectionValid() throws ProcessFailedException{
 		if(manager == null){
+			if(conParams.jndiDataSourceName != null || conParams.driverName != null) {
+				initDb();
+				if(manager != null) return;
+			}
 			throw new ProcessFailedException("failed to connect database.");
 		}
+	}
+
+	public ConnectionParameters getConnection() {
+		return conParams;
 	}
 
 	private ConnectionParameters conParams = new ConnectionParameters();

@@ -364,8 +364,8 @@ public class DictionaryDataBase {
 	private String createBilingualDictionarySQL(
 			int index, String headLang, String targetLang, String headword
 			, MatchingMethod matchingMethod, boolean order) {
-		String headLangColumn = DataBaseUtil.getColumnName(headLang);
-		String targetLangColumn = DataBaseUtil.getColumnName(targetLang);
+		String headLangColumn = dbDictionary.col(headLang);
+		String targetLangColumn = dbDictionary.col(targetLang);
 
 		StringBuilder buf = new StringBuilder();
 		buf.append(" SELECT ");
@@ -374,7 +374,7 @@ public class DictionaryDataBase {
 		}
 		buf.append(headLangColumn).append(", ");
 		buf.append(targetLangColumn);
-		buf.append(" FROM \"").append(tableName).append("\"");
+		buf.append(" FROM ").append(dbDictionary.table(tableName));
 		buf.append(" WHERE LOWER(").append(headLangColumn).append(")");
 		String escapedHw = StringEscapeUtils.escapeSql(headword.toLowerCase());
 		if (matchingMethod.equals(COMPLETE)) {

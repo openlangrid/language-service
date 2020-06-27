@@ -27,5 +27,27 @@ package jp.go.nict.langrid.wrapper.common.db;
  * @version $Revision: 266 $
  */
 public enum DbDictionary {
-	POSTGRESQL, MYSQL;
+	POSTGRESQL{
+		@Override
+		public String table(String name) {
+			return "\"" + name + "\"";
+		}
+		@Override
+		public String col(String name) {
+			return "\"" + name + "\"";
+		}
+	},
+	MYSQL{
+		@Override
+		public String table(String name) {
+			return "`" + name + "`";
+		}
+		@Override
+		public String col(String name) {
+			return "`" + name + "`";
+		}
+	};
+
+	public abstract String table(String name);
+	public abstract String col(String name);
 }
